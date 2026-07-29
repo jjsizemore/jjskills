@@ -1,0 +1,4 @@
+interface:
+  display_name: "Managing shadcn Components"
+  short_description: "Use when adding, listing, auditing, or inspecting shadcn/ui components, registry data, or CLI/MCP component installation workflows."
+  default_prompt: "Use $managing-shadcn-components to handle this task."

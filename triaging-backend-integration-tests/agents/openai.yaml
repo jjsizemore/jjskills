@@ -1,0 +1,4 @@
+interface:
+  display_name: "Triaging Backend Integration Tests"
+  short_description: "Use when diagnosing backend integration tests that involve real databases, transactions, fixtures, service boundaries, or flaky persistence behavior."
+  default_prompt: "Use $triaging-backend-integration-tests to handle this task."

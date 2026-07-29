@@ -1,0 +1,4 @@
+interface:
+  display_name: "Designing Desktop Product UX"
+  short_description: "Use when designing, reviewing, or implementing desktop application UX flows, layout, empty states, recovery states, or repeated operator workflows."
+  default_prompt: "Use $designing-desktop-product-ux to handle this task."

@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Governing Skills'
+  short_description: 'Use when governing skills is needed.'
+  default_prompt: 'Use $governing-skills to handle this governing skills task.'

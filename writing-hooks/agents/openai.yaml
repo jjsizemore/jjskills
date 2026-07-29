@@ -1,0 +1,4 @@
+interface:
+  display_name: "Writing Hooks"
+  short_description: "Use when creating, editing, testing, validating, symlinking, or publishing agent-runtime hooks for coding agents."
+  default_prompt: "Use $writing-hooks to handle this task."

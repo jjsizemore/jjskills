@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agents.local/schemas/work-run-ledger.v1.json",
+  "title": "WorkRunLedger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "project",
+    "branchName",
+    "description",
+    "maxIterations",
+    "budgetSealedAt",
+    "iteration",
+    "userStories"
+  ],
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "project": { "type": "string", "minLength": 1 },
+    "branchName": { "type": "string" },
+    "description": { "type": "string" },
+    "sourceSpec": { "type": ["string", "null"] },
+    "maxIterations": { "type": "integer", "minimum": 1 },
+    "budgetSealedAt": { "type": "string", "minLength": 1 },
+    "iteration": { "type": "integer", "minimum": 0 },
+    "status": {
+      "type": "string",
+      "enum": ["active", "completed", "cancelled", "blocked"]
+    },
+    "userStories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "description",
+          "acceptanceCriteria",
+          "priority",
+          "passes"
+        ],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "acceptanceCriteria": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 1
+          },
+          "priority": { "type": "integer", "minimum": 1 },
+          "passes": { "type": "boolean" },
+          "notes": { "type": "string" },
+          "blockedReason": { "type": ["string", "null"] },
+          "tags": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Testing GitHub Actions Locally"
+  short_description: "Use when testing or debugging GitHub Actions workflow changes locally with act, especially workflows, reusable workflows, runner selection, or job conditions."
+  default_prompt: "Use $testing-github-actions-locally to handle this task."

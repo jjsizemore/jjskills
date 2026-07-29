@@ -1,0 +1,4 @@
+interface:
+  display_name: "Closing Deployment Pipelines"
+  short_description: "Use when recent Git changes need to be pushed, released, monitored, or unblocked through CI/CD, E2E, smoke, deployment, or production verification, including when failures may be pre-existing but block the requested pipeline."
+  default_prompt: "Use $closing-deployment-pipelines to handle this task."

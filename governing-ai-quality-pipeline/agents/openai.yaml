@@ -1,0 +1,4 @@
+interface:
+  display_name: "Governing AI Quality Pipeline"
+  short_description: "Use when working on AI relevance gates, confidence filtering, evaluation, adaptive learning, prompt quality, or scoped AI orchestration."
+  default_prompt: "Use $governing-ai-quality-pipeline to handle this task."

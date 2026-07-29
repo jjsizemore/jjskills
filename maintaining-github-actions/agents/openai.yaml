@@ -1,0 +1,4 @@
+interface:
+  display_name: "Maintaining GitHub Actions"
+  short_description: "Use when auditing, debugging, optimizing, or contract-testing GitHub Actions workflows, runners, caches, permissions, or release jobs."
+  default_prompt: "Use $maintaining-github-actions to handle this task."

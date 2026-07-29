@@ -1,0 +1,4 @@
+interface:
+  display_name: "Aligning Legal Trust Surfaces"
+  short_description: "Use when changes affect privacy, terms, consent, signup, billing, account deletion, data use, AI processing, exports, or public trust copy."
+  default_prompt: "Use $aligning-legal-trust-surfaces to handle this task."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Using Codex CLI Agent"
+  short_description: "Use when invoking OpenAI Codex CLI as an external coding agent for review, debugging, implementation checks, or investigation."
+  default_prompt: "Use $using-codex-cli-agent to handle this task."

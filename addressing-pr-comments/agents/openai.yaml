@@ -1,0 +1,4 @@
+interface:
+  display_name: "Addressing PR Comments"
+  short_description: "Use when addressing pull request review comments, requested changes, or threaded GitHub feedback with local verification and follow-up commits."
+  default_prompt: "Use $addressing-pr-comments to handle this task."

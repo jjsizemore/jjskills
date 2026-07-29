@@ -1,0 +1,4 @@
+interface:
+  display_name: "Setting Up Codex Repo Environment"
+  short_description: "Use when setting up or reviewing Codex local environments, Codex app actions, or project-scoped Codex configuration for a repository."
+  default_prompt: "Use $setting-up-codex-repo-environment to handle this task."

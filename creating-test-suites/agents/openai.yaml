@@ -1,0 +1,4 @@
+interface:
+  display_name: "Creating Test Suites"
+  short_description: "Use when building or extending behavior-focused tests for missing coverage, regression protection, contracts, quality gates, or incidents."
+  default_prompt: "Use $creating-test-suites to handle this task."

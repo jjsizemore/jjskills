@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reviewing PRs"
+  short_description: "Use when self-reviewing or reviewing a pull request for correctness, regressions, security, tests, maintainability, or release risk."
+  default_prompt: "Use $reviewing-prs to handle this task."

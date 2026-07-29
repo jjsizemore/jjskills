@@ -1,0 +1,4 @@
+interface:
+  display_name: "Maintaining Desktop Audio Pipeline"
+  short_description: "Use when working on desktop audio capture, echo cancellation, diarization, attribution, transcript fidelity, permissions, latency, or audio benchmarks."
+  default_prompt: "Use $maintaining-desktop-audio-pipeline to handle this task."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Guarding Backend Architecture"
+  short_description: "Use when changing backend routers, services, repositories, schemas, permissions, persistence, or cross-layer contracts."
+  default_prompt: "Use $guarding-backend-architecture to handle this task."

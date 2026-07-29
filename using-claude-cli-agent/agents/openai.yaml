@@ -1,0 +1,4 @@
+interface:
+  display_name: "Using Claude CLI Agent"
+  short_description: "Use when invoking Claude Code CLI as an external coding agent for review, debugging, implementation checks, or investigation."
+  default_prompt: "Use $using-claude-cli-agent to handle this task."

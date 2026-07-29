@@ -1,0 +1,4 @@
+interface:
+  display_name: "Syncing Worktree Env"
+  short_description: "Use when a newly created or refreshed git worktree needs local environment files, dependency state, or tool trust restored safely."
+  default_prompt: "Use $syncing-worktree-env to handle this task."

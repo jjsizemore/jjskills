@@ -1,0 +1,4 @@
+interface:
+  display_name: "Planning Release Rollout Rollback"
+  short_description: "Use when planning or executing production rollouts, staged releases, preflight checks, verification signals, or rollback runbooks."
+  default_prompt: "Use $planning-release-rollout-rollback to handle this task."

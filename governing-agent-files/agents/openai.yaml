@@ -1,0 +1,4 @@
+interface:
+  display_name: "Governing Agent Files"
+  short_description: "Use when creating or updating agent instructions, prompts, skills, routing files, or AI tool guidance in a repository."
+  default_prompt: "Use $governing-agent-files to handle this task."

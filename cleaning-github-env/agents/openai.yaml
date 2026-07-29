@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cleaning GitHub Env"
+  short_description: "Use when auditing, classifying, or cleaning GitHub repository variables, secrets, environment variables, environment secrets, or unused environments."
+  default_prompt: "Use $cleaning-github-env to handle this task."

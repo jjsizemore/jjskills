@@ -1,0 +1,4 @@
+interface:
+  display_name: "Investigating Sentry Observability"
+  short_description: "Use when investigating Sentry issues, traces, releases, deploy metadata, errors, or observability incidents through MCP tools."
+  default_prompt: "Use $investigating-sentry-observability to handle this task."

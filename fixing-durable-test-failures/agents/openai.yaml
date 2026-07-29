@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fixing Durable Test Failures"
+  short_description: "Use when diagnosing and durably fixing failing tests or regressions through root-cause triage, remediation categories, and reusable failure taxonomy."
+  default_prompt: "Use $fixing-durable-test-failures to handle this task."

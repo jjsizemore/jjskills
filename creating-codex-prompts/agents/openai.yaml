@@ -1,0 +1,4 @@
+interface:
+  display_name: "Creating Codex Prompts"
+  short_description: "Use when creating or refactoring a prompt intended for Codex or another coding agent to execute in a repository."
+  default_prompt: "Use $creating-codex-prompts to handle this task."

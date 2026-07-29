@@ -1,0 +1,4 @@
+interface:
+  display_name: "Creating Implementation Specs"
+  short_description: "Use when transforming a discovered issue, bug, regression, architecture gap, operational deficiency, technical debt, CI failure, security finding, or UX problem into a handoff-ready remediation spec."
+  default_prompt: "Use $creating-implementation-specs to handle this task."

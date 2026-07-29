@@ -1,0 +1,4 @@
+interface:
+  display_name: "Optimizing Neon Postgres Egress"
+  short_description: "Use when diagnosing or reducing excessive Postgres egress, high database bills, unexpected data transfer, or query patterns that pull too much data."
+  default_prompt: "Use $optimizing-neon-postgres-egress to handle this task."

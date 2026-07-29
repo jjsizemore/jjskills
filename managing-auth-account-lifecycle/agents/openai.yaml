@@ -1,0 +1,4 @@
+interface:
+  display_name: "Managing Auth Account Lifecycle"
+  short_description: "Use when working on authentication, session lifecycle, account creation, deletion, re-authentication, invites, profile bootstrap, or auth trust copy."
+  default_prompt: "Use $managing-auth-account-lifecycle to handle this task."

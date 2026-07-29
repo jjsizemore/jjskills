@@ -1,0 +1,4 @@
+interface:
+  display_name: "Governing Prompts"
+  short_description: "Use when creating, refactoring, indexing, or validating repository prompt files for coding agents or operational workflows."
+  default_prompt: "Use $governing-prompts to handle this task."
