@@ -49,3 +49,6 @@ Options:
 BACKUP_SIZE_OK name=.agents/skills.bak-20260729T233634Z size=8.2M
 US-002_GREEN import_count=139
 SECRET_SCAN_OK via H5
+PRE_SYMLINK name=.agents/skills.pre-symlink-20260729T235204Z
+codex_ok=.codex/skills/executing-work/SKILL.md
+grok_ok=.grok/skills/cmux/SKILL.md
