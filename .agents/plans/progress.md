@@ -52,3 +52,4 @@ SECRET_SCAN_OK via H5
 PRE_SYMLINK name=.agents/skills.pre-symlink-20260729T235204Z
 codex_ok=.codex/skills/executing-work/SKILL.md
 grok_ok=.grok/skills/cmux/SKILL.md
+T8_GREEN 20260729T235237Z retain backups >=7d
