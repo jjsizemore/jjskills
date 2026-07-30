@@ -1,0 +1,60 @@
+// hk — https://hk.jdx.dev — https://github.com/jdx/hk
+// Install hooks after clone: `hk install` (or once machine-wide: `hk install --global`).
+// Requires on PATH: hk, trufflehog, gitleaks  (e.g. brew install hk trufflehog gitleaks)
+amends "package://github.com/jdx/hk/releases/download/v1.53.0/hk@1.53.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.53.0/hk@1.53.0#/Builtins.pkl"
+
+// Never feed local tooling / caches into file-based steps.
+exclude = List(
+  "graphify-out",
+  "graphify",
+  ".tokensave",
+  ".serena",
+  ".headroom",
+  ".omc",
+  ".git",
+  ".agents/runs",
+)
+
+// Secret guards. Check-only — never "fix" secrets.
+// Use staged/delta scanners so historical skill docs (example tokens) are not re-flagged every commit.
+local secret_steps = new Mapping<String, Step> {
+  // Pattern scan of the staged index only.
+  ["gitleaks"] {
+    check = "gitleaks protect --staged --redact --verbose --no-banner"
+    check_first = false
+  }
+
+  // TruffleHog on the commit delta (HEAD → staged). Exit 183 on findings → fails the hook.
+  // --no-verification: fail closed on detector hits even when live API verify is unavailable.
+  ["trufflehog"] {
+    check = "trufflehog git file://. --since-commit HEAD --no-verification --fail"
+    check_first = false
+  }
+
+  // PEM / OpenSSH private keys in staged text files.
+  ["detect_private_key"] = Builtins.detect_private_key
+
+  ["check_merge_conflict"] = Builtins.check_merge_conflict
+}
+
+hooks {
+  ["pre-commit"] {
+    fix = false
+    stash = "none"
+    steps = secret_steps
+  }
+  ["pre-push"] {
+    fix = false
+    stash = "none"
+    steps = secret_steps
+  }
+  ["check"] {
+    steps = secret_steps
+  }
+  ["fix"] {
+    // Secrets cannot be auto-fixed; still run checks.
+    fix = false
+    steps = secret_steps
+  }
+}

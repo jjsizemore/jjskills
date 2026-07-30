@@ -37,6 +37,10 @@ git clone https://github.com/jjsizemore/jjskills.git ~/repos/jjskills
 mkdir -p ~/.agents
 ln -sfn ~/repos/jjskills ~/.agents/skills
 ln -sfn ~/.agents/skills ~/.claude/skills
+
+# Secret-scanning hooks (hk + trufflehog + gitleaks)
+brew install hk trufflehog gitleaks   # if needed
+(cd ~/repos/jjskills && hk install)
 ```
 
 ### Smoke checks
@@ -56,12 +60,43 @@ test -f ~/.claude/skills/executing-work/SKILL.md
 
 Migration from an existing real `~/.agents/skills` directory (backup, import, first bind) is documented in [`.agents/plans/user-skills-vcs.md`](.agents/plans/user-skills-vcs.md).
 
+## Git hooks (hk + secret scanning)
+
+This repo uses **[hk](https://hk.jdx.dev)** ([jdx/hk](https://github.com/jdx/hk)) for client-side hooks (`hk.pkl`).
+
+**Guards on `pre-commit` and `pre-push`:**
+
+| Step | Tool | Role |
+| --- | --- | --- |
+| `gitleaks` | [gitleaks](https://github.com/gitleaks/gitleaks) | Pattern scan of staged files |
+| `trufflehog` | [TruffleHog](https://github.com/trufflesecurity/trufflehog) | Scan commit delta vs `HEAD` (fail closed, no live verify required) |
+| `detect_private_key` | `hk util detect-private-key` | PEM / OpenSSH private keys |
+| `check_merge_conflict` | hk util | Conflict markers |
+
+### One-time setup (each clone / machine)
+
+```bash
+brew install hk trufflehog gitleaks   # or equivalent
+cd ~/repos/jjskills
+hk install                            # wires git hooks for this repo
+# optional machine-wide: hk install --global  (no-op in repos without hk.pkl)
+```
+
+Verify:
+
+```bash
+hk validate
+hk check                              # run secret steps without committing
+```
+
+Bypass only when intentional: `HK=0 git commit …` or `git commit --no-verify` (discouraged).
+
 ## Day-2 workflow
 
 1. Edit skill content in this repo (or via the live symlink path).
 2. Review with `git status` / `git diff`.
 3. Stage **explicit paths** only — **never `git add -A`**.
-4. Commit on a branch; open a PR or merge as usual.
+4. Commit on a branch; open a PR or merge as usual (hooks block secret-looking content).
 
 ### Exclusions (see `.gitignore`)
 
