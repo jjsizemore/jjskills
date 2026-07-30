@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Closing Repo Work'
+  short_description: 'Use when closing repo work is needed.'
+  default_prompt: 'Use $closing-repo-work to handle this closing repo work task.'

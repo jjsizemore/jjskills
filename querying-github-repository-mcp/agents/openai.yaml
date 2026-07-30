@@ -1,0 +1,4 @@
+interface:
+  display_name: "Querying GitHub Repository MCP"
+  short_description: "Use when querying GitHub repositories, files, commits, branches, PRs, issues, review comments, or workflow data through MCP tools."
+  default_prompt: "Use $querying-github-repository-mcp to handle this task."

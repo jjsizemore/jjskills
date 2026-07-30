@@ -1,0 +1,29 @@
+.tokensave/
+.serena/
+.headroom/
+.omc/
+.DS_Store
+.hub/
+.curator_backups/
+.curator_state
+.bundled_manifest
+.global-skill-*
+.usage.json
+.usage.json.lock
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.env.*
+*.pem
+*.key
+.secrets/
+# Local-only recovery paths (never publish absolute machine paths)
+.agents/plans/BACKUP_PATH.txt
+.agents/plans/PRE_SYMLINK_PATH.txt
+
+# Local graphify cache
+graphify-out/
+
+# Local work-run ledger (not published)
+.agents/runs/

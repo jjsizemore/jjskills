@@ -1,0 +1,4 @@
+interface:
+  display_name: "Automating Browser Playwright CLI"
+  short_description: "Use when automating browser interactions or debugging web pages with Playwright CLI workflows, including screenshots, DOM inspection, or high-throughput page actions."
+  default_prompt: "Use $automating-browser-playwright-cli to handle this task."

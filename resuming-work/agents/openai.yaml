@@ -1,0 +1,4 @@
+interface:
+  display_name: "Resuming Work"
+  short_description: "Use when interrupted repository work must be resumed from a branch, issue, pull request, prior plan, failing check, or partial local changes."
+  default_prompt: "Use $resuming-work to handle this task."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Operating Local Releases"
+  short_description: "Use when running release, deployment, publishing, or emergency operational steps locally because hosted automation is unavailable or insufficient."
+  default_prompt: "Use $operating-local-releases to handle this task."

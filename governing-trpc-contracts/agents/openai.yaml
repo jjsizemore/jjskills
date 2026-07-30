@@ -1,0 +1,4 @@
+interface:
+  display_name: "Governing tRPC Contracts"
+  short_description: "Use when changing tRPC routers, procedures, AppRouter exports, client helpers, validation schemas, or TanStack Query integration."
+  default_prompt: "Use $governing-trpc-contracts to handle this task."

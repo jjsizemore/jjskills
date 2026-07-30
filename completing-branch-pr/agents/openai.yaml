@@ -1,0 +1,4 @@
+interface:
+  display_name: "Completing Branch PR"
+  short_description: "Use when verifying, fixing, and finalizing a development branch or pull request before merge or handoff."
+  default_prompt: "Use $completing-branch-pr to handle this task."

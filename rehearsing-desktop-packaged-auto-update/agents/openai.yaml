@@ -1,0 +1,4 @@
+interface:
+  display_name: "Rehearsing Desktop Packaged Auto Update"
+  short_description: "Use when rehearsing desktop auto-update locally with packaged artifacts, update feeds, installer metadata, or updater logs."
+  default_prompt: "Use $rehearsing-desktop-packaged-auto-update to handle this task."

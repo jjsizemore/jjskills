@@ -1,0 +1,4 @@
+interface:
+  display_name: "Running Quality Gates"
+  short_description: "Use when selecting, running, or triaging validation gates such as lint, typecheck, tests, builds, hooks, smoke checks, or release readiness checks."
+  default_prompt: "Use $running-quality-gates to handle this task."

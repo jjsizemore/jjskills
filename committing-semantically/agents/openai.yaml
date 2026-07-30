@@ -1,0 +1,4 @@
+interface:
+  display_name: "Committing Semantically"
+  short_description: "Use when committing changes, grouping diffs into logical commits, writing conventional commit messages, or satisfying commitlint and release conventions."
+  default_prompt: "Use $committing-semantically to handle this task."

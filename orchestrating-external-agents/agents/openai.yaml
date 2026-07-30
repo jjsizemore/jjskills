@@ -1,0 +1,4 @@
+interface:
+  display_name: "Orchestrating External Agents"
+  short_description: "Use when delegating work to a separate CLI coding agent or model for review, debugging, implementation checks, or parallel investigation."
+  default_prompt: "Use $orchestrating-external-agents to handle this task."

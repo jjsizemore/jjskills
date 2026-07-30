@@ -1,0 +1,4 @@
+interface:
+  display_name: "Claiming Postgres"
+  short_description: "Use when a temporary Neon Claimable Postgres database is needed without login, signup, or credit card setup, including REST, CLI, or SDK access."
+  default_prompt: "Use $claiming-postgres to handle this task."

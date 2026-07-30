@@ -1,0 +1,4 @@
+interface:
+  display_name: "Using Antigravity Agy CLI"
+  short_description: "Use when invoking Google Antigravity agy CLI as an external coding agent for review, debugging, implementation checks, or investigation."
+  default_prompt: "Use $using-antigravity-agy-cli to handle this task."

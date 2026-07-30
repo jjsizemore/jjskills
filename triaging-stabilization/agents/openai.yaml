@@ -1,0 +1,4 @@
+interface:
+  display_name: "Triaging Stabilization"
+  short_description: "Use when assessing application stability, ranking branches or PRs, diagnosing merge readiness, or deciding what to fix or merge next."
+  default_prompt: "Use $triaging-stabilization to handle this task."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Working With Neon Postgres"
+  short_description: "Use when working with Neon Serverless Postgres, local development, connection methods, Neon CLI, Platform API or SDKs, auth, branching, or migrations."
+  default_prompt: "Use $working-with-neon-postgres to handle this task."

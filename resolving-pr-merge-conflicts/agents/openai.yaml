@@ -1,0 +1,4 @@
+interface:
+  display_name: "Resolving PR Merge Conflicts"
+  short_description: "Use when resolving GitHub PR merge conflicts or base/head drift with PR metadata, deliberate hunk reconciliation, and post-resolution validation."
+  default_prompt: "Use $resolving-pr-merge-conflicts to handle this task."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Governing Resource Costs"
+  short_description: "Use when diagnosing or reducing runtime resource, infrastructure cost, database egress, CPU, memory, retry, queue, model, or storage risks."
+  default_prompt: "Use $governing-resource-costs to handle this task."

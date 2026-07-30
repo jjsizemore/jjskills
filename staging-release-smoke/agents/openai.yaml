@@ -1,0 +1,4 @@
+interface:
+  display_name: "Staging Release Smoke"
+  short_description: "Use when promoting release or deploy changes through a staging environment and verifying hosted release behavior with evidence."
+  default_prompt: "Use $staging-release-smoke to handle this task."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Debugging Real Time Pipelines"
+  short_description: "Use when debugging live, streaming, websocket, audio, event, queue, or real-time processing pipelines with missing, delayed, duplicated, or low-quality outputs."
+  default_prompt: "Use $debugging-real-time-pipelines to handle this task."

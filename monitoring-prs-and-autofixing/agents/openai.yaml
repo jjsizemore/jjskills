@@ -1,0 +1,4 @@
+interface:
+  display_name: "Monitoring PRs And Autofixing"
+  short_description: "Use when a pull request needs follow-through on hosted checks, review comments, mergeability, or verified fix pushes after creation or update."
+  default_prompt: "Use $monitoring-prs-and-autofixing to handle this task."

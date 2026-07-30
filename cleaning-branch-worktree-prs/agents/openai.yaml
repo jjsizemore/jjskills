@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cleaning Branch Worktree PRs"
+  short_description: "Use when auditing local branches, remote branches, worktrees, and old pull requests to explain which items are safe to clean up and which need preservation."
+  default_prompt: "Use $cleaning-branch-worktree-prs to handle this task."

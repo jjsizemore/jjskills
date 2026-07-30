@@ -1,0 +1,4 @@
+interface:
+  display_name: "Migrating Transaction Tests"
+  short_description: "Use when migrating integration tests from truncation, global database state, isolation leaks, or slow setup toward transaction-scoped fixtures."
+  default_prompt: "Use $migrating-transaction-tests to handle this task."

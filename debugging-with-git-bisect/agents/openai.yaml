@@ -1,0 +1,4 @@
+interface:
+  display_name: "Debugging With Git Bisect"
+  short_description: "Use when binary-searching git history to find the first commit that introduced a regression, failing test, or behavior change."
+  default_prompt: "Use $debugging-with-git-bisect to handle this task."

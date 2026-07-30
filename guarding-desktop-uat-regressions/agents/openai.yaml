@@ -1,0 +1,4 @@
+interface:
+  display_name: "Guarding Desktop UAT Regressions"
+  short_description: "Use when adding or hardening desktop end-to-end or UAT regression checks from incidents, review findings, or fragile user flows."
+  default_prompt: "Use $guarding-desktop-uat-regressions to handle this task."

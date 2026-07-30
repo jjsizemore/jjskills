@@ -1,0 +1,4 @@
+interface:
+  display_name: "Governing Shared Context"
+  short_description: "Use when working on shared team, organization, project, tenant, knowledge, memory, approval, export, or context-assembly behavior."
+  default_prompt: "Use $governing-shared-context to handle this task."

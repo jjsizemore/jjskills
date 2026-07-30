@@ -1,0 +1,4 @@
+interface:
+  display_name: "Running Commit Range UAT"
+  short_description: "Use when running repeatable user acceptance checks across each commit in a range to identify regressions or validate a stacked branch."
+  default_prompt: "Use $running-commit-range-uat to handle this task."

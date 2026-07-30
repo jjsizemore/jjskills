@@ -1,0 +1,4 @@
+interface:
+  display_name: "Auditing Codebase Reliability"
+  short_description: "Use when auditing a codebase for latent bugs, reliability risks, performance bottlenecks, resource leaks, or release-readiness gaps."
+  default_prompt: "Use $auditing-codebase-reliability to handle this task."

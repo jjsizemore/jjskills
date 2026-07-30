@@ -1,0 +1,4 @@
+interface:
+  display_name: "Executing Work"
+  short_description: "Use when taking repository work from a prompt, issue, bug, review request, partial branch, or failing check through implementation and closeout."
+  default_prompt: "Use $executing-work to handle this task."

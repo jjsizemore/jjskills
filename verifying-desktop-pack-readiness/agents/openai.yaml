@@ -1,0 +1,4 @@
+interface:
+  display_name: "Verifying Desktop Pack Readiness"
+  short_description: "Use when desktop or Electron changes may affect packaging, startup, signing, auto-update, bundled assets, native modules, or packaged runtime behavior."
+  default_prompt: "Use $verifying-desktop-pack-readiness to handle this task."
