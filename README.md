@@ -26,7 +26,35 @@ Git working tree for the **user-scope Agent Skills** install. The live runtime p
 ~/.claude/skills -> ~/.agents/skills
 ```
 
-Codex/Grok may keep per-skill symlink forests pointing into `~/.agents/skills`.
+## Bootstrap (new machine)
+
+Restores the **shared skill content** and Claude discovery. Commands assume clone at `~/repos/jjskills` (same as layout above). If you use another path, substitute it everywhere below (or set `REPO` and replace `~/repos/jjskills` with `"$REPO"`).
+
+```bash
+git clone https://github.com/jjsizemore/jjskills.git ~/repos/jjskills
+# or: git clone <your-fork-or-mirror-url> ~/repos/jjskills
+
+mkdir -p ~/.agents
+ln -sfn ~/repos/jjskills ~/.agents/skills
+ln -sfn ~/.agents/skills ~/.claude/skills
+```
+
+### Smoke checks
+
+```bash
+test "$(readlink ~/.agents/skills)" = "$HOME/repos/jjskills"
+test "$(readlink ~/.claude/skills)" = "$HOME/.agents/skills"
+test -f ~/.agents/skills/executing-work/SKILL.md
+test -f ~/.claude/skills/executing-work/SKILL.md
+```
+
+### What this does *not* restore
+
+- **Codex / Grok skill forests** — those clients use many per-skill symlinks under `~/.codex/skills` and `~/.grok/skills` (plus some client-only packages). They are **not** in this repo. After bootstrap, content is available at `~/.agents/skills`; rebuild each client’s forest separately (link selected package names into that tree) if you use those products.
+- **Machine-local recovery files** — `BACKUP_PATH.txt` / `PRE_SYMLINK_PATH.txt` are gitignored; they only matter for same-machine bind rollback after a prior live install.
+- **Dotfile tooling** under a live install (`.hub/`, curator state, etc.) — intentionally excluded from VCS.
+
+Migration from an existing real `~/.agents/skills` directory (backup, import, first bind) is documented in [`.agents/plans/user-skills-vcs.md`](.agents/plans/user-skills-vcs.md).
 
 ## Day-2 workflow
 
