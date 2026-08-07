@@ -34,6 +34,14 @@ The whole map at low resolution, loaded once per session. Open tickets are **not
 
 <what reaching the end of this map looks like — the spec, decision, or change this effort is finding its way to. One or two lines; every session orients to it before choosing a ticket.>
 
+## Why / Rationale
+
+<why this map and its work are needed; explain the problem or motivation>
+
+## ADR Reference
+
+<when an architectural decision has evaluated alternatives or tradeoffs, reference `docs/architecture/adr/ADR-XXX-<name>.md`; otherwise write `Not applicable — no architectural decision with evaluated alternatives or tradeoffs.>
+
 ## Notes
 
 <domain; skills every session should consult; standing preferences for this effort>
@@ -61,6 +69,14 @@ Each ticket is a **child issue** of the map; the tracker's issue id is its ident
 ## Question
 
 <the decision or investigation this ticket resolves>
+
+## Why / Rationale
+
+<why this ticket is needed and what problem it addresses>
+
+## ADR Reference
+
+<when this ticket makes an architectural decision with evaluated alternatives or tradeoffs, reference `docs/architecture/adr/ADR-XXX-<name>.md`; otherwise write `Not applicable — no architectural decision with evaluated alternatives or tradeoffs.>
 ```
 
 Each ticket carries a `wayfinder:<type>` label — one of `research`, `prototype`, `grilling`, `task` (see [Ticket Types](#ticket-types)).
