@@ -24,6 +24,8 @@ Use when creating an implementation-ready remediation specification for a bug, i
 ## Contract
 
 - Consume established diagnosis evidence; do not invent a root cause. Route missing diagnosis to `debugging-systematically` and implementation ownership to `remediating-root-causes`.
+- **Mandatory Why / Rationale**: Every implementation spec MUST explain why the change is needed and the problem it addresses.
+- **ADR requirement**: When an architectural decision is made and alternatives or tradeoffs are evaluated, require an ADR under `docs/architecture/adr/` recording decision, alternatives considered, tradeoffs, and rationale. Routine/non-architectural changes do not require an ADR.
 
 ## Workflow
 

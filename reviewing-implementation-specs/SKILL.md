@@ -6,6 +6,8 @@ description: 'Use when Reviews implementation specs for clarity, technical sound
 ## Review Dimensions
 
 Evaluate the spec across five dimensions:
+- **Why / Rationale**: Verify the spec explains why the change is needed and the problem it addresses.
+- **ADR completeness**: When an architectural decision is made and alternatives or tradeoffs are evaluated, verify an ADR records decision, alternatives considered, tradeoffs, and rationale; routine/non-architectural changes do not require an ADR.
 
 1. **Clarity and Structure** — Goals, scope, and non-goals defined; consistent terminology; logical organization
 2. **Technical Soundness** — Architectural decisions justified; edge cases and error handling addressed; assumptions stated explicitly
