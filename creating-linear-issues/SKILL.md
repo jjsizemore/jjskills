@@ -25,11 +25,13 @@ so an implementer does not rediscover cause, recovery, ownership, or acceptance.
 
 | Section | Required |
 | --- | --- |
+| Why / Rationale | MANDATORY — explain why the issue/work is needed |
 | Problem / goal | Yes — evidence-linked |
 | Failing boundary / proof | Bugs/incidents: yes; chores: N/A with reason |
 | Root cause / escape reason | Bugs: yes; features: design intent |
 | Acceptance criteria | Yes — testable |
 | Implementation scope | Files/areas / out of scope |
+| Architectural Decision Record (ADR) | When an architectural decision is made and alternatives or tradeoffs are evaluated, require an ADR under `docs/architecture/adr/` containing decision, alternatives considered, tradeoffs, and rationale; routine/non-architectural changes do not require an ADR |
 | Validation | Commands / gates |
 | UX recovery / operator notification | When users/ops affected; else `Not applicable — …` |
 | Rollout / rollback | When runtime; else N/A |

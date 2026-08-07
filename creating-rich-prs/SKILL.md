@@ -12,6 +12,8 @@ Use this skill to generate and submit a rich, context-aware pull request for the
 1. **Analyze the Work**: Run `git log` and `git diff` against the base branch to understand the scope and intent of the changes.
 2. **Draft the Description**: Structure the PR body with clear sections:
    - **Overview**: A high-level summary of what the PR accomplishes.
+   - **Why / Rationale (MANDATORY)**: Explain why the change was made and the problem it solves.
+   - **Architectural Decision Record**: If an architectural decision is made and alternatives or tradeoffs are evaluated, reference an ADR under `docs/architecture/adr/` containing decision, alternatives considered, tradeoffs, and rationale. Routine/non-architectural changes do not require an ADR.
    - **Motivation & Context**: Why the change is necessary and the problem it solves.
    - **Implementation Details**: Key technical decisions, architectural shifts, or notable logic changes.
    - **Validation/Test Plan**: How the changes were verified locally and how reviewers can test them.
