@@ -3,6 +3,8 @@
 Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all operations.
 
 ## Conventions
+- **Issue contract**: Every created or updated issue MUST include a clear **Why / Rationale** explaining why the work is needed.
+- **ADR requirement**: When an architectural decision is made and alternatives or tradeoffs are evaluated, the issue MUST reference an ADR under `docs/architecture/adr/` containing decision, alternatives considered, tradeoffs, and rationale. Routine/non-architectural changes do not require an ADR.
 
 - **Create an issue**: `gh issue create --title "..." --body "..."`. Use a heredoc for multi-line bodies.
 - **Read an issue**: `gh issue view <number> --comments`, filtering comments by `jq` and also fetching labels.
