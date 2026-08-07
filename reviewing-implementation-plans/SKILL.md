@@ -21,16 +21,17 @@ Antagonistic acceptance gate for **plan artifacts** (not code). Used by
 
 For each finding, cite section/heading evidence and a concrete fix.
 
-1. **Goal & non-goals** — clear; out-of-scope stated
-2. **Requirements coverage** — every acceptance criterion maps to a task/story
-3. **No placeholders** — no TBD/TODO/“similar to Task N”/hand-wavy validation
-4. **File paths** — real paths; layer order sane for the stack
-5. **Tests** — each story has a verifiable check; bug plans have a regression guard
-6. **Dependencies** — task order respects data/API/UI dependencies
-7. **Risks** — rollout/rollback, migrations, feature flags when relevant
-8. **Customer trust** (bugs/reliability) — root cause, guard, debug signal, UX recovery, observability/notification, or `Not applicable — reason`
-9. **Execution stories** — present, priority-ordered, one-iteration-sized
-10. **Feasibility** — no step requires unavailable credentials/tools without a note
+1. **Goal, non-goals & Why rationale** — clear explanation of why the change is needed; out-of-scope stated
+2. **Architectural decision records** — when an architectural decision is made and alternatives or tradeoffs were evaluated, verify an ADR records decision, alternatives considered, tradeoffs, and rationale; routine/non-architectural changes do not require an ADR
+3. **Requirements coverage** — every acceptance criterion maps to a task/story
+4. **No placeholders** — no TBD/TODO/“similar to Task N”/hand-wavy validation
+5. **File paths** — real paths; layer order sane for the stack
+6. **Tests** — each story has a verifiable check; bug plans have a regression guard
+7. **Dependencies** — task order respects data/API/UI dependencies
+8. **Risks** — rollout/rollback, migrations, feature flags when relevant
+9. **Customer trust** (bugs/reliability) — root cause, guard, debug signal, UX recovery, observability/notification, or `Not applicable — reason`
+10. **Execution stories** — present, priority-ordered, one-iteration-sized
+11. **Feasibility** — no step requires unavailable credentials/tools without a note
 
 ## Output format
 

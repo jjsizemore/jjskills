@@ -15,6 +15,8 @@ Use when you have requirements or diagnosis evidence for a multi-step remediatio
 
 ## Contract
 - Confirm the trigger and request clarification for material unknowns; preserve portable planning behavior and prefer narrower repository overrides.
+- **Mandatory Why / Rationale**: Every plan MUST explain why the work is needed and what problem or motivation it addresses.
+- **ADR requirement**: When an architectural decision is made and alternatives or tradeoffs are evaluated, require an ADR under `docs/architecture/adr/` recording decision, alternatives considered, tradeoffs, and rationale. Routine/non-architectural changes do not require an ADR.
 - Consume diagnosis evidence; route missing diagnosis to `debugging-systematically` and execution to `remediating-root-causes`.
 
 ## Workflow
