@@ -7,8 +7,8 @@ description: 'Use when Reviews implementation specs for clarity, technical sound
 
 Evaluate the spec across five dimensions:
 
-1. **Clarity and Structure** — Goals, scope, and non-goals defined; consistent terminology; logical organization
-2. **Technical Soundness** — Architectural decisions justified; edge cases and error handling addressed; assumptions stated explicitly
+1. **Clarity, Structure and Why Rationale** — Motivation ("why"), goals, scope, and non-goals defined; consistent terminology; logical organization
+2. **Technical Soundness & ADRs** — Architectural decisions justified with ADRs documented under `docs/architecture/adr/` when trade-offs exist; edge cases and error handling addressed; assumptions stated explicitly
 3. **Completeness** — Functional and non-functional requirements covered; dependencies, integrations, and data flows specified; migration/rollout/rollback plans present where relevant
 4. **Feasibility and Risk** — Technical, operational, and scalability risks identified; performance, security, and compliance addressed; hidden complexities and unclear ownership surfaced
 5. **Testability and Observability** — Acceptance criteria measurable and specific; testing strategy defined (unit, integration, e2e); logging, monitoring, and metrics specified

@@ -25,16 +25,17 @@ so an implementer does not rediscover cause, recovery, ownership, or acceptance.
 
 | Section | Required |
 | --- | --- |
+| Why / Rationale | MANDATORY — technical/business context explaining why change/issue is needed |
 | Problem / goal | Yes — evidence-linked |
 | Failing boundary / proof | Bugs/incidents: yes; chores: N/A with reason |
 | Root cause / escape reason | Bugs: yes; features: design intent |
+| Architectural Decision Record (ADR) | When an architectural decision or tradeoff is involved (`docs/architecture/adr/`) |
 | Acceptance criteria | Yes — testable |
 | Implementation scope | Files/areas / out of scope |
 | Validation | Commands / gates |
 | UX recovery / operator notification | When users/ops affected; else `Not applicable — …` |
 | Rollout / rollback | When runtime; else N/A |
 | Owner | Team or person |
-
 Reject patch-and-test-only issues with no acceptance proof.
 
 ## Create (preferred order)

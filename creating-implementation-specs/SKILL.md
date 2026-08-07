@@ -24,13 +24,14 @@ Use when creating an implementation-ready remediation specification for a bug, i
 ## Contract
 
 - Consume established diagnosis evidence; do not invent a root cause. Route missing diagnosis to `debugging-systematically` and implementation ownership to `remediating-root-causes`.
+- **Mandatory "Why / Rationale" Section**: Every spec MUST include a section explaining **why** the change is necessary and problem motivation.
+- **Architectural Decision Records (ADRs)**: When an architectural decision was made & options/tradeoffs were evaluated, the spec MUST mandate documenting that decision in an ADR under `docs/architecture/adr/`. Routine changes do not require an ADR.
 
 ## Workflow
 
-- Specify the failing boundary, proof artifact, impact, root cause, escape reason, regression test that fails without the fix, and future-debugging signal.
+- Specify the motivation ("Why"), failing boundary, proof artifact, impact, root cause, escape reason, ADR path (if architectural), regression test that fails without the fix, and future-debugging signal.
 - Specify UX status/retry/recovery, operator observability/notification, rollout gates, rollback criteria, failure recovery, owners, and evidence limits.
 - Permit `Not applicable — reason` only for UX, operator notification, rollout, or rollback after proving no relevant surface exists.
-
 ## Stop Condition
 
 - Stop when causal evidence, owner, regression protection, or recovery criteria are missing; reject a patch-and-unit-test-only brief.

@@ -15,12 +15,13 @@ Use when you have requirements or diagnosis evidence for a multi-step remediatio
 
 ## Contract
 - Confirm the trigger and request clarification for material unknowns; preserve portable planning behavior and prefer narrower repository overrides.
+- **Mandatory "Why / Rationale" Section**: All plans MUST include a dedicated section explaining **why** the proposed changes are being made.
+- **Architectural Decision Records (ADRs)**: If the plan involves architectural decisions where alternatives/tradeoffs were evaluated, the plan MUST require an ADR to be written and checked in under `docs/architecture/adr/ADR-XXX-<name>.md` (or repo-standard ADR directory). Routine/non-architectural changes do not require an ADR, but still require the "Why" rationale.
 - Consume diagnosis evidence; route missing diagnosis to `debugging-systematically` and execution to `remediating-root-causes`.
 
 ## Workflow
-- Map the failing boundary, root-cause evidence, escape reason, affected scope, regression guard, future-debugging signal, implementation tasks, validation, recovery, rollout, rollback, and ownership into ordered steps.
+- Map the motivation ("Why"), failing boundary, root-cause evidence, escape reason, affected scope, ADR path (if architectural), regression guard, future-debugging signal, implementation tasks, validation, recovery, rollout, rollback, and ownership into ordered steps.
 - Ensure each acceptance criterion maps to a task and proof; keep `Not applicable — reason` limited to fields allowed by the shared handoff.
-
 ## Stop Condition
 - Stop rather than invent a cause or call a generic task list remediation-ready when it omits causal proof, regression protection, or recovery.
 

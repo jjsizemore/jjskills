@@ -10,9 +10,10 @@ Use this skill to generate and submit a rich, context-aware pull request for the
 ## Guidance
 
 1. **Analyze the Work**: Run `git log` and `git diff` against the base branch to understand the scope and intent of the changes.
-2. **Draft the Description**: Structure the PR body with clear sections:
+2. **Draft the Description**: Structure the PR body with MANDATORY clear sections:
    - **Overview**: A high-level summary of what the PR accomplishes.
-   - **Motivation & Context**: Why the change is necessary and the problem it solves.
+   - **Why / Rationale (MANDATORY)**: Explicit explanation of **why** the change was made, the underlying problem being solved, and technical or business motivation. Never submit a PR without a "Why / Rationale" section.
+   - **Architectural Decision Record (ADR)**: If an architectural decision was made (changing component boundaries, persistence models, state management, protocols, or trade-offs between alternatives), reference the documented ADR under `docs/architecture/adr/ADR-XXX-<name>.md`.
    - **Implementation Details**: Key technical decisions, architectural shifts, or notable logic changes.
    - **Validation/Test Plan**: How the changes were verified locally and how reviewers can test them.
 3. **Split-Out PRs (related-but-distinct work)**: When a branch bundles multiple concerns (e.g., skill content + skill symlink registrations, or infra + docs), open a separate PR for the splittable slice rather than lumping it into a larger bundle.

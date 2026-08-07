@@ -11,9 +11,9 @@ metadata:
 
 Use this skill when verifying, fixing, and finalizing a development branch or pull request before merge or handoff.
 
-## Guidance
-
 - Confirm the trigger matches the current task before applying this workflow.
+- **PR & Commit Rationale Check**: Verify that the PR description and commit messages contain a clear "Why / Rationale" section explaining the technical/business motivation for the changes.
+- **ADR Check**: If an architectural decision was made & options/tradeoffs were evaluated, verify that an ADR is present under `docs/architecture/adr/`.
 - Keep the work scoped to the named capability and prefer narrower repo-local overrides when present.
 - Preserve relevant evidence, commands, paths, and validation results in the final handoff.
 - Update this skill with more specific guidance when a repeatable failure mode or workflow detail emerges.
