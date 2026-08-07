@@ -16,9 +16,9 @@ Use when a pull request needs follow-through on hosted checks, review comments, 
 
 ## Contract
 
+- Whenever a PR is created or updated, any merge conflicts or red CI MUST be resolved with `remediating-root-causes` and/or `monitoring-prs-and-autofixing` before the agent can consider its work done.
 - Monitor a pull request through hosted checks, review feedback, mergeability, and verified follow-up without assuming a provider-specific command or repository layout.
 - Preserve causal evidence and route unclear failures to `debugging-systematically`; route confirmed repairs to `remediating-root-causes` before any fix is pushed.
-
 ## Workflow
 
 - Check the current PR state, classify each failing check or review thread, reproduce failures locally, and preserve the exact failing boundary.
