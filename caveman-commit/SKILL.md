@@ -23,8 +23,7 @@ Write commit messages terse and exact. Conventional Commits format. No fluff. Wh
 - Every commit MUST include a body explaining **why** the change was made (motivation/context/root cause)
 - Wrap at 72 chars
 - Bullets `-` not `*`
-- Reference issues/PRs/ADRs at end: `Closes #42`, `Refs #17`, `ADR: docs/architecture/adr/ADR-001.md`
-
+- Reference issues/PRs/ADRs at end: `Closes #42`, `Refs #17`, `ADR: docs/architecture/adr/ADR-001.md` (ADR must document decision, alternatives considered, tradeoffs, and rationale)
 **What NEVER goes in:**
 - "This commit does X", "I", "we", "now", "currently" — the diff says what
 - "As requested by..." — use Co-authored-by trailer

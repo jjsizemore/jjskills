@@ -29,8 +29,7 @@ so an implementer does not rediscover cause, recovery, ownership, or acceptance.
 | Problem / goal | Yes — evidence-linked |
 | Failing boundary / proof | Bugs/incidents: yes; chores: N/A with reason |
 | Root cause / escape reason | Bugs: yes; features: design intent |
-| Architectural Decision Record (ADR) | When an architectural decision or tradeoff is involved (`docs/architecture/adr/`) |
-| Acceptance criteria | Yes — testable |
+| Architectural Decision Record (ADR) | When an architectural decision is involved, require an ADR under `docs/architecture/adr/` containing: (1) decision, (2) alternatives considered, (3) tradeoffs, and (4) rationale |
 | Implementation scope | Files/areas / out of scope |
 | Validation | Commands / gates |
 | UX recovery / operator notification | When users/ops affected; else `Not applicable — …` |

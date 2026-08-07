@@ -25,8 +25,7 @@ Use when creating an implementation-ready remediation specification for a bug, i
 
 - Consume established diagnosis evidence; do not invent a root cause. Route missing diagnosis to `debugging-systematically` and implementation ownership to `remediating-root-causes`.
 - **Mandatory "Why / Rationale" Section**: Every spec MUST include a section explaining **why** the change is necessary and problem motivation.
-- **Architectural Decision Records (ADRs)**: When an architectural decision was made & options/tradeoffs were evaluated, the spec MUST mandate documenting that decision in an ADR under `docs/architecture/adr/`. Routine changes do not require an ADR.
-
+- **Architectural Decision Records (ADRs)**: When an architectural decision was made & options/tradeoffs were evaluated, the spec MUST mandate documenting that decision in an ADR under `docs/architecture/adr/` containing all four mandatory sections: (1) **decision**, (2) **alternatives considered**, (3) **tradeoffs**, and (4) **rationale**. Routine changes do not require an ADR.
 ## Workflow
 
 - Specify the motivation ("Why"), failing boundary, proof artifact, impact, root cause, escape reason, ADR path (if architectural), regression test that fails without the fix, and future-debugging signal.
