@@ -13,6 +13,21 @@ Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all o
 
 Infer the repo from `git remote -v` — `gh` does this automatically when run inside a clone.
 
+## Required labels
+
+Setup must provision and verify labels in GitHub; writing this file does not create them. When `triage` is installed, read the right-hand column of `docs/agents/triage-labels.md` and ensure every configured triage label exists. The default mapping includes the five state labels (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`) and the category labels `bug` and `enhancement`. Custom mappings replace those names.
+
+Wayfinder also requires these labels: `wayfinder:map`, `wayfinder:research`, `wayfinder:prototype`, `wayfinder:grilling`, and `wayfinder:task`.
+
+On a fresh repo, list labels, create each missing label, and list them again to verify:
+
+```sh
+gh label list --limit 1000 --json name --jq '.[].name'
+gh label create "<missing-label>" --description "<role>" --color "<hex-color>"
+```
+
+Repeat the create command only for labels absent from the first listing. Do not report setup complete until all configured triage and wayfinder labels are present.
+
 ## Pull requests as a triage surface
 
 **PRs as a request surface: no.** _(Set to `yes` if this repo treats external PRs as feature requests; `/triage` reads this flag.)_

@@ -1,7 +1,11 @@
 ---
 name: research
-description: Investigate a question against high-trust primary sources and capture the findings as a Markdown file in the repo. Use when the user wants a topic researched, docs or API facts gathered, or reading legwork delegated to a background agent.
+description: Investigate a question against high-trust primary sources and capture the findings as a durable Markdown artifact in the repo. Use only when the user explicitly requests that artifact or asks for the research to be delegated to a background agent; ordinary docs and API questions do not activate this skill.
 ---
+
+## Activation boundary
+
+Activate only when the user explicitly requests a durable research artifact in the repository or explicit background delegation. Answer ordinary documentation and API questions directly with the current documentation lookup path, without creating a research artifact.
 
 Spin up a **background agent** to do the research, so you keep working while it reads.
 

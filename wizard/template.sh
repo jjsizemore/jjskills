@@ -98,7 +98,7 @@ _existing() {
 # ask KEY "Prompt" — read a value into $KEY. Offers the existing .env value as
 # a default on re-runs (Enter keeps it). Visible input (non-secret).
 ask() {
-  local key="$1" prompt="$2" current input
+  local key="$1" prompt="$2" mode="${3:-required}" current input
   current=$(_existing "$key" || true)
   if [[ -n "$current" ]]; then
     printf '  %s%s%s %s[Enter keeps current]%s ' "$BOLD" "$prompt" "$RESET" "$DIM" "$RESET"
@@ -107,12 +107,17 @@ ask() {
   fi
   read -r input || true
   [[ -z "$input" && -n "$current" ]] && input="$current"
+  if [[ "$mode" != optional && -z "$input" ]]; then
+    warn "$key is required"
+    return 1
+  fi
   printf -v "$key" '%s' "$input"
 }
 
+
 # ask_secret KEY "Prompt" — like ask, but input is hidden.
 ask_secret() {
-  local key="$1" prompt="$2" current input
+  local key="$1" prompt="$2" mode="${3:-required}" current input
   current=$(_existing "$key" || true)
   if [[ -n "$current" ]]; then
     printf '  %s%s%s %s[Enter keeps current]%s ' "$BOLD" "$prompt" "$RESET" "$DIM" "$RESET"
@@ -122,13 +127,51 @@ ask_secret() {
   read -rs input || true
   printf '\n'
   [[ -z "$input" && -n "$current" ]] && input="$current"
+  if [[ "$mode" != optional && -z "$input" ]]; then
+    warn "$key is required"
+    return 1
+  fi
   printf -v "$key" '%s' "$input"
 }
+
+_env_file_safe() {
+  local in_worktree
+  if [[ -L "$ENV_FILE" ]]; then
+    warn "refusing to write symlink ENV_FILE: $ENV_FILE"
+    return 1
+  fi
+  if ! command -v git >/dev/null 2>&1; then
+    warn "refusing to write $ENV_FILE — git is unavailable"
+    return 1
+  fi
+  in_worktree=$(git rev-parse --is-inside-work-tree 2>/dev/null) || {
+    warn "refusing to write $ENV_FILE — not inside a Git worktree"
+    return 1
+  }
+  if [[ "$in_worktree" != true ]]; then
+    warn "refusing to write $ENV_FILE — not inside a Git worktree"
+    return 1
+  fi
+  if git ls-files --error-unmatch -- "$ENV_FILE" >/dev/null 2>&1; then
+    warn "refusing to write tracked ENV_FILE: $ENV_FILE"
+    return 1
+  fi
+  if ! git check-ignore -q -- "$ENV_FILE"; then
+    warn "refusing to write non-ignored ENV_FILE: $ENV_FILE"
+    return 1
+  fi
+}
+
 
 # write_env KEY VALUE — upsert KEY=VALUE into ENV_FILE (creates it; replaces
 # any existing line). Idempotent.
 write_env() {
-  local key="$1" value="$2" tmp
+  local key="$1" value="$2" mode="${3:-required}" tmp
+  if [[ "$mode" != optional && -z "$value" ]]; then
+    warn "refusing to write empty required value: $key"
+    return 1
+  fi
+  _env_file_safe
   touch "$ENV_FILE"
   tmp=$(mktemp)
   grep -vE "^${key}=" "$ENV_FILE" > "$tmp" || true
@@ -138,10 +181,15 @@ write_env() {
   printf '  %s✓ wrote%s %s → %s\n' "$GREEN" "$RESET" "$key" "$ENV_FILE"
 }
 
+
 # set_secret NAME VALUE — set a GitHub Actions repo secret via gh. Falls back
 # to a warning (and records it) if gh is unavailable or unauthenticated.
 set_secret() {
   local name="$1" value="$2"
+  if [[ -z "$value" ]]; then
+    warn "refusing to set empty GitHub secret: $name"
+    return 1
+  fi
   if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
     if printf '%s' "$value" | gh secret set "$name" >/dev/null 2>&1; then
       WRITTEN_SECRET+=("$name")

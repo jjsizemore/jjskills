@@ -75,19 +75,19 @@ Show counts and a one-line summary per item. Let the maintainer pick.
 
 4. **Grill (if needed).** If the request needs fleshing out, run the `/grilling` and `/domain-modeling` skills together — grill it into shape a round of questions at a time, sharpening domain terms and updating `CONTEXT.md`/ADRs inline as decisions land.
 
-5. **Apply the outcome:**
-   - `ready-for-agent` — post an agent brief comment ([AGENT-BRIEF.md](AGENT-BRIEF.md)).
-   - `ready-for-human` — same structure as an agent brief, but note why it can't be delegated (judgment calls, external access, design decisions, manual testing).
+5. **Apply the outcome only after its preconditions:**
+   - `ready-for-agent` — before applying the state, post a complete agent brief ([AGENT-BRIEF.md](AGENT-BRIEF.md)), or post confirmation that an existing brief is still complete and current under that document. This is mandatory even when a quick override skips grilling; never apply `ready-for-agent` without a brief.
+   - `ready-for-human` — post the same structure as an agent brief, but note why it can't be delegated (judgment calls, external access, design decisions, manual testing).
    - `needs-info` — post triage notes (template below).
    - `wontfix` — close, with the comment depending on *why*:
      - **Already implemented** — the change already exists in the codebase. Point to where it lives; do **not** write to `.out-of-scope/` (that KB is for *rejected* requests, not built ones).
      - **Rejected (bug)** — polite explanation, then close.
-     - **Rejected (enhancement)** — write to `.out-of-scope/`, link to it from a comment, then close ([OUT-OF-SCOPE.md](OUT-OF-SCOPE.md)).
+     - **Rejected (enhancement)** — publish the `.out-of-scope/` record through the configured repository workflow and verify it is durable; only then link to it in a comment and close ([OUT-OF-SCOPE.md](OUT-OF-SCOPE.md)). If publication cannot happen, stop before commenting or closing and report the blocker.
    - `needs-triage` — apply the role. Optional comment if there's partial progress.
 
 ## Quick state override
 
-If the maintainer says "move #42 to ready-for-agent", trust them and apply the role directly. Confirm what you're about to do (role changes, comment, close), then act. Skip grilling. If moving to `ready-for-agent` without a grilling session, ask whether they want to write an agent brief.
+If the maintainer says "move #42 to ready-for-agent", trust the request for this transition and skip recommendation and grilling. Confirm what you're about to do (role changes, comment, close), then act. Before applying `ready-for-agent`, create and post a complete agent brief or confirm in a comment that an existing brief is complete and current under [AGENT-BRIEF.md](AGENT-BRIEF.md). If that brief precondition cannot be met, stop without applying the role.
 
 ## Needs-info template
 

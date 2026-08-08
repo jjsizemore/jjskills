@@ -11,4 +11,6 @@ description: "Use when you need to resolve an in-progress git merge/rebase confl
 
 4. Discover the project's **automated checks** and run them — typically typecheck, then tests, then format. Fix anything the merge broke.
 
-5. **Finish the merge/rebase.** Stage everything and commit. If rebasing, continue the rebase process until all commits are rebased.
+5. **Finish according to the operation.**
+   - **Merge:** stage every resolved path with `git add`, verify there are no unmerged entries, then create the merge commit with `git commit`. Do not run `git rebase --continue`.
+   - **Rebase:** after each resolution, stage every resolved path with `git add`, then run `git rebase --continue`. Repeat resolving, staging, and `git rebase --continue` until the rebase exits successfully. Never run a normal `git commit`; the rebase machinery creates each commit.
