@@ -1,9 +1,14 @@
 ---
 name: code-review
-description: Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes — Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/spec asked for?). Runs both reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to "review since X".
+description: Review either current WIP or committed changes from a fixed point along two axes — Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/spec asked for?). Runs both reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to "review since X".
 ---
 
-Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
+Review either the current WIP or the committed-tree diff from a fixed point:
+
+- **WIP** — include staged and unstaged tracked changes in the working tree.
+- **Fixed-point committed tree** — review only committed changes from the requested fixed point.
+
+Both axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
 
 - **Standards** — does the code conform to this repo's documented coding standards?
 - **Spec** — does the code faithfully implement the originating issue / spec?
@@ -14,13 +19,16 @@ The issue tracker should have been provided to you — run `/setup-matt-pocock-s
 
 ## Process
 
-### 1. Pin the fixed point
+### 1. Select the baseline and exact diff rule
 
-Whatever the user said is the fixed point — a commit SHA, branch name, tag, `main`, `HEAD~5`, etc. If they didn't specify one, ask for it.
+Choose one mode; never silently mix them:
 
-Capture the diff command once: `git diff <fixed-point>...HEAD` (three-dot, so the comparison is against the merge-base). Also note the list of commits via `git log <fixed-point>..HEAD --oneline`.
+- **WIP mode** — when the user asks for WIP, worktree, staged, unstaged, or current uncommitted changes. If a fixed point is supplied, the target is the union of `git diff <fixed-point>...HEAD` (committed changes from the merge-base) and `git diff HEAD` (the combined staged and unstaged tracked changes against `HEAD`). If no fixed point is supplied, the target is `git diff HEAD` with `HEAD` as the baseline. Treat the two patches as one review target; do not replace `git diff HEAD` with `git diff` or `git diff --cached`.
+- **Fixed-point committed-tree mode** — when the user requests a committed branch/tree review without WIP. Whatever the user said is the fixed point — a commit SHA, branch name, tag, `main`, `HEAD~5`, etc. The baseline is the merge-base and the exact diff is `git diff <fixed-point>...HEAD` (three-dot). Also note the commits via `git log <fixed-point>..HEAD --oneline`.
 
-Before going further, confirm the fixed point resolves (`git rev-parse <fixed-point>`) and the diff is non-empty. A bad ref or empty diff should fail here — not inside two parallel sub-agents.
+If neither mode nor a fixed point is clear, ask the user. Record the selected baseline and exact diff rule verbatim; this same rule must be passed to both sub-agents in step 4.
+
+Before going further, confirm every supplied fixed point resolves (`git rev-parse <fixed-point>`) and that the selected diff is non-empty. A bad ref or empty diff should fail here — not inside two parallel sub-agents.
 
 ### 2. Identify the spec source
 
@@ -59,15 +67,18 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 
 **Standards sub-agent prompt** — include:
 
-- The full diff command and commit list.
-- The list of standards-source files you found in step 3, **plus the smell baseline from step 3** pasted in full — the sub-agent has no other access to it.
+- The exact baseline and diff rule selected in step 1, verbatim. In WIP mode, explicitly identify both `git diff <fixed-point>...HEAD` (when a fixed point was supplied) and `git diff HEAD`; in committed-tree mode, explicitly identify `git diff <fixed-point>...HEAD` and its merge-base baseline.
+- The commit list when the selected rule includes one.
+- The list of standards-source files you found in step 3, **plus the smell baseline from step 3 pasted in full** — the sub-agent has no other access to it.
 - The brief: "Report — per file/hunk where relevant — (a) every place the diff violates a documented standard: cite the standard (file + the rule); and (b) any baseline smell you spot: name it and quote the hunk. Distinguish hard violations from judgement calls — documented-standard breaches can be hard, but baseline smells are always judgement calls, and a documented repo standard overrides the baseline. Skip anything tooling enforces. Under 400 words."
 
 **Spec sub-agent prompt** — include:
 
-- The diff command and commit list.
+- The exact baseline and diff rule selected in step 1, verbatim. Review exactly that target, including staged and unstaged tracked changes in WIP mode and excluding them in committed-tree mode.
+- The commit list when the selected rule includes one.
 - The path or fetched contents of the spec.
 - The brief: "Report: (a) requirements the spec asked for that are missing or partial; (b) behaviour in the diff that wasn't asked for (scope creep); (c) requirements that look implemented but where the implementation looks wrong. Quote the spec line for each finding. Under 400 words."
+
 
 If the spec is missing, skip the Spec sub-agent and note this in the final report.
 

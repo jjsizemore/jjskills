@@ -1,11 +1,15 @@
 ---
 name: diagnosing-bugs
-description: Diagnosis loop for hard bugs and performance regressions. Use when the user says "diagnose"/"debug this", or reports something broken/throwing/failing/slow.
+description: Diagnosis-and-remediation loop for hard bugs and performance regressions. Use only when the user explicitly asks for end-to-end remediation, such as diagnosing and fixing the issue. Use `debugging-systematically` for diagnosis-only requests.
 ---
 
 # Diagnosing Bugs
 
 A discipline for hard bugs. Skip phases only when explicitly justified.
+
+## Activation boundary
+
+Invoke this skill only for explicit end-to-end remediation intent: the user asks to diagnose a bug and fix or remediate it in the same request. For diagnosis, root-cause analysis, or evidence gathering without a requested fix, use `debugging-systematically` instead.
 
 When exploring the codebase, read `CONTEXT.md` (if it exists) to get a clear mental model of the relevant modules, and check ADRs in the area you're touching.
 

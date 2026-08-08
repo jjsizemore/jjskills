@@ -77,7 +77,7 @@ During triage (Step 1: Gather context), read all files in `.out-of-scope/`. When
 
 The maintainer may:
 
-- **Confirm** — the new issue gets added to the existing file's "Prior requests" list, then closed
+- **Confirm** — the new issue gets added to the existing file's "Prior requests" list, then follows the publication flow below before any comment or closure
 - **Reconsider** — the out-of-scope file gets deleted or updated, and the issue proceeds through normal triage
 - **Disagree** — the issues are related but distinct, proceed with normal triage
 
@@ -93,8 +93,11 @@ The flow:
 2. Check if a matching `.out-of-scope/` file already exists
 3. If yes: append the new issue to the "Prior requests" list
 4. If no: create a new file with the concept name, decision, reason, and first prior request
-5. Post a comment on the issue explaining the decision and mentioning the `.out-of-scope/` file
-6. Close the issue with the `wontfix` label
+5. Publish the new or updated record through the repository's configured workflow (for example, the required commit, pull request, or merge). A working-tree-only file is not durable. Verify that the configured publication completed before proceeding.
+6. Only after durable publication, post a comment on the issue explaining the decision and linking the published `.out-of-scope/` record
+7. Close the issue with the `wontfix` label
+
+If the configured publication workflow is unavailable, unknown, or fails, stop with the issue open: do not post the rejection comment and do not close it. Report the publication blocker to the maintainer so the record can become durable before the issue is closed.
 
 ## Updating or removing out-of-scope files
 
