@@ -116,9 +116,11 @@ gh label list --limit 1000 --json name --jq '.[].name'
 gh label create "<missing-label>" --description "<role>" --color "<hex-color>"
 ```
 
-Repeat `gh label create` only for labels absent from the first listing, and rerun `gh label list` to verify every configured triage and wayfinder label exists. For GitLab, use the equivalent `glab label list` / `glab label create` flow. If labels cannot be created or verified, do not report setup complete; show the missing labels and the commands the user must run.
+Repeat `gh label create` only for labels absent from the first listing, and rerun `gh label list` to verify every configured triage and wayfinder label exists. For GitLab, use the equivalent `glab label list` / `glab label create` flow. If remote labels cannot be created or verified, do not report setup complete; show the missing labels and the commands the user must run.
+
+For local Markdown, do not run remote label commands: triage state is the configured `Status:` vocabulary and Wayfinder ticket kind is the configured `Type:` vocabulary in `.scratch/<feature>/issues/*.md`. Verify those file conventions instead, and stop if they are not documented.
 
 For "other" issue trackers, write `docs/agents/issue-tracker.md` from scratch using the user's description.
 
 ### 5. Done
-Tell the user the setup is complete only after any configured triage labels and all wayfinder labels were provisioned and verified. Name the labels and which engineering skills will now read from these files. Mention they can edit `docs/agents/*.md` directly later — re-running this skill is only necessary if they want to switch issue trackers or restart from scratch.
+Tell the user the setup is complete only after the configured remote labels are provisioned and verified, or the local Markdown `Status:`/`Type:` conventions are verified. Name the labels or file vocabularies and which engineering skills will read from these files. Mention they can edit `docs/agents/*.md` directly later — re-running this skill is only necessary if they want to switch issue trackers or restart from scratch.

@@ -121,11 +121,11 @@ User invokes with a map (URL or number). A ticket is **optional** — without on
 
 1. Load the **map** — the low-res view, not every ticket body.
 2. Choose the ticket. If the user named one, use it. Otherwise take the first frontier ticket in order. **Claim it**: assign it to yourself before any work.
-3. **Resolve it by ticket type.** After claiming the ticket, inspect its single `wayfinder:<type>` label and dispatch the matching workflow before doing any generic fallback:
-   - `wayfinder:research` — launch a `/research` subagent to investigate and record its findings.
-   - `wayfinder:prototype` — invoke `/prototype` and work with the human on the concrete artifact.
-   - `wayfinder:grilling` — invoke `/grilling` and `/domain-modeling` together.
-   - `wayfinder:task` — perform the prerequisite task directly when AFK, or give the human a precise checklist when it requires HITL.
+3. **Resolve it by ticket type.** After claiming the ticket, inspect the configured tracker representation: read its single `wayfinder:<type>` label for GitHub/GitLab, or its single `Type: research|prototype|grilling|task` line for local Markdown. Dispatch the matching workflow before doing any generic fallback:
+   - `research` — launch a `/research` subagent to investigate and record its findings.
+   - `prototype` — invoke `/prototype` and work with the human on the concrete artifact.
+   - `grilling` — invoke `/grilling` and `/domain-modeling` together.
+   - `task` — perform the prerequisite task directly when AFK, or give the human a precise checklist when it requires HITL.
    If the ticket has no type, multiple types, or an unknown type, stop and ask the maintainer; never silently treat it as grilling. If the selected workflow leaves a genuinely unresolved decision, a generic `/grilling` and `/domain-modeling` fallback may be used only after this dispatch and must not replace it.
 4. Record the resolution: post the answer as a **resolution comment**, **close** the issue, and **append a context pointer** to the map's Decisions-so-far.
 5. Add newly-surfaced tickets (create-then-wire); graduate any fog the answer has made specifiable, clearing each graduated patch from **Not yet specified** so it lives only as its new ticket. If the answer reveals a ticket — this one or another — sits beyond the destination, **rule it out of scope** rather than resolving it on the route. If the decision invalidates other parts of the map, update or delete those tickets.
