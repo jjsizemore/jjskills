@@ -8,24 +8,102 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CLI = path.join(__dirname, '..', 'scripts', 'work-run.mjs');
 
 function run(args, cwd, env = {}) {
-  const r = spawnSync(process.execPath, [CLI, ...args], {
+  const normalized =
+    args[0] === 'init'
+      ? [
+          ...args,
+          '--source-spec',
+          'fixture-spec',
+          '--tracking-provider',
+          'local',
+          '--tracking-issue-id',
+          'not_applicable',
+          '--tracking-key',
+          'fixture-key',
+          '--tracking-url',
+          'not_applicable',
+        ]
+      : args;
+  const r = spawnSync(process.execPath, [CLI, ...normalized], {
     cwd,
     encoding: 'utf8',
-    env: { ...process.env, ...env },
+    timeout: 5_000,
+    env: {
+      ...process.env,
+      AGENT_RUNS_ROOT: path.join(path.dirname(cwd), `${path.basename(cwd)}-agent-runs`),
+      ...env,
+    },
   });
   return r;
 }
 
-function makeRepo() {
+function runsRoot(cwd) {
+  return path.join(path.dirname(cwd), `${path.basename(cwd)}-agent-runs`);
+}
+
+function makeRepo(oracleFails = false) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'work-run-'));
-  fs.mkdirSync(path.join(dir, '.git')); // mark as repo-ish
+  assert.equal(spawnSync('git', ['init', '-q'], { cwd: dir }).status, 0);
+  assert.equal(
+    spawnSync('git', ['config', 'user.email', 'test@example.invalid'], { cwd: dir }).status,
+    0,
+  );
+  assert.equal(
+    spawnSync('git', ['config', 'user.name', 'Work Run Test'], { cwd: dir }).status,
+    0,
+  );
+  assert.equal(
+    spawnSync('git', ['config', 'commit.gpgsign', 'false'], { cwd: dir }).status,
+    0,
+  );
+  fs.writeFileSync(
+    path.join(dir, 'oracle.test.mjs'),
+    oracleFails
+      ? 'process.exit(1);\n'
+      : "import test from 'node:test';\ntest('oracle fixture', () => {});\n",
+  );
+  fs.writeFileSync(
+    path.join(dir, 'closeout-command.json'),
+    JSON.stringify({ closeoutCommand: [process.execPath, 'oracle.test.mjs'] }),
+  );
+  assert.equal(
+    spawnSync('git', ['add', 'oracle.test.mjs', 'closeout-command.json'], { cwd: dir }).status,
+    0,
+  );
+  const commit = spawnSync('git', ['commit', '--no-gpg-sign', '--no-verify', '-q', '-m', 'fixture'], {
+    cwd: dir,
+    encoding: 'utf8',
+  });
+  assert.equal(commit.status, 0, commit.stderr);
   return dir;
+}
+function closeoutEvidence(cwd, overrides = {}) {
+  const ledger = readJson(path.join(runsRoot(cwd), 'pick-run/ledger.json'));
+  const baseSha = ledger.baseSha;
+  const subjectHead = spawnSync('git', ['rev-parse', 'HEAD'], { cwd, encoding: 'utf8' }).stdout.trim();
+  const evidence = {
+    runId: 'pick-run',
+    status: 'VERIFIED',
+    baseSha,
+    subjectHead,
+    diffDigest: `sha256:${createHash('sha256')
+      .update(spawnSync('git', ['diff', '--binary', `${baseSha}..${subjectHead}`], {
+        cwd,
+        encoding: 'buffer',
+      }).stdout)
+      .digest('hex')}`,
+    oracle: { command: ledger.closeoutCommand, status: 0, signal: null },
+    ...overrides,
+  };
+  const p = path.join(runsRoot(cwd), 'pick-run', 'evidence', 'closeout.json');
+  fs.writeFileSync(p, JSON.stringify(evidence));
+  return p;
 }
 
 function readJson(p) {
@@ -55,6 +133,7 @@ describe('work-run init', () => {
   });
   afterEach(() => {
     fs.rmSync(repo, { recursive: true, force: true });
+    fs.rmSync(runsRoot(repo), { recursive: true, force: true });
   });
 
   it('creates run dir, ACTIVE, sealed budget, progress, handoff', () => {
@@ -97,10 +176,10 @@ describe('work-run init', () => {
     );
     assert.equal(r.status, 0, r.stderr + r.stdout);
 
-    const active = fs.readFileSync(path.join(repo, '.agents/runs/ACTIVE'), 'utf8').trim();
+    const active = fs.readFileSync(path.join(runsRoot(repo), 'ACTIVE'), 'utf8').trim();
     assert.equal(active, 'demo-run');
 
-    const ledger = readJson(path.join(repo, '.agents/runs/demo-run/ledger.json'));
+    const ledger = readJson(path.join(runsRoot(repo), 'demo-run/ledger.json'));
     assert.equal(ledger.version, 1);
     assert.equal(ledger.userStories.length, 2);
     assert.equal(ledger.maxIterations, 10); // 2 stories * 2 = 4 -> floor 10
@@ -108,8 +187,8 @@ describe('work-run init', () => {
     assert.equal(ledger.iteration, 0);
     assert.equal(ledger.status, 'active');
 
-    assert.ok(fs.existsSync(path.join(repo, '.agents/runs/demo-run/progress.md')));
-    assert.ok(fs.existsSync(path.join(repo, '.agents/runs/demo-run/handoff.md')));
+    assert.ok(fs.existsSync(path.join(runsRoot(repo), 'demo-run/progress.md')));
+    assert.ok(fs.existsSync(path.join(runsRoot(repo), 'demo-run/handoff.md')));
   });
 
   it('rejects second init for same run-id without --force', () => {
@@ -144,13 +223,37 @@ describe('work-run init', () => {
     const r2 = run(args, repo);
     assert.notEqual(r2.status, 0);
   });
+  it('rejects force-overwrite of an active run', () => {
+    const storiesPath = path.join(os.tmpdir(), `${path.basename(repo)}-force-stories.json`);
+    fs.writeFileSync(
+      storiesPath,
+      JSON.stringify([{ id: 'US-001', title: 'A', acceptanceCriteria: ['c'], passes: false }]),
+    );
+    const args = [
+      'init',
+      '--run-id',
+      'active-run',
+      '--project',
+      'p',
+      '--branch',
+      'b',
+      '--description',
+      'd',
+      '--stories-file',
+      storiesPath,
+    ];
+    assert.equal(run(args, repo).status, 0);
+    const forced = run([...args, '--force'], repo);
+    assert.notEqual(forced.status, 0);
+    assert.match(forced.stderr + forced.stdout, /cannot overwrite active/i);
+  });
 });
 
 describe('work-run pick / mark-pass / seal', () => {
   let repo;
   beforeEach(() => {
     repo = makeRepo();
-    const storiesPath = path.join(repo, 'stories.json');
+    const storiesPath = path.join(os.tmpdir(), `${path.basename(repo)}-stories.json`);
     fs.writeFileSync(
       storiesPath,
       JSON.stringify([
@@ -192,6 +295,7 @@ describe('work-run pick / mark-pass / seal', () => {
   });
   afterEach(() => {
     fs.rmSync(repo, { recursive: true, force: true });
+    fs.rmSync(runsRoot(repo), { recursive: true, force: true });
   });
 
   it('picks highest priority incomplete story', () => {
@@ -212,12 +316,12 @@ describe('work-run pick / mark-pass / seal', () => {
     const r = run(['set-max', '--max-iterations', '99'], repo);
     assert.notEqual(r.status, 0);
     assert.match(r.stderr + r.stdout, /seal|sealed|forbidden|cannot/i);
-    const ledger = readJson(path.join(repo, '.agents/runs/pick-run/ledger.json'));
+    const ledger = readJson(path.join(runsRoot(repo), 'pick-run/ledger.json'));
     assert.notEqual(ledger.maxIterations, 99);
   });
 
   it('bump-iteration refuses past sealed max', () => {
-    const ledgerPath = path.join(repo, '.agents/runs/pick-run/ledger.json');
+    const ledgerPath = path.join(runsRoot(repo), 'pick-run/ledger.json');
     const ledger = readJson(ledgerPath);
     ledger.maxIterations = 1;
     ledger.iteration = 1;
@@ -235,21 +339,87 @@ describe('work-run pick / mark-pass / seal', () => {
     assert.equal(s.complete, 0);
   });
 
-  it('complete when all pass emits WORK_RUN_COMPLETE', () => {
+  it(
+    'requires bound verified closeout before emitting WORK_RUN_COMPLETE',
+    () => {
     run(['mark-pass', '--story', 'US-001'], repo);
     run(['mark-pass', '--story', 'US-002'], repo);
-    const r = run(['status'], repo);
-    const s = JSON.parse(r.stdout);
-    assert.equal(s.incomplete, 0);
-    assert.equal(s.allPass, true);
-    assert.match(r.stdout, /WORK_RUN_COMPLETE|allPass": true/);
+    const blocked = run(['complete'], repo);
+    assert.notEqual(blocked.status, 0);
+    assert.match(blocked.stderr + blocked.stdout, /closeout|verified/i);
+
+    const forged = closeoutEvidence(repo, { runId: 'other-run' });
+    const rejected = run(['complete', '--closeout-evidence', forged], repo);
+    assert.notEqual(rejected.status, 0);
+    assert.match(rejected.stderr + rejected.stdout, /unbound|incomplete|verified/i);
+
+    const valid = closeoutEvidence(repo);
+    const r = run(['complete', '--closeout-evidence', valid], repo);
+    assert.equal(r.status, 0, r.stderr);
+    assert.match(r.stdout, /WORK_RUN_COMPLETE/);
+    const ledger = readJson(path.join(runsRoot(repo), 'pick-run/ledger.json'));
+    assert.equal(ledger.closeoutOracle.status, 'pass');
+    assert.equal(ledger.closeoutOracle.verifier, 'closeout-verify.mjs');
+  });
+  it(
+    'rejects a failing project oracle despite matching metadata',
+    () => {
+    const failingRepo = makeRepo(true);
+    const storiesPath = path.join(os.tmpdir(), `${path.basename(failingRepo)}-stories.json`);
+    fs.writeFileSync(
+      storiesPath,
+      JSON.stringify([
+        { id: 'US-001', title: 'A', acceptanceCriteria: ['c'], passes: false },
+        { id: 'US-002', title: 'B', acceptanceCriteria: ['c'], passes: false },
+      ]),
+    );
+    const init = run(
+      [
+        'init',
+        '--run-id',
+        'pick-run',
+        '--project',
+        'p',
+        '--branch',
+        'b',
+        '--description',
+        'd',
+        '--stories-file',
+        storiesPath,
+      ],
+      failingRepo,
+    );
+    assert.equal(init.status, 0, init.stderr);
+    run(['mark-pass', '--story', 'US-001'], failingRepo);
+    run(['mark-pass', '--story', 'US-002'], failingRepo);
+    const rejected = run(
+      ['complete', '--closeout-evidence', closeoutEvidence(failingRepo)],
+      failingRepo,
+    );
+    assert.notEqual(rejected.status, 0);
+    assert.match(rejected.stderr + rejected.stdout, /project oracle/i);
+    fs.rmSync(failingRepo, { recursive: true, force: true });
+    fs.rmSync(runsRoot(failingRepo), { recursive: true, force: true });
+  });
+  it(
+    'rejects closeout when the worktree is dirty',
+    () => {
+    run(['mark-pass', '--story', 'US-001'], repo);
+    run(['mark-pass', '--story', 'US-002'], repo);
+    fs.writeFileSync(path.join(repo, 'dirty.txt'), 'uncommitted');
+    const rejected = run(
+      ['complete', '--closeout-evidence', closeoutEvidence(repo)],
+      repo,
+    );
+    assert.notEqual(rejected.status, 0);
+    assert.match(rejected.stderr + rejected.stdout, /clean Git worktree/i);
   });
 
   it('cancel clears ACTIVE and preserves ledger', () => {
     assert.equal(run(['cancel'], repo).status, 0);
-    assert.ok(!fs.existsSync(path.join(repo, '.agents/runs/ACTIVE')));
-    assert.ok(fs.existsSync(path.join(repo, '.agents/runs/pick-run/ledger.json')));
-    const ledger = readJson(path.join(repo, '.agents/runs/pick-run/ledger.json'));
+    assert.ok(!fs.existsSync(path.join(runsRoot(repo), 'ACTIVE')));
+    assert.ok(fs.existsSync(path.join(runsRoot(repo), 'pick-run/ledger.json')));
+    const ledger = readJson(path.join(runsRoot(repo), 'pick-run/ledger.json'));
     assert.equal(ledger.status, 'cancelled');
   });
 
@@ -259,7 +429,7 @@ describe('work-run pick / mark-pass / seal', () => {
         .status,
       0,
     );
-    const ledger = readJson(path.join(repo, '.agents/runs/pick-run/ledger.json'));
+    const ledger = readJson(path.join(runsRoot(repo), 'pick-run/ledger.json'));
     const story = ledger.userStories.find((s) => s.id === 'US-001');
     assert.equal(story.blockedReason, 'tests red after remediation');
     assert.equal(ledger.status, 'blocked');

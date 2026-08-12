@@ -1,12 +1,16 @@
 #!/usr/bin/env node
 /**
  * Portable work-run ledger CLI.
- * Repo-local state: <cwd>/.agents/runs/<run-id>/
+ * State root: <git-common-dir>/agent-runs/ or explicit AGENT_RUNS_ROOT.
  *
  * Budget is sealed at init; agents cannot raise maxIterations afterward.
+ * Completion additionally requires evidence accepted by the controller-owned
+ * closeout verifier; caller-supplied oracle claims are ignored.
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const FLOOR = 10;
@@ -44,7 +48,82 @@ function parseArgs(argv) {
 }
 
 function runsRoot(cwd) {
-  return path.join(cwd, '.agents', 'runs');
+  if (process.env.AGENT_RUNS_ROOT) {
+    if (!path.isAbsolute(process.env.AGENT_RUNS_ROOT)) die('AGENT_RUNS_ROOT must be absolute');
+    return process.env.AGENT_RUNS_ROOT;
+  }
+  try {
+    const commonDir = execFileSync('git', ['rev-parse', '--git-common-dir'], {
+      cwd,
+      encoding: 'utf8',
+    }).trim();
+    if (!commonDir) throw new Error('empty git common dir');
+    return path.resolve(cwd, commonDir, 'agent-runs');
+  } catch {
+    die('cannot resolve shared run root; set absolute AGENT_RUNS_ROOT or run inside a Git worktree');
+  }
+}
+
+function currentHead(cwd) {
+  try {
+    return execFileSync('git', ['rev-parse', 'HEAD'], { cwd, encoding: 'utf8' }).trim();
+  } catch {
+    die('cannot resolve current Git HEAD for closeout evidence');
+  }
+}
+
+function deliveryDiffDigest(cwd, baseSha, subjectHead) {
+  try {
+    const diff = execFileSync('git', ['diff', '--binary', `${baseSha}..${subjectHead}`], {
+      cwd,
+      encoding: 'buffer',
+    });
+    return `sha256:${createHash('sha256').update(diff).digest('hex')}`;
+  } catch {
+    die('cannot resolve delivered Git diff for closeout evidence');
+  }
+}
+
+function runControllerVerifier(cwd, runId, ledgerPath, evidencePath, baseSha, subjectHead, diffDigest) {
+  const verifierPath = path.join(path.dirname(fileURLToPath(import.meta.url)), 'closeout-verify.mjs');
+  const result = spawnSync(
+    process.execPath,
+    [
+      verifierPath,
+      '--cwd',
+      cwd,
+      '--run-id',
+      runId,
+      '--ledger',
+      ledgerPath,
+      '--evidence',
+      evidencePath,
+      '--base-sha',
+      baseSha,
+      '--subject-head',
+      subjectHead,
+      '--diff-digest',
+      diffDigest,
+    ],
+    { cwd, encoding: 'utf8', timeout: 120_000 },
+  );
+  if (result.status !== 0 || result.signal) {
+    const detail = result.stderr.trim();
+    die(
+      detail
+        ? `cannot complete: controller closeout verifier rejected the evidence (${detail})`
+        : 'cannot complete: controller closeout verifier rejected the evidence',
+    );
+  }
+  try {
+    const oracle = JSON.parse(result.stdout);
+    if (oracle.status !== 'pass' || oracle.runId !== runId) {
+      die('cannot complete: controller closeout verifier returned invalid proof');
+    }
+    return oracle;
+  } catch {
+    die('cannot complete: controller closeout verifier returned invalid proof');
+  }
 }
 
 function activePath(cwd) {
@@ -127,17 +206,63 @@ function riskBonusFromStories(stories) {
   return Math.min(4, bonus);
 }
 
+function parseOracleConfig(cwd, baseSha) {
+  let raw;
+  try {
+    raw = execFileSync('git', ['show', `${baseSha}:closeout-command.json`], {
+      cwd,
+      encoding: 'buffer',
+    });
+  } catch {
+    die('missing repository closeout-command.json at run base');
+  }
+  let config;
+  try {
+    config = JSON.parse(raw.toString('utf8'));
+  } catch {
+    die('repository closeout-command.json at run base is invalid JSON');
+  }
+  const command = config.closeoutCommand;
+  const executable = Array.isArray(command) ? path.basename(command[0] || '') : '';
+  if (
+    !Array.isArray(command) ||
+    command.length === 0 ||
+    command.some((part) => typeof part !== 'string' || part.length === 0) ||
+    !new Set(['node', 'pnpm', 'npm', 'yarn', 'bun', 'python', 'python3']).has(executable) ||
+    (executable === 'node' && command.some((part) => ['-e', '--eval', '-p', '--print'].includes(part)))
+  ) {
+    die('closeout-command.json closeoutCommand must be a project-owned test command');
+  }
+  return {
+    command,
+    configSha: `sha256:${createHash('sha256').update(raw).digest('hex')}`,
+  };
+}
+
 function cmdInit(cwd, args) {
   const runId = args['run-id'];
   if (!runId) die('init requires --run-id');
-  if (!args.project || !args.branch || !args.description) {
-    die('init requires --project --branch --description');
-  }
-  if (!args['stories-file']) die('init requires --stories-file <json array or {userStories}>');
-
+  const required = [
+    'project',
+    'branch',
+    'description',
+    'stories-file',
+    'source-spec',
+    'tracking-provider',
+    'tracking-issue-id',
+    'tracking-key',
+    'tracking-url',
+  ];
+  const missing = required.filter((key) => !args[key]);
+  if (missing.length > 0) die(`init requires ${missing.map((key) => `--${key}`).join(' ')}`);
   const dir = runDir(cwd, runId);
-  if (fs.existsSync(path.join(dir, 'ledger.json')) && !args.force) {
-    die(`run already exists: ${runId} (pass --force to overwrite)`);
+  const existingLedgerPath = path.join(dir, 'ledger.json');
+  if (fs.existsSync(existingLedgerPath)) {
+    const existing = JSON.parse(fs.readFileSync(existingLedgerPath, 'utf8'));
+    if (existing.status === 'active' || existing.status === 'blocked') {
+      die(`cannot overwrite ${existing.status} run: ${runId}`);
+    }
+    if (!args.force) die(`run already exists: ${runId} (pass --force to overwrite)`);
   }
 
   const raw = JSON.parse(fs.readFileSync(args['stories-file'], 'utf8'));
@@ -154,6 +279,12 @@ function cmdInit(cwd, args) {
     if (s.notes === undefined) s.notes = '';
     if (s.blockedReason === undefined) s.blockedReason = null;
   }
+  const orderedStoryIds = stories.map((story) => story.id);
+  if (new Set(orderedStoryIds).size !== orderedStoryIds.length) {
+    die('stories-file contains duplicate story IDs');
+  }
+  const baseSha = currentHead(cwd);
+  const oracleConfig = parseOracleConfig(cwd, baseSha);
 
   let maxIterations;
   if (args['max-iterations']) {
@@ -166,14 +297,24 @@ function cmdInit(cwd, args) {
   const now = new Date().toISOString();
   const ledger = {
     version: 1,
+    runId,
     project: args.project,
     branchName: args.branch,
     description: args.description,
-    sourceSpec: args['source-spec'] || null,
+    sourceSpec: args['source-spec'],
+    trackingProvider: args['tracking-provider'],
+    trackingIssueId: args['tracking-issue-id'],
+    trackingKey: args['tracking-key'],
+    trackingUrl: args['tracking-url'],
+    closeoutCommand: oracleConfig.command,
+    closeoutConfigSha: oracleConfig.configSha,
+    orderedStoryIds,
+    baseSha,
     maxIterations,
     budgetSealedAt: now,
     iteration: 0,
     status: 'active',
+    closeoutStatus: null,
     userStories: stories,
   };
 
@@ -213,7 +354,7 @@ function cmdMarkPass(cwd, args) {
   story.passes = true;
   story.blockedReason = null;
   if (args.note) story.notes = String(args.note);
-  if (data.userStories.every((s) => s.passes)) data.status = 'completed';
+  // Passing stories do not complete the run; closeout verification does.
   writeLedger(lp, data);
   appendProgress(cwd, runId, `## mark-pass ${storyId}\n- ${args.note || 'passed'}\n`);
   writeHandoff(runDir(cwd, runId), defaultHandoff(data, runId));
@@ -278,6 +419,7 @@ function cmdStatus(cwd, args) {
   const out = {
     runId,
     status: data.status,
+    closeoutStatus: data.closeoutStatus || null,
     iteration: data.iteration,
     maxIterations: data.maxIterations,
     budgetSealedAt: data.budgetSealedAt,
@@ -287,7 +429,9 @@ function cmdStatus(cwd, args) {
     allPass,
     next: pickNext(data),
   };
-  if (allPass) out.completion = `WORK_RUN_COMPLETE run-id=${runId}`;
+  if (allPass && data.closeoutStatus === 'VERIFIED') {
+    out.completion = `WORK_RUN_COMPLETE run-id=${runId}`;
+  }
   process.stdout.write(JSON.stringify(out, null, 2) + '\n');
 }
 
@@ -328,7 +472,38 @@ function cmdComplete(cwd, args) {
   if (!(data.userStories || []).every((s) => s.passes)) {
     die('cannot complete: incomplete stories remain');
   }
+  const evidencePath = args['closeout-evidence'];
+  if (!evidencePath) die('cannot complete: --closeout-evidence is required');
+  let evidence;
+  try {
+    evidence = JSON.parse(fs.readFileSync(evidencePath, 'utf8'));
+  } catch {
+    die('cannot complete: closeout evidence is not valid JSON');
+  }
+  const subjectHead = currentHead(cwd);
+  const diffDigest = deliveryDiffDigest(cwd, data.baseSha, subjectHead);
+  if (
+    !evidence ||
+    evidence.runId !== runId ||
+    evidence.status !== 'VERIFIED' ||
+    evidence.baseSha !== data.baseSha ||
+    evidence.subjectHead !== subjectHead ||
+    evidence.diffDigest !== diffDigest
+  ) {
+    die('cannot complete: closeout evidence is unbound or incomplete');
+  }
+  const verifiedOracle = runControllerVerifier(
+    cwd,
+    runId,
+    lp,
+    evidencePath,
+    data.baseSha,
+    subjectHead,
+    diffDigest,
+  );
   data.status = 'completed';
+  data.closeoutStatus = 'VERIFIED';
+  data.closeoutOracle = verifiedOracle;
   writeLedger(lp, data);
   const ap = activePath(cwd);
   if (fs.existsSync(ap) && fs.readFileSync(ap, 'utf8').trim() === runId) fs.unlinkSync(ap);
@@ -343,7 +518,8 @@ function main() {
 
 Commands:
   init --run-id ID --project P --branch B --description D --stories-file F
-       [--max-iterations N] [--source-spec PATH] [--force]
+       --source-spec S --tracking-provider P --tracking-issue-id I
+       --tracking-key K --tracking-url U [--max-iterations N] [--force]
   pick [--run-id ID]
   mark-pass --story ID [--note TEXT]
   mark-blocked --story ID --reason TEXT
@@ -351,10 +527,9 @@ Commands:
   set-max --max-iterations N   (always rejected after seal)
   status
   append --text TEXT
-  cancel
-  complete
+  complete --closeout-evidence PATH
 
-State: <cwd>/.agents/runs/
+State: <git-common-dir>/agent-runs/ (or AGENT_RUNS_ROOT)
 `);
     process.exit(0);
   }

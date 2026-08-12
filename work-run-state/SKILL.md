@@ -17,19 +17,20 @@ Leaf skill for **disk truth** of a multi-story execution run. Controllers
 (`executing-work`, `resuming-work`, `canceling-work-run`) own policy; this skill
 owns paths, schema, and CLI mutations.
 
-## Layout (repo-local)
+## Layout (shared authority)
 
 ```text
-.agents/runs/ACTIVE                 # current run-id
-.agents/runs/<run-id>/
+<git-common-dir>/agent-runs/ACTIVE
+<git-common-dir>/agent-runs/<run-id>/
   ledger.json                       # stories + sealed maxIterations
   progress.md                       # append-only log + Codebase Patterns
   handoff.md                        # cold-start brief for next process
-  evidence/                         # optional logs
+  evidence/                         # optional logs and closeout artifacts
 ```
 
-Do **not** use `~/.agents/runs/` as primary. Do **not** use `.current-work` for
-story boards.
+Set `AGENT_RUNS_ROOT` to an absolute path only for an explicit isolated test or
+validated adapter. Do not use `~/.agents/runs/` or `.agents/runs/` as primary
+state. Do not use `.current-work` for story boards.
 
 ## Sealed budget
 
@@ -57,11 +58,16 @@ node ~/.agents/skills/work-run-state/scripts/work-run.mjs <command> ...
 | `pick` | Highest-priority incomplete non-blocked story |
 | `mark-pass` / `mark-blocked` | Update story |
 | `bump-iteration` | Increment counter; fail if at sealed max |
-| `status` | Counts + optional `WORK_RUN_COMPLETE` |
+| `status` | Counts + completion only after verified closeout |
 | `append` | Append to progress.md |
 | `cancel` | Clear ACTIVE; keep history |
-| `complete` | All pass → clear ACTIVE + completion line |
+| `complete` | All pass + bound evidence + controller verifier → clear ACTIVE |
 | `set-max` | Always rejected after seal |
+
+`complete --closeout-evidence PATH` never trusts a caller-supplied oracle. The
+CLI invokes the fixed `closeout-verify.mjs` controller, which rechecks ledger,
+base/head/diff bindings and runs the checked-in contract suite. A matching JSON
+artifact alone cannot complete a run.
 
 ## Model tier
 

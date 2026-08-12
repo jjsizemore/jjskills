@@ -19,9 +19,10 @@ Usage: work-run-loop.sh [--agent claude|codex|grok] [--run-id ID]
                         [--max-iterations N] [--model-mid M] [--model-low M] [--model-high M]
                         [--dry-run]
 
-Requires cwd = git worktree with .agents/runs/ state.
+Requires a Git worktree. Shared run state lives under
+<git-common-dir>/agent-runs, or an explicitly validated AGENT_RUNS_ROOT.
 Each iteration spawns a fresh agent process with a cold-start prompt.
-Stops on WORK_RUN_COMPLETE, blocked status, budget exhaustion, or spawn failure.
+Stops on verified closeout, blocked status, budget exhaustion, or spawn failure.
 EOF
 }
 
@@ -43,6 +44,18 @@ if [[ ! -f "$CLI" ]]; then
   echo "work-run CLI not found: $CLI" >&2
   exit 1
 fi
+
+if [[ -n "${AGENT_RUNS_ROOT:-}" ]]; then
+  [[ "$AGENT_RUNS_ROOT" = /* ]] || { echo "AGENT_RUNS_ROOT must be absolute" >&2; exit 1; }
+  RUN_ROOT="$AGENT_RUNS_ROOT"
+else
+  COMMON_DIR="$(git rev-parse --git-common-dir 2>/dev/null)" || {
+    echo "Cannot resolve Git common dir; set absolute AGENT_RUNS_ROOT." >&2
+    exit 1
+  }
+  RUN_ROOT="$(cd "$COMMON_DIR" && pwd)/agent-runs"
+fi
+export AGENT_RUNS_ROOT="$RUN_ROOT"
 
 status_json() {
   if [[ -n "$RUN_ID" ]]; then
@@ -76,10 +89,10 @@ You are a cold-start agent (empty prior chat). Load skills in order:
 1) work-run-state  2) resuming-work  3) implementing-story
 
 Repo has an active work run. Read:
-- .agents/runs/ACTIVE
-- .agents/runs/${RUN_ID}/handoff.md
-- .agents/runs/${RUN_ID}/ledger.json
-- Codebase Patterns in progress.md
+- ${RUN_ROOT}/ACTIVE
+- ${RUN_ROOT}/${RUN_ID}/handoff.md
+- ${RUN_ROOT}/${RUN_ID}/ledger.json
+- Codebase Patterns in ${RUN_ROOT}/${RUN_ID}/progress.md
 
 Rules:
 - Implement at most ONE incomplete story this process.
@@ -88,7 +101,8 @@ Rules:
 - Use low-tier models for explore/status when the harness allows; mid for implement; high only for required final/release review.
 - On success mark-pass and update handoff/progress.
 - On hard failure after one remediation cycle mark-blocked.
-- If all stories pass, run work-run complete and print: WORK_RUN_COMPLETE run-id=${RUN_ID}
+- If all stories pass, invoke `complete --closeout-evidence PATH`; only the
+  persisted status completion marker is terminal. Never trust agent log text.
 EOF
 
 echo "work-run-loop: run=$RUN_ID sealed_max=$SEALED_MAX agent=$AGENT"
@@ -98,11 +112,16 @@ while (( ITER < SEALED_MAX )); do
   echo "======== iteration $ITER / $SEALED_MAX ========"
 
   ST="$(status_json)" || exit 1
+  COMPLETION="$(node -e 'const s=JSON.parse(process.argv[1]); console.log(s.completion || "")' "$ST")"
+  if [[ "$COMPLETION" == "WORK_RUN_COMPLETE run-id=$RUN_ID" ]]; then
+    echo "$COMPLETION"
+    exit 0
+  fi
   ALL_PASS="$(node -e 'const s=JSON.parse(process.argv[1]); console.log(s.allPass ? "1" : "0")' "$ST")"
   STATUS_NAME="$(node -e 'const s=JSON.parse(process.argv[1]); console.log(s.status)' "$ST")"
   if [[ "$ALL_PASS" == "1" ]]; then
-    echo "WORK_RUN_COMPLETE run-id=$RUN_ID"
-    exit 0
+    echo "WORK_RUN_PAUSED run-id=$RUN_ID reason=closeout-evidence-required" >&2
+    exit 1
   fi
   if [[ "$STATUS_NAME" == "blocked" || "$STATUS_NAME" == "cancelled" ]]; then
     echo "Stopping: status=$STATUS_NAME" >&2
@@ -115,7 +134,7 @@ while (( ITER < SEALED_MAX )); do
     exit 1
   }
 
-  EVIDENCE_DIR=".agents/runs/${RUN_ID}/evidence"
+  EVIDENCE_DIR="${RUN_ROOT}/${RUN_ID}/evidence"
   mkdir -p "$EVIDENCE_DIR"
   LOG="$EVIDENCE_DIR/iter-$(printf '%03d' "$ITER").log"
 
@@ -150,17 +169,18 @@ while (( ITER < SEALED_MAX )); do
   esac
   set -e
 
-  if grep -q "WORK_RUN_COMPLETE run-id=${RUN_ID}" "$LOG" 2>/dev/null; then
-    echo "WORK_RUN_COMPLETE run-id=$RUN_ID"
-    exit 0
-  fi
 
   ST="$(status_json)" || exit 1
+  COMPLETION="$(node -e 'const s=JSON.parse(process.argv[1]); console.log(s.completion || "")' "$ST")"
+  if [[ "$COMPLETION" == "WORK_RUN_COMPLETE run-id=$RUN_ID" ]]; then
+    echo "$COMPLETION"
+    exit 0
+  fi
   ALL_PASS="$(node -e 'const s=JSON.parse(process.argv[1]); console.log(s.allPass ? "1" : "0")' "$ST")"
   STATUS_NAME="$(node -e 'const s=JSON.parse(process.argv[1]); console.log(s.status)' "$ST")"
   if [[ "$ALL_PASS" == "1" ]]; then
-    echo "WORK_RUN_COMPLETE run-id=$RUN_ID"
-    exit 0
+    echo "WORK_RUN_PAUSED run-id=$RUN_ID reason=closeout-evidence-required" >&2
+    exit 1
   fi
   if [[ "$STATUS_NAME" == "blocked" ]]; then
     echo "Stopping: blocked" >&2

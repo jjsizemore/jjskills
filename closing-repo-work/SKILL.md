@@ -1,100 +1,78 @@
 ---
 name: closing-repo-work
-description: 'Use when working in the SyncVia repo to sequence repository-changing delivery closeout from pre-commit evidence through merge and applicable post-merge proof; not for planning-only or leaf-only work.'
+description: 'Use when sequencing repository-changing work from local evidence through the requested handoff, review, merge, deployment, and applicable post-change proof.'
+metadata:
+  governing-skills-placement: user
+  governing-skills-reason: Portable lifecycle controller; repository-local adapters supply provider commands and gates.
 ---
 
-# Repository Closeout Controller (SyncVia)
+# Repository Closeout Controller
 
 ## Scope
 
-Use this controller for repository-changing delivery: product code, tests, docs,
-Skills, prompts, CI, hooks, metadata, or self-healing changes. Read-only
+Use for repository-changing delivery: product code, tests, docs, skills,
+prompts, CI, hooks, metadata, or self-healing changes. Read-only
 investigation, planning-only work, and explicitly requested local-only work do
 not enter this lifecycle.
 
-## Controller Interface
+The shared [portable autonomous completion contract](../references/autonomous-completion-contract.md)
+defines authority, proof tiers, recovery, ownership, and terminal states.
+Repository adapters add commands and provider facts; they may not weaken its
+fail-closed boundaries.
 
-`closing-repo-work` is the sole sequencing controller. It accepts the repository
-intent, acceptance/todo coverage, immutable intended diff, current phase, and
-applicability result; it produces phase-bound evidence or a `VERIFIED`,
-`BLOCKED`, or `PAUSED` terminal report. It does not replace leaf ownership or
-invent evidence.
+## Controller interface
 
-<!-- skill-governance: owner=closing-repo-work; role=controller; rule=phase-aware-repository-closeout -->
+The controller accepts the repository intent, acceptance/todo coverage,
+immutable intended diff, task class, requested endpoint, current phase, and
+applicability result. It composes phase-bound evidence and returns exactly one
+terminal report: `VERIFIED`, `BLOCKED`, or `PAUSED`. It does not replace leaf
+ownership or invent evidence.
 
-This controller MUST stop phase progression when the checked-in evidence
-validator rejects required identity, proof, or classifier bindings.
+Record the requested endpoint (`pr`, `merge`, or `deploy`) at run start. Do not
+add authority mid-run. Missing, stale, contradictory, or unavailable required
+evidence blocks progression.
 
-<!-- /skill-governance -->
+## Closeout sequence
 
-Use `scripts/closeout-evidence-validator.mjs` with the checked-in
-`contracts/closeout-evidence.schema.json` and applicability result. Preserve
-the immutable `baseSha`, `subjectHeadSha`, and normalized diff digest through
-every phase.
+1. **Pre-change** — confirm scope, task class, authority, acceptance criteria,
+   and any immutable identity or handoff required by the repository adapter.
+2. **Pre-commit** — require focused intended paths, regression/contract proof,
+   and exact command output bound to the current head.
+3. **Pre-push** — inspect staged paths, focused commits, clean intended diff,
+   and passing applicable local gates before publishing.
+4. **Review/hosted** — bind the carrier SHA, PR URL, latest reviewed head,
+   required checks, review threads, and mergeability. Requested merge,
+   green-CI, or a healthy unversioned endpoint is not proof.
+5. **Post-change** — when merge or deployment is in scope, bind actual merge
+   SHA to artifact/release SHA, deployment result, runtime/version equality,
+   authenticated smoke/UAT, tracking closure, and cleanup evidence.
+6. **Terminal** — run only after all applicable proof is present and an
+   independent oracle confirms it.
 
-## Pre-commit evidence
+## Leaf handoffs
 
-Require `pre_commit` evidence for the current head: intent, acceptance/todo
-coverage, focused intended diff, and applicable replayable TDD or contract
-evidence. The evidence records its command output and immutable checkpoint
-binding; it never derives expected behavior from production logic.
+| Capability | Owning leaf | Controller action |
+| --- | --- | --- |
+| RED/GREEN regression proof | `developing-with-tests` | Require phase-bound result |
+| Role-based UAT | `verifying-before-completion` | Require applicable artifacts |
+| Review/mergeability | `completing-branch-pr` | Require latest-head result |
+| Hosted checks/review monitoring | `monitoring-prs-and-autofixing` | Require green checks and resolved threads |
+| Deployment/runtime proof | `closing-deployment-pipelines` | Require artifact and runtime evidence |
+| Owned failure repair | `debugging-systematically` then `remediating-root-causes` | Require diagnosis, repair, and revalidation |
 
-## Pre-push evidence
+Leaves return proof or a blocker; they do not declare whole-run completion.
+Independent lanes may continue after a leaf failure, dependent lanes pause,
+and shared-file work remains controller-sequenced.
 
-Require `pre_push` evidence for the current head: focused commits, a clean
-intended diff, and passing local gates. Inspect the exact staged and intended
-paths before any publish action so unrelated work cannot enter the delivery.
+## Blockers and output
 
-## Post-push and post-PR evidence
+Stop for approval-required or prohibited actions, unavailable providers, stale
+evidence, failed gates, unresolved ambiguity, or exhausted bounded recovery.
+Every `BLOCKED` or `PAUSED` report includes the failing boundary, owner,
+rollback disposition, next command, and a clearly labeled
+`Unblock instructions (human-gated)` block. The block is a handoff, never
+permission to continue or delegate.
 
-Require the carrier SHA, local-gate evidence, and tracked artifact after push.
-After PR creation, bind the PR URL, base SHA, and latest head SHA to that same
-immutable delivery record. Missing artifact, stale head, or ambiguous evidence
-selection remains blocked.
-
-## Pre-merge evidence
-
-Whenever a PR is created or updated, any merge conflicts or red CI MUST be
-resolved with `remediating-root-causes` and/or `monitoring-prs-and-autofixing`
-before the agent can consider its work done. Hand off review and mergeability
-evaluation to `completing-branch-pr`, then post-PR CI and thread monitoring to
-`monitoring-prs-and-autofixing`. Require latest-head remote CI, configured review,
-zero unresolved threads, mergeability, and closed or not-needed remediation
-before scheduling automerge. A requested merge is not merge evidence.
-
-## Post-merge evidence
-
-Require an actual merge SHA from GitHub. Hand deployment/runtime proof to
-`closing-deployment-pipelines` and role-based verification to
-`verifying-before-completion`. When applicable, bind the deployed SHA/runtime
-version and smoke/manual UAT artifacts to the actual merge SHA. A gate may be
-`not_applicable` only with the independent classifier's bound reason and digest.
-
-## Terminal evidence
-
-Run the terminal phase only after actual merge and all applicable pre- and
-post-merge evidence are present. `WORK_RUN_COMPLETE`, `MERGE READY`, and similar
-markers remain nonterminal until the terminal validator passes.
-
-Missing, stale, pending, or failed required evidence blocks the phase and terminal completion.
-
-## Leaf Handoffs
-
-| Capability                     | Owning leaf                                               | Controller action                                     |
-| ------------------------------ | --------------------------------------------------------- | ----------------------------------------------------- |
-| Replayable RED/GREEN evidence  | `developing-with-tests`                                   | Require its phase-bound result.                       |
-| Role-based UAT and local proof | `verifying-before-completion`                             | Require applicable validation artifacts.              |
-| Review and mergeability        | `completing-branch-pr`                                    | Require latest-head review and mergeability evidence. |
-| Hosted PR monitoring           | `monitoring-prs-and-autofixing`                           | Require green CI and resolved threads.                |
-| Deployment and runtime proof   | `closing-deployment-pipelines`                            | Require expected SHA, runtime, and release artifacts. |
-| Owned failure repair           | `debugging-systematically` then `remediating-root-causes` | Require diagnosis, repair, and revalidation.          |
-
-Do not duplicate a leaf's procedure, mutate `~/.agents`, or treat pending
-hosted checks, inaccessible providers, requested automerge, or a healthy
-unversioned endpoint as completion.
-
-## Output
-
-Report the current phase, immutable SHA/diff bindings, applicable evidence,
-leaf handoffs, failing boundary or external owner when blocked, and rollback or
-recovery route. Terminal reports use only `VERIFIED`, `BLOCKED`, or `PAUSED`.
+Report current phase, task class, endpoint, immutable identity/diff bindings,
+applicable proof/oracle records, leaf handoffs, exact commands/results, and
+recovery/rollback scope or `Not applicable — reason`.

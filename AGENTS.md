@@ -4,9 +4,10 @@ This repository root **is** the user-scope Agent Skills tree.
 
 ## Layout
 
-- Each top-level package directory is a skill (`SKILL.md`) or category hub (`DESCRIPTION.md`).
-- `references/` holds shared handoff and remediation material.
-- `.agents/plans/` holds the setup plan, progress log, and (local-only) recovery path files.
+- `references/` holds shared handoff, remediation, and completion-contract material.
+- `references/autonomous-completion-contract.md` is the provider-neutral
+  completion boundary; adapters may add proof but may not weaken its fail-closed
+  authority, evidence, recovery, ownership, or terminal-state rules.
 
 ## Runtime bind
 
@@ -15,6 +16,11 @@ Live installs should resolve user skills via:
 ```text
 ~/.agents/skills -> ~/repos/jjskills
 ```
+
+The target is incomplete unless
+`references/autonomous-completion-contract.md` exists. Provider adapters may
+add proof, but may not weaken that contract. A temporary alternate checkout is
+valid only when the installer explicitly binds it with `JJ_SKILLS_ROOT`.
 
 `~/.claude/skills` typically points at `~/.agents/skills`. Codex/Grok may use per-skill links into that tree.
 

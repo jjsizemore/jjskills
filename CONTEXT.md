@@ -77,13 +77,25 @@ An explicit operator or maintainer decision that stops new story work while pres
 An explicit prerequisite relationship that prevents a dependent story from entering `in_progress` until its prerequisite passes.
 
 **Validation failure**:
-Evidence that a story is not passed; the story remains `in_progress` while the assigned agent can remediate it and becomes `blocked` only when an external decision, resource, or prerequisite is required.
+Evidence that a story is not passed; the story remains `in_progress` while the
+assigned agent can remediate it and becomes `blocked` only when an external
+decision, resource, or prerequisite is required.
+
+**Delivery terminal state**:
+The controller's final report for repository work: `VERIFIED`, `BLOCKED`, or
+`PAUSED`. It is distinct from the internal run state `completed`; a completed
+run requires every non-cancelled story to pass and all applicable closeout
+evidence to be independently verified.
 
 **Run completion**:
-A run is `completed` only when every non-cancelled story is `passed`; unresolved blocked stories keep the run blocked.
+A run is `completed` only when every non-cancelled story is `passed`, the
+applicable proof tier has passed, and its closeout evidence has been
+independently verified. Unresolved blocked stories or missing closeout evidence
+keep the run from completion.
 
 **Acceptance contract**:
-The agreed criteria that define a story’s outcome; any change must be recorded and followed by revalidation of affected criteria.
+The agreed criteria that define a story’s outcome; any change must be recorded
+and followed by revalidation of affected criteria.
 
 **Reproducible evidence**:
 Evidence that identifies what was checked, where, how, and with what result, so another agent can assess or repeat the claim.
