@@ -1,4 +1,0 @@
-interface:
-  display_name: "Managing Linear"
-  short_description: "Use when managing Linear issues, projects, team workflows, comments, statuses, or ticket metadata."
-  default_prompt: "Use $managing-linear to handle this task."

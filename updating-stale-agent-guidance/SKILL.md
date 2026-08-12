@@ -143,6 +143,22 @@ If a repository has no validator, perform deterministic shell checks and state
 that no repository-specific validator exists. Do not claim a behavioral repair
 from static inspection alone when a runnable reproduction is available.
 
+### User-run test handoff contract
+
+Whenever the next validation step requires the user or another operator to run
+a test manually, the user-facing request MUST include a literal, ready-to-use
+block labeled `Paste this` or `Do this`, every time. Include the destination
+and actor/account, the exact message or UI action, the expected result, and the
+identifier or screenshot the operator should report back. For a matrix, give a
+separate block for each case or one numbered block with unambiguous boundaries;
+never ask the operator to “test” or “tell me when done” without the payload.
+
+If the case is a click, upload, DM, thread, or other action without a single
+message to paste, provide the exact UI action plus any literal text and
+filename required. Use placeholders only when the missing value is itself the
+explicit blocker. Do not put credentials, tokens, or other secrets in a
+pasteable block.
+
 ### 6. Stop at a real boundary
 
 Stop and report when:
@@ -175,6 +191,8 @@ The final handoff must include:
 - explicit `Not applicable — <reason>` entries for UX, operator notification,
   rollout, rollback, or external-doc checks that do not apply;
 - remaining stale risks, blocked checks, and the precise next step.
+- for every requested user-run test, the corresponding `Paste this` or `Do
+  this` block and the evidence the operator must return;
 
 For incident or release-sensitive guidance, also include user recovery/status,
 operator notification/observability, rollout go/no-go, and rollback criteria.

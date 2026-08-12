@@ -54,11 +54,13 @@ selection remains blocked.
 
 ## Pre-merge evidence
 
-Hand off review and mergeability evaluation to `completing-branch-pr`, then
-post-PR CI and thread monitoring to `monitoring-prs-and-autofixing`. Require
-latest-head remote CI, configured review, zero unresolved threads, mergeability,
-and closed or not-needed remediation before scheduling automerge. A requested
-merge is not merge evidence.
+Whenever a PR is created or updated, any merge conflicts or red CI MUST be
+resolved with `remediating-root-causes` and/or `monitoring-prs-and-autofixing`
+before the agent can consider its work done. Hand off review and mergeability
+evaluation to `completing-branch-pr`, then post-PR CI and thread monitoring to
+`monitoring-prs-and-autofixing`. Require latest-head remote CI, configured review,
+zero unresolved threads, mergeability, and closed or not-needed remediation
+before scheduling automerge. A requested merge is not merge evidence.
 
 ## Post-merge evidence
 

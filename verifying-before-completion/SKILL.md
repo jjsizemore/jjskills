@@ -15,6 +15,7 @@ Use after creating changes and before final responses, commits, pushes, PRs, or 
 
 ## Contract
 - Make no completion claim without fresh evidence from this session; role-based UAT is not replaced by a broad test command.
+- Whenever a PR is created or updated, any merge conflicts or red CI MUST be resolved with `remediating-root-causes` and/or `monitoring-prs-and-autofixing` before the agent can consider its work done.
 - Route unproven causal claims to `debugging-systematically` and requested repairs to `remediating-root-causes`.
 
 ## Workflow

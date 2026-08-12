@@ -21,9 +21,8 @@ Antagonistic acceptance gate for **plan artifacts** (not code). Used by
 
 For each finding, cite section/heading evidence and a concrete fix.
 
-1. **Goal, non-goals & Why rationale** — clear explanation of why the change is needed; out-of-scope stated
-2. **Architectural decision records** — when an architectural decision is made and alternatives or tradeoffs were evaluated, verify an ADR records decision, alternatives considered, tradeoffs, and rationale; routine/non-architectural changes do not require an ADR
-3. **Requirements coverage** — every acceptance criterion maps to a task/story
+1. **Goal, non-goals & Why rationale** — clear explanation of **why** the change was made; out-of-scope stated
+2. **Architectural Decision Records (ADRs)** — if an architectural decision was made & options/tradeoffs considered, an ADR under `docs/architecture/adr/` is mandated, containing all 4 required fields: decision, alternatives considered, tradeoffs, and rationale
 4. **No placeholders** — no TBD/TODO/“similar to Task N”/hand-wavy validation
 5. **File paths** — real paths; layer order sane for the stack
 6. **Tests** — each story has a verifiable check; bug plans have a regression guard

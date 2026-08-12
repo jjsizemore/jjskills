@@ -1,4 +1,0 @@
-interface:
-  display_name: "Managing Linear Projects MCP"
-  short_description: "Use when managing Linear issues, projects, comments, statuses, or planning metadata through available MCP tools."
-  default_prompt: "Use $managing-linear-projects-mcp to handle this task."

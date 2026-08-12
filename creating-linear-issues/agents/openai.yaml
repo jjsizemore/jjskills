@@ -1,4 +1,0 @@
-interface:
-  display_name: "Creating Linear Issues"
-  short_description: "Use when creating, confirming, or updating a Linear issue with enough detail for implementation, validation, and closeout."
-  default_prompt: "Use $creating-linear-issues to handle this task."

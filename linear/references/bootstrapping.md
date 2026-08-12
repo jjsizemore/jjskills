@@ -12,7 +12,7 @@ Use this guide when the `linear` skill is invoked in a repository that does not 
 
 ### Step 1: Identify Repository Remote
 
-Derive the GitHub `owner/repository` string from the Git remote:
+Derive the GitHub `owner/repository` string from the repository's Git remote:
 
 ```bash
 git remote get-url origin
@@ -52,10 +52,15 @@ query DiscoverTeamsAndOrganization {
 
 ### Step 4: Team Selection and Configuration Persistence
 
-1. **If explicit authoritative input was provided** (e.g. a Linear team URL or team key/ID specified by the user/operator): match it against the API response `teams.nodes`.
-2. **If no explicit input was provided**: present the workspace name, workspace slug, and available teams (key, name, stable UUID). Require explicit selection. Never auto-select.
-3. Construct `teamUrl` as `https://linear.app/<URL_KEY>/team/<TEAM_KEY>/overview`.
-4. Write `<repo>/.linear/team.json`:
+1. **If explicit authoritative input was provided** (e.g. `https://linear.app/moshpit/team/MOSH/overview` or `MOSH` team key/ID specified by the user):
+   - Match the provided key/ID against the API response `teams.nodes`.
+2. **If no explicit input was provided**:
+   - Present the workspace name (`organization.name`), workspace slug (`organization.urlKey`), and the list of available teams (key, name, stable UUID).
+   - Require explicit selection from the user/operator before proceeding. Never auto-select.
+3. **Construct `teamUrl`**:
+   - Use the resolved `organization.urlKey` and `teamKey`:
+     `https://linear.app/${organization.urlKey}/team/${teamKey}/overview`
+4. **Write `<repo>/.linear/team.json`**:
 
 ```json
 {
@@ -66,7 +71,7 @@ query DiscoverTeamsAndOrganization {
 }
 ```
 
-5. Update `~/.agents/linear/profiles.json`:
+5. **Update `~/.agents/linear/profiles.json`**:
 
 ```json
 {
