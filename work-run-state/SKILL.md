@@ -34,17 +34,19 @@ state. Do not use `.current-work` for story boards.
 
 ## Sealed budget
 
-At init:
+Record the actual resource allowance at intake and seal `maxIterations`.
+Preserve active runs' existing caps; never raise/reset their budget or start a
+replacement run to evade exhaustion. Existing allocator defaults may supply an
+initial recorded cap when appropriate; they are not a new universal retry stop.
+Use canonical causal-progress recovery with an internal 30-minute checkpoint.
+While the child runs, the loop appends a durable `progress.md` checkpoint with
+run/story identity, timestamp/elapsed time, the latest structured causal receipt
+or explicit unknown, resource usage or unknown, and remaining sealed allowance.
+The checkpoint continues the child; it never pauses work or changes the budget.
 
-```text
-maxIterations = min(30, max(10, storyCount * 2 + riskBonus))
-```
-
-`riskBonus` is 0–4 from story tags (`release`, `security`, …) and large boards.
-Human may pass `--max-iterations=N` **only at init**. After `budgetSealedAt` is
-set, **raising max is forbidden** (CLI rejects `set-max`). Outer `work-run-loop.sh`
-must snapshot max into a shell variable and not re-trust agent-edited JSON for
-the loop bound.
+Record the canonical delivery target: future B is reviewed green merge plus
+applicable staging, explicit C is production, and explicit PR/merge/local-only
+targets and existing sealed targets remain unchanged.
 
 ## CLI
 
@@ -55,7 +57,7 @@ node ~/.agents/skills/work-run-state/scripts/work-run.mjs <command> ...
 | Command | Purpose |
 | --- | --- |
 | `init` | Create run, seal budget, set ACTIVE |
-| `pick` | Highest-priority incomplete non-blocked story |
+| `pick` | Highest-priority eligible story; blocked stories and unmet `serial-after:<id>` dependencies are excluded |
 | `mark-pass` / `mark-blocked` | Update story |
 | `bump-iteration` | Increment counter; fail if at sealed max |
 | `status` | Counts + completion only after verified closeout |
@@ -64,10 +66,25 @@ node ~/.agents/skills/work-run-state/scripts/work-run.mjs <command> ...
 | `complete` | All pass + bound evidence + controller verifier → clear ACTIVE |
 | `set-max` | Always rejected after seal |
 
+New `init` calls require `--endpoint pr|merge|staging|deploy|local-only`. The
+endpoint is immutable for that run. The ledger schema keeps it optional so
+historical ledgers without an endpoint remain readable and follow their
+existing verifier path without migration or a default.
+
 `complete --closeout-evidence PATH` never trusts a caller-supplied oracle. The
 CLI invokes the fixed `closeout-verify.mjs` controller, which rechecks ledger,
-base/head/diff bindings and runs the checked-in contract suite. A matching JSON
-artifact alone cannot complete a run.
+base/head/diff bindings and runs the checked-in project oracle. `WORK_RUN_COMPLETE`
+is emitted only after that verifier passes.
+
+The fixed verifier queries GitHub and requires the PR's current head to equal
+the subject head for `pr`. `merge` also requires actual `mergedAt` and
+`mergeCommit` metadata, but does not claim live deployment. `staging` and
+`deploy` require that merge metadata plus the checked-in project oracle's fresh
+JSON `deliveryProof`: endpoint, subjectHead, environment, runtimeSha,
+checksPassed, expectedRuntimeVersion/runtimeVersion and
+expectedArtifactSha/artifactSha. The oracle must obtain independent
+runtime/artifact observations, not echo caller claims. `local-only` requires no
+PR or deployment proof.
 
 ## Model tier
 
@@ -87,4 +104,6 @@ node --test ~/.agents/skills/work-run-state/tests/work-run.test.mjs
 
 ## Stop
 
-Stop and report if ACTIVE missing, ledger corrupt, or budget exhausted.
+Recover missing ACTIVE/metadata from authoritative durable state before escalation.
+Park only gated/exhausted dependencies; independent authorized work continues.
+Only the controller applies canonical whole-run terminal conditions.

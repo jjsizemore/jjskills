@@ -29,13 +29,14 @@ decision.
 
 ## Workflow
 
-1. **Inventory** — inspect status and diff (or the just-created commit/branch
-   range when already committed), acceptance criteria, affected roles, and
-   pre-existing dirty files.
-2. **Plan UAT** — choose the narrowest regression proof, realistic role-based
-   flow, and one meaningful unhappy path for each affected boundary.
-3. **Execute narrow to broad** — run targeted checks first, perform user,
-   developer, operator, and maintainer UAT as applicable, then broader gates.
+1. **Inventory** — reuse the consolidated scope/dirty/owner preflight until a
+   specific invalidator changes an affected fact.
+2. **Select risk proof** — mechanical: deterministic checks, no mandatory review;
+   behavior: targeted regression, affected checks, changed-path smoke and one
+   fresh independent review; high-impact: add identified material-risk checks.
+   Authority/CI-lifecycle text is not mechanical just because it is Markdown.
+3. **Execute** — exercise the actual changed boundary and applicable roles.
+   Do not add every repository suite or unrelated runtime/host UAT by default.
 4. **Challenge the result** — try to break the changed workflow; verify visible
    recovery/status feedback, actionable diagnostics, and aligned downstream
    docs, metadata, and generated artifacts.
@@ -45,10 +46,13 @@ decision.
 
 ## Stop condition
 
-Stop rather than claim completion when the reported path was not exercised, a
-required check is unavailable, evidence is stale, or a required role is
-blocked. Report `BLOCKED` or `PAUSED` with the contract's human-gated unblock
-instructions; never continue or delegate the unblock in the same session.
+Do not claim completion with an unexercised path, stale/missing required evidence,
+or failed checks. Apply the canonical contract's available internal recovery and
+lane-scoped limits before classifying a human gate. Park only gated/exhausted roles
+and their dependencies; continue independent authorized work with its own remaining
+budgets to the actual recorded endpoint. Only the controller applies the canonical
+whole-run `BLOCKED`/`PAUSED` conditions and exact report/ACK rules. A handoff never
+authorizes gated retries, polling, wake-ups, or delegation without decisive clearance.
 
 ## Role selection
 
@@ -65,7 +69,11 @@ Select every affected role:
 
 ## Completion bar
 
-Claim completion only when the diff matches scope, regression protection exists
-or its absence is explicit, every affected role passed or is explicitly
-blocked, required validation passed in this session, and remaining risks are
-named plainly.
+- The diff matches scope, regression protection exists or its absence is explicit, every affected role passed or is explicitly blocked, required validation passed in this session, and remaining risks are named plainly.
+- Product code changes are **committed** with semantic message and `Agent:`/`Model:` trailers.
+- Changes are **pushed** to the remote branch (or a `local-only` exception is recorded in the work-run ledger with user authorization).
+- For product/UI changes, current post-push PR evidence must bind the authorized endpoint; after merge the closed PR and recorded current-head review satisfy this boundary. Attach Gitshot screenshots for affected UI/UX surfaces.
+- Docs-only, skill-only, and CI-only changes do not require a PR or screenshots for `VERIFIED`.
+
+If any item is unmet, withhold `VERIFIED` and continue reachable authorized work.
+Use `BLOCKED`/`PAUSED` only under the canonical contract's scoped terminal conditions.

@@ -25,10 +25,10 @@ local secret_steps = new Mapping<String, Step> {
     check_first = false
   }
 
-  // TruffleHog on the commit delta (HEAD → staged). Exit 183 on findings → fails the hook.
-  // --no-verification: fail closed on detector hits even when live API verify is unavailable.
+  // Keep the documented manual scan mode: all detector results fail closed without live verification.
+  // Clear Git selectors and TruffleHog hook-mode markers before resolving this worktree's HEAD or cloning.
   ["trufflehog"] {
-    check = "trufflehog git file://. --since-commit HEAD --no-verification --fail"
+    check = "env -u GIT_ALTERNATE_OBJECT_DIRECTORIES -u GIT_CONFIG -u GIT_CONFIG_PARAMETERS -u GIT_CONFIG_COUNT -u GIT_OBJECT_DIRECTORY -u GIT_DIR -u GIT_WORK_TREE -u GIT_IMPLICIT_WORK_TREE -u GIT_GRAFT_FILE -u GIT_INDEX_FILE -u GIT_NO_REPLACE_OBJECTS -u GIT_REPLACE_REF_BASE -u GIT_PREFIX -u GIT_SHALLOW_FILE -u GIT_COMMON_DIR -u PRE_COMMIT -u HUSKY -u HUSKY_GIT_PARAMS -u TRUFFLEHOG_PRE_COMMIT sh -c 'head=$(git rev-parse --verify HEAD) && trufflehog git file://. --since-commit \"$head\" --branch \"$head\" --no-verification --fail --results=verified,unverified,unknown'"
     check_first = false
   }
 

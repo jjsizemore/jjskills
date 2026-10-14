@@ -43,7 +43,7 @@ commit, or PR procedures.
 - `closing-repo-work` — commit/push/PR when board green
 - `remediating-root-causes` — only on story failure path
 - `grill-me` — **only if** plan/spec missing decisions after explore
-- `writing-plans` or `creating-implementation-specs` — if no artifact yet
+- `writing-plans` or `creating-implementation-specs` — only when consolidated preflight/current plan is insufficient to resolve material decisions or scope
 
 ## Modes
 
@@ -51,7 +51,7 @@ commit, or PR procedures.
 | --- | --- | --- |
 | **In-session** | Interactive, small boards | Loop stories in this chat until done or blocked |
 | **Outer-loop body** | Spawned by `work-run-loop.sh` | Exactly **one** story then exit |
-| **Unattended multi-story** | Overnight / large | Human runs `work-run-loop.sh` after `init` |
+| **Unattended multi-story** | Overnight / large | Controller runs the existing loop within current authority, ownership/resource limits, and sealed budgets; park only genuinely gated work. |
 
 Detect outer-loop via env `WORK_RUN_OUTER_LOOP=1` or user saying “one story only”.
 
@@ -65,12 +65,13 @@ Detect outer-loop via env `WORK_RUN_OUTER_LOOP=1` or user saying “one story on
 
 ### 2. Init run (`work-run-state`)
 
-1. Require the planning handoff: `runId`, tracking identity (or an explicit
-   `not_applicable` reason), source spec, branch/worktree identity, and exact
-   ordered story IDs. Missing or conflicting identity is a blocker; never
-   invent a UUID, URL, branch, or story ID.
-2. Build stories from the plan/spec “Execution stories” appendix, or one story
-   wrapping the whole plan.
+1. Initialize only from a sufficient authorized request, consolidated preflight,
+   or current plan/spec and durable bindings: real `runId`, tracking identity
+   (or explicit `not_applicable` reason), source basis, branch/worktree identity,
+   and exact ordered story IDs. Recover metadata from actual native/durable state;
+   never invent an ID. Hold only for genuinely missing material scope or authority.
+2. Form stories from an existing plan appendix or sufficient preflight scope;
+   use one story when sufficient. A whole-plan artifact is not required.
 3. `work-run-state` init seals the budget. Do not raise the maximum later.
 
 ### 3. Loop
@@ -79,15 +80,17 @@ While incomplete stories and iteration &lt; sealed max:
 
 1. `pick` next story.
 2. `implementing-story` (mid tier implement; low tier explore).
-3. On block → stop controller; report.
+3. On failure → apply the canonical recovery rules within remaining sealed attempts;
+   park only genuinely gated/dependent stories and continue independent authorized stories.
 4. Append patterns to progress.md.
 5. If outer-loop mode → exit after one story.
 
 ### 4. Closeout (board green only)
 
 1. `verifying-before-completion` for final role-based gates.
-2. Multi-story or release-sensitive work gets the applicable independent
-   review once.
+2. Behavior/high-impact changes receive one fresh capable independent review
+   bound to the current delta/proof; equivalent providers may substitute.
+   Mechanical changes use deterministic checks without mandatory review.
 3. `closing-repo-work` composes local, hosted, runtime, and UAT proof where
    applicable.
 4. Complete the ledger only after the closeout controller returns `VERIFIED`;
@@ -109,9 +112,9 @@ pnpm). Overrides must **not** reintroduce `.current-work` as a story ledger.
 ## Stop conditions
 
 - All stories pass and closeout returns `VERIFIED`
-- Story blocked after bounded remediation
-- Sealed budget exhausted
-- Missing human decision or required evidence
+- Every remaining story genuinely depends on an exact external-human gate after permitted recovery
+- Recorded global budget/suspension requires `PAUSED`, or immutable limits leave no reachable authorized work
+- Per-story/boundary exhaustion parks that lane only; continue independent stories with their own remaining sealed budgets
 
 ## Pressure scenarios
 

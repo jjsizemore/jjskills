@@ -28,9 +28,10 @@ applicability result. It composes phase-bound evidence and returns exactly one
 terminal report: `VERIFIED`, `BLOCKED`, or `PAUSED`. It does not replace leaf
 ownership or invent evidence.
 
-Record the requested endpoint (`pr`, `merge`, or `deploy`) at run start. Do not
-add authority mid-run. Missing, stale, contradictory, or unavailable required
-evidence blocks progression.
+Record the canonical delivery target at assignment: future B is reviewed green
+merge plus applicable staging; explicit C selects production without routine
+reapproval. Explicit PR/merge/local-only restrictions and existing sealed targets
+remain unchanged. Missing required evidence withholds completion, not reachable work.
 
 ## Closeout sequence
 
@@ -40,14 +41,18 @@ evidence blocks progression.
    and exact command output bound to the current head.
 3. **Pre-push** — inspect staged paths, focused commits, clean intended diff,
    and passing applicable local gates before publishing.
-4. **Review/hosted** — bind the carrier SHA, PR URL, latest reviewed head,
+4. **Commit & push** — commit with semantic message including `Agent:` and `Model:` trailers. Push to the remote branch. If the user authorized local-only work, record the exception in the work-run ledger; otherwise push is mandatory and BLOCKS terminal state.
+5. **PR & screenshots** — for product/UI delivery, bind the feature-trunk PR's current head and attach Gitshot proof for affected UI/UX. A merged PR is evidenced by its recorded post-push/current-head review, not by requiring it to remain open.
+6. **Review/hosted** — bind the carrier SHA, PR URL, latest reviewed head,
    required checks, review threads, and mergeability. Requested merge,
    green-CI, or a healthy unversioned endpoint is not proof.
-5. **Post-change** — when merge or deployment is in scope, bind actual merge
+7. **Post-change** — when merge or deployment is in scope, bind actual merge
    SHA to artifact/release SHA, deployment result, runtime/version equality,
    authenticated smoke/UAT, tracking closure, and cleanup evidence.
-6. **Terminal** — run only after all applicable proof is present and an
-   independent oracle confirms it.
+8. **Terminal** — run only after all applicable proof is present and an
+   independent oracle confirms it. A `VERIFIED` terminal state requires
+   committed+pushed code plus applicable post-push evidence; after merge, the
+   PR is closed and is not required to remain open.
 
 ## Leaf handoffs
 
@@ -66,12 +71,13 @@ and shared-file work remains controller-sequenced.
 
 ## Blockers and output
 
-Stop for approval-required or prohibited actions, unavailable providers, stale
-evidence, failed gates, unresolved ambiguity, or exhausted bounded recovery.
-Every `BLOCKED` or `PAUSED` report includes the failing boundary, owner,
-rollback disposition, next command, and a clearly labeled
-`Unblock instructions (human-gated)` block. The block is a handoff, never
-permission to continue or delegate.
+Do not cross approval-required/prohibited boundaries or claim completion with
+stale/missing evidence or failed gates. Perform the canonical contract's available
+internal recovery; preserve existing identities/approvals and scoped sealed limits.
+Park only gated/exhausted actions and dependencies; independent authorized lanes
+continue under their own remaining budgets to the actual recorded endpoint.
+Only the controller applies the canonical whole-run terminal/report/ACK conditions.
+A handoff grants no gated retry/poll/wake/delegation without decisive clearance.
 
 Report current phase, task class, endpoint, immutable identity/diff bindings,
 applicable proof/oracle records, leaf handoffs, exact commands/results, and

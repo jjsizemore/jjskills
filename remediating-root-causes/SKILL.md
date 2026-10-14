@@ -70,8 +70,9 @@ shows no action is needed; omission is not a decision.
 - Rollback: revert/disable path, trigger, owner, and post-rollback verification.
 - Failure recovery: retry, replay, cleanup, compensation, and idempotency.
 
-If three fixes fail or each exposes a new failure class, stop patching and
-reassess diagnosis and architecture.
+Three unsuccessful fixes or a new failure class are diagnostic reassessment
+signals, not a hard attempt limit or human pause. Reassess causality/strategy
+and continue when new causal progress and the canonical resource budget permit.
 
 Final handoff includes proof bundle, applicability matrix, validation commands,
 delivery evidence, and remaining risk.

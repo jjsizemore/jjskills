@@ -29,10 +29,14 @@ Assume **no prior chat memory**. Disk + git only.
 
 ## Workflow
 
-1. Resolve run: `.agents/runs/ACTIVE`, else run-id / issue id, else newest incomplete
+1. Resolve the exact run from `<git-common-dir>/agent-runs/ACTIVE`, then an explicit run-id. If no `ACTIVE` run exists, route to `executing-work`; never scan newest incomplete artifacts.
 2. Read `handoff.md`, `ledger.json`, progress patterns
 3. Reconcile git branch / worktree; fix base drift before implementing
-4. Stop if blocked / cancelled / completed / budget exhausted
+4. Stop for cancelled/completed runs or the canonical whole-run `PAUSED` conditions.
+   Reconcile recoverable blockers from authoritative native/durable state; preserve
+   existing IDs, approvals, limits, and genuine gates. A per-lane/boundary budget
+   exhaustion parks only that lane; pick independent authorized stories with their
+   own remaining budgets. No decisive clearance means no dependent retry/poll/wake/delegation.
 5. **One story only:** `implementing-story` for pick result
 6. Rewrite handoff before exit
 
