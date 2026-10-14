@@ -107,3 +107,11 @@ node --test ~/.agents/skills/work-run-state/tests/work-run.test.mjs
 Recover missing ACTIVE/metadata from authoritative durable state before escalation.
 Park only gated/exhausted dependencies; independent authorized work continues.
 Only the controller applies canonical whole-run terminal conditions.
+
+## Completion verifier
+
+The terminal controller must not accept a caller-supplied `oracle` claim.
+`complete` invokes a fixed controller-owned verifier that rechecks the ledger,
+current subject head, immutable base-to-head diff digest, and a checked-in
+validation command. A matching JSON artifact or claimed `result: pass` is not
+an independent oracle.

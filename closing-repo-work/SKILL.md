@@ -82,3 +82,43 @@ A handoff grants no gated retry/poll/wake/delegation without decisive clearance.
 Report current phase, task class, endpoint, immutable identity/diff bindings,
 applicable proof/oracle records, leaf handoffs, exact commands/results, and
 recovery/rollback scope or `Not applicable — reason`.
+
+## Delivery conventions
+
+- A PR contains `## Development Provenance` with `Creator worktree:` equal to
+  `git rev-parse --show-toplevel` on the creator's machine; include no secrets.
+- Include `Why / Rationale` and `Change Explanation` in the PR body. Write
+  2–4 sentences directly explaining what changed, why, and the key behavior or
+  trade-off to retain; do not route this through a teaching skill.
+- Use a conventional commit message with `Agent:` and `Model:` trailers.
+- Attach UI/UX screenshots with `npx gitshot <image> | gh pr comment <n> --body-file -`.
+- Write an ADR under `docs/architecture/adr/` only for an architectural decision
+  with evaluated alternatives, trade-offs, and rationale.
+- For ad-hoc work, search Linear via MCP for an existing matching issue first.
+  If none exists or issue limits prevent creation, record
+  `not-applicable-linear-free-issue-limit` in the coordination ledger; never
+  fabricate issue IDs or URLs.
+- For release-sensitive work, record the release tag and SHA, downstream
+  workflow conclusion, and matching runtime/version, or `Not applicable — <reason>`.
+- After deployment, verify `/health` returns 200 with the expected service/version
+  and inspect matching deployed bundle assets; an unversioned status is insufficient.
+- Worktree removal is filesystem cleanup, not operational closeout.
+- In `~/repos/worktrees/<repo>-agent-<N>`, load `managing-persistent-worktree-prs`
+  before opening a PR.
+- For HTPC, follow its repository `AGENTS.md` for paths, stack order, labels,
+  health checks, and rollback.
+
+The recorded endpoint's delivery criteria are:
+
+- `VERIFIED`: the applicable proof tier passed with an independent oracle **AND** all of:
+  - Product code changes are **committed** with semantic message and `Agent:`/`Model:` trailers.
+  - Changes are **pushed** to the remote branch, or a `local-only` exception is recorded in the work-run ledger with user authorization.
+  - For product/UI changes (feat/fix/refactor/perf touching frontend, desktop, or packages/ui), an **open PR** existed targeting `dev` (or the repo's feature trunk) and its body reflected the current head at push time.
+  - **Gitshot screenshots** were attached to the PR for every UI/UX diff. Upload and comment via `npx gitshot <image> | gh pr comment <n> --body-file -`.
+  - Docs-only, skill-only, or CI-only changes do not require a PR or screenshots for `VERIFIED`.
+  - After merge, the PR is closed; terminal verification uses the recorded post-push PR evidence and does not require an open PR.
+  - If any applicable item above is unmet, withhold `VERIFIED` and continue
+    reachable authorized work. Use `BLOCKED`/`PAUSED` only under the scoped
+    terminal conditions below.
+
+For the scoped terminal conditions referenced above, see [Portable Autonomous Completion Contract](../references/autonomous-completion-contract.md).
