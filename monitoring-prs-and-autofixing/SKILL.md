@@ -27,7 +27,7 @@ Use when a pull request needs follow-through on hosted checks, review comments, 
 
 ## Stop Condition
 
-- Stop only when the latest head is mergeable with all required checks green, actionable review threads resolved, and required independent review evidence recorded; otherwise stop at a concrete permission, external-service, conflict, failing-check, or human-decision blocker with its last observed state.
+- Finish only when the latest head is mergeable with all required checks green, actionable review threads resolved, and required independent review evidence recorded. Otherwise apply the canonical completion contract's available bounded internal diagnosis/recovery before reporting a genuine permission/external/required-human gate or exhausted dependency; park only affected work.
 
 ## Deliverable
 
@@ -35,8 +35,8 @@ Use when a pull request needs follow-through on hosted checks, review comments, 
 
 ## Guidance
 
-- Continue monitoring until the PR is clean and mergeable: required hosted checks have completed successfully, requested changes are addressed, and the platform reports the PR as mergeable.
-- Stop at a concrete permission, external-service, failing-check, conflict, or required-human-review blocker; preserve the exact blocker and last observed state.
+- Continue monitoring and available bounded diagnosis/recovery until the latest head is clean and mergeable: required hosted checks completed successfully, requested changes addressed, and platform mergeability confirmed. Never suppress red CI or push unverified changes.
+- Apply the canonical completion contract before escalation; park only genuinely gated/exhausted dependencies, preserving exact boundary, last observed state, and eligible independent work.
 - Preserve relevant evidence, commands, paths, validation results, latest head SHA, and recovery ownership in the handoff.
 
 ## The Loop
@@ -86,4 +86,4 @@ Fetch the target base, resolve conflicts semantically, rerun targeted validation
 
 ## Escalation
 
-Stop at an unexplained local/hosted discrepancy, scope conflict, unresolved external dependency, permission boundary, or required human decision. Report the exact blocker, last successful state, and recovery owner.
+Apply the canonical completion contract's available bounded internal diagnosis/recovery to discrepancies, conflicts, and owned failures before escalation. Report only a genuine permission/external/required-human gate or exhausted dependency with its exact boundary, last successful state, and recovery owner; preserve independent authorized work and all latest-head proof criteria.

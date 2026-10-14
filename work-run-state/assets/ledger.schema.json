@@ -20,6 +20,10 @@
     "branchName": { "type": "string" },
     "description": { "type": "string" },
     "sourceSpec": { "type": ["string", "null"] },
+    "endpoint": {
+      "type": "string",
+      "enum": ["pr", "merge", "staging", "deploy", "local-only"]
+    },
     "maxIterations": { "type": "integer", "minimum": 1 },
     "budgetSealedAt": { "type": "string", "minLength": 1 },
     "iteration": { "type": "integer", "minimum": 0 },

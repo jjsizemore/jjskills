@@ -53,7 +53,35 @@ function oracleResult(cwd, command) {
     command,
     status: result.status,
     signal: result.signal,
+    stdout: result.stdout,
   };
+}
+
+function pullRequestInfo(cwd, url) {
+  const result = spawnSync('gh', ['pr', 'view', url, '--json', 'url,headRefOid,mergedAt,mergeCommit'], {
+    cwd,
+    encoding: 'utf8',
+    timeout: 30_000,
+  });
+  if (result.status !== 0 || result.signal) {
+    fail('closeout verifier cannot query current GitHub PR metadata');
+  }
+  let payload;
+  try {
+    payload = JSON.parse(result.stdout);
+  } catch {
+    fail('closeout verifier received invalid GitHub PR metadata');
+  }
+  if (
+    !payload ||
+    typeof payload !== 'object' ||
+    Array.isArray(payload) ||
+    typeof payload.headRefOid !== 'string' ||
+    payload.headRefOid.length === 0
+  ) {
+    fail('closeout verifier received PR metadata without headRefOid');
+  }
+  return payload;
 }
 
 
@@ -123,6 +151,46 @@ const expectedOracle =
     : null;
 if (expectedOracle === null || expectedOracle.status !== 0 || expectedOracle.signal) {
   fail('closeout verifier project oracle failed');
+}
+const ENDPOINTS = new Set(['pr', 'merge', 'staging', 'deploy', 'local-only']);
+const hasEndpoint = Object.hasOwn(ledger, 'endpoint');
+if (hasEndpoint && !ENDPOINTS.has(ledger.endpoint)) {
+  fail('closeout verifier rejected unknown immutable endpoint');
+}
+let mergedSha = null;
+if (hasEndpoint && ledger.endpoint !== 'local-only') {
+  if (typeof evidence.prUrl !== 'string' || !/^https?:\/\//u.test(evidence.prUrl)) {
+    fail('closeout verifier requires a PR URL for this delivery target');
+  }
+  const pr = pullRequestInfo(args.cwd, evidence.prUrl);
+  if (pr.headRefOid !== args['subject-head']) {
+    fail('closeout verifier requires the queried PR head SHA to match the subject head');
+  }
+  if (ledger.endpoint !== 'pr') {
+    if (typeof pr.mergedAt !== 'string' || !pr.mergedAt ||
+        !/^[a-f0-9]{40,64}$/u.test(pr.mergeCommit?.oid || '')) {
+      fail('closeout verifier requires actual merge evidence for this delivery target');
+    }
+    mergedSha = pr.mergeCommit.oid;
+  }
+}
+if (hasEndpoint && ['staging', 'deploy'].includes(ledger.endpoint)) {
+  let proof;
+  try {
+    proof = JSON.parse(expectedOracle.stdout).deliveryProof;
+  } catch {
+    fail('closeout verifier project oracle did not return independent delivery proof');
+  }
+  const environment = ledger.endpoint === 'staging' ? 'staging' : 'production';
+  if (!proof || proof.endpoint !== ledger.endpoint ||
+      proof.subjectHead !== args['subject-head'] || proof.environment !== environment ||
+      proof.runtimeSha !== mergedSha || proof.checksPassed !== true ||
+      typeof proof.expectedRuntimeVersion !== 'string' || !proof.expectedRuntimeVersion ||
+      proof.runtimeVersion !== proof.expectedRuntimeVersion ||
+      !/^[a-f0-9]{40,64}$/u.test(proof.expectedArtifactSha || '') ||
+      proof.artifactSha !== proof.expectedArtifactSha) {
+    fail('closeout verifier project oracle delivery observations do not bind the authorized target');
+  }
 }
 if (
   !evidence.oracle ||

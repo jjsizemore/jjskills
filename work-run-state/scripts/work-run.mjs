@@ -15,6 +15,7 @@ import { fileURLToPath } from 'node:url';
 
 const FLOOR = 10;
 const HARD_CEILING = 30;
+const ENDPOINTS = new Set(['pr', 'merge', 'staging', 'deploy', 'local-only']);
 
 export function computeMaxIterations(storyCount, riskBonus = 0) {
   const n = Number(storyCount) || 0;
@@ -190,7 +191,13 @@ function defaultHandoff(ledger, runId) {
 }
 
 function pickNext(ledger) {
-  const open = (ledger.userStories || []).filter((s) => !s.passes && !s.blockedReason);
+  if (['completed', 'cancelled', 'paused'].includes(ledger.status)) return null;
+  const open = (ledger.userStories || []).filter((story) =>
+    !story.passes && !story.blockedReason && (story.tags || []).every((tag) => {
+      if (!tag.startsWith('serial-after:')) return true;
+      return ledger.userStories.some((candidate) => candidate.id === tag.slice(13) && candidate.passes);
+    })
+  );
   open.sort((a, b) => a.priority - b.priority || a.id.localeCompare(b.id));
   return open[0] || null;
 }
@@ -247,6 +254,7 @@ function cmdInit(cwd, args) {
     'branch',
     'description',
     'stories-file',
+    'endpoint',
     'source-spec',
     'tracking-provider',
     'tracking-issue-id',
@@ -255,6 +263,7 @@ function cmdInit(cwd, args) {
   ];
   const missing = required.filter((key) => !args[key]);
   if (missing.length > 0) die(`init requires ${missing.map((key) => `--${key}`).join(' ')}`);
+  if (!ENDPOINTS.has(args.endpoint)) die(`init rejects unknown --endpoint: ${args.endpoint}`);
   const dir = runDir(cwd, runId);
   const existingLedgerPath = path.join(dir, 'ledger.json');
   if (fs.existsSync(existingLedgerPath)) {
@@ -302,6 +311,7 @@ function cmdInit(cwd, args) {
     branchName: args.branch,
     description: args.description,
     sourceSpec: args['source-spec'],
+    endpoint: args.endpoint,
     trackingProvider: args['tracking-provider'],
     trackingIssueId: args['tracking-issue-id'],
     trackingKey: args['tracking-key'],
@@ -371,11 +381,11 @@ function cmdMarkBlocked(cwd, args) {
   const story = data.userStories.find((s) => s.id === storyId);
   if (!story) die(`unknown story: ${storyId}`);
   story.blockedReason = String(args.reason);
-  data.status = 'blocked';
+  data.status = pickNext(data) ? 'active' : 'blocked';
   writeLedger(lp, data);
   appendProgress(cwd, runId, `## mark-blocked ${storyId}\n- ${args.reason}\n`);
   writeHandoff(runDir(cwd, runId), defaultHandoff(data, runId));
-  process.stdout.write(JSON.stringify({ ok: true, storyId, status: 'blocked' }) + '\n');
+  process.stdout.write(JSON.stringify({ ok: true, storyId, status: data.status }) + '\n');
 }
 
 function cmdSetMax(cwd, args) {
@@ -385,7 +395,7 @@ function cmdSetMax(cwd, args) {
   if (data.budgetSealedAt) {
     die(
       `forbidden: budget sealed at ${data.budgetSealedAt} (maxIterations=${data.maxIterations}). ` +
-        `Agents cannot raise maxIterations mid-run. Start a new run or re-init with human --max-iterations.`,
+        `Agents cannot raise/reset sealed maxIterations or reinitialize to evade exhaustion.`,
     );
   }
   die('forbidden: set-max is disabled after init seal');
@@ -395,6 +405,10 @@ function cmdBumpIteration(cwd, args) {
   const runId = resolveRunId(cwd, args);
   if (!runId) die('no ACTIVE run');
   const { path: lp, data } = readLedger(cwd, runId);
+  const next = pickNext(data);
+  if (!next || (args.story && args.story !== next.id)) {
+    die('selected story is gated, dependent, cancelled, or globally suspended');
+  }
   if (data.iteration >= data.maxIterations) {
     die(
       `iteration budget exhausted: ${data.iteration}/${data.maxIterations} (sealed ${data.budgetSealedAt})`,
@@ -419,6 +433,7 @@ function cmdStatus(cwd, args) {
   const out = {
     runId,
     status: data.status,
+    endpoint: data.endpoint || null,
     closeoutStatus: data.closeoutStatus || null,
     iteration: data.iteration,
     maxIterations: data.maxIterations,
@@ -518,8 +533,9 @@ function main() {
 
 Commands:
   init --run-id ID --project P --branch B --description D --stories-file F
-       --source-spec S --tracking-provider P --tracking-issue-id I
-       --tracking-key K --tracking-url U [--max-iterations N] [--force]
+       --endpoint pr|merge|staging|deploy|local-only --source-spec S
+       --tracking-provider P --tracking-issue-id I --tracking-key K --tracking-url U
+       [--max-iterations N] [--force]
   pick [--run-id ID]
   mark-pass --story ID [--note TEXT]
   mark-blocked --story ID --reason TEXT

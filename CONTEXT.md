@@ -42,6 +42,24 @@ _Avoid_: “safe because Git merged cleanly”.
 The bounded user-visible or operator-visible outcome that a skill or workflow owns.
 _Avoid_: skill package, implementation area.
 
+**Assignment**:
+A user's requested outcome.
+
+**Assignment authority**:
+The authority conveyed by an assignment for necessary actions within its intended project, environment, and impact scope.
+
+**Impact boundary**:
+The edge of the scope of affected data, resources, privileges, or environment beyond which an action would change the agreed assignment.
+
+**Verification tier**:
+A change-risk classification determining the breadth of evidence required for its acceptance contract.
+
+**Delivery target**:
+The authorized outcome or environment where assignment completion must be demonstrated.
+
+**Recovery budget**:
+A bounded resource allowance for recovering a failed work boundary.
+
 ## Governance
 
 **Canonical term**:
