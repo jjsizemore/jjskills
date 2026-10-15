@@ -197,6 +197,16 @@ observations do not rewrite current disposition. This does not suppress required
 native audit/accounting records, sealed liveness checkpoints, or immediate
 safety/authority transitions.
 
+When a diagnosed executor or route failure blocks an assigned outcome, an explicit
+applicable authority delta may permit a bounded handoff to an available capable
+executor or independent reviewer despite superseded user-only restrictions. Transfer
+the exact task, source custody, immutable inputs, evidence, remaining allowances and
+acceptance criteria; stop conflicting execution before the handoff. A replacement
+reviewer independently reads the actual required immutable subject. This does not
+transfer gated actuation or waive protected ownership, leases, security, signer,
+human-presence, sealed-budget or endpoint restrictions.
+
+
 Meaningful progress is new causal evidence or verified delivery-state change.
 After 30 minutes without it, reassess and change the authorized approach; this is
 not a retry budget, timer automation, owner wake-up or unattended-execution promise.
@@ -204,8 +214,9 @@ Inspect a stalled owner once to distinguish active work, unanswered prompt, exec
 failure and a genuine blocker. Reconcile authoritative state once after failure,
 including partial local/remote publication, before any permitted recovery.
 Use an already-allowed equivalent route/model with the same owner/packet where
-permitted; otherwise park the exact boundary. Preserve protected assignments,
-profiles/safety settings and designated signing; infer neither refusal nor outage.
+permitted, or the authorized bounded handoff above; otherwise park the exact
+boundary. Preserve protected assignments, profiles/safety settings and designated
+signing; infer neither refusal nor outage.
 Repair only necessary owned prerequisites, not an unrelated tooling redesign.
 
 Refresh context at intake, reconnect or a relevant change, reusing unchanged context.
@@ -248,3 +259,4 @@ bindings above; each forbidden variant must remain closed.
 | Unknown/busy host; historical retained guard | No mutation; repair authorized observation or await job/lease resolution. Existing owner proves exclusive transaction and remaining allowance. | PID absence/API idle treated as guard authority; adopt/delete guard, reset accounting or widen targets. |
 | Password/PAT/GUI genuinely human-only | HUMAN_BLOCKED lane; one exact private action/destination and expected non-secret result. Continue independent work. | Secret relay, fake consent, recurring requests or asking for an action available tools already permit. |
 | Explicit new user scope supersedes NoHost | Record exact superseded scope/current delta; preserve signer/lease/job/owner/budget gates and pass fresh preconditions. | Bare continue/default changes endpoint, unrelated gate cleared, or planning-only authority executes host work. |
+| Diagnosed unavailable executor; capable alternate; applicable authority delta removes only a user-only fence | Transfer exact task/custody, immutable inputs, evidence, remaining allowance and acceptance; stop conflicting execution. Alternate reviewer independently reads the required immutable subject. | Replace a healthy/protected owner, transfer gated actuation, reset limits, skip independent review or treat no reply as a human gate. |
