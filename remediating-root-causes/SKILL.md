@@ -79,8 +79,8 @@ delivery evidence, and remaining risk.
 
 ## Relation to multi-story runs
 
-- **Green multi-story delivery** → `executing-work` + `.agents/runs` ledger (not this skill as the outer controller).
-- **Single story failure inside a run** → invoke this skill once from `implementing-story`; if still failing, `work-run-state` `mark-blocked` and stop the run.
+- **Green multi-story delivery** → `executing-work` + `<git-common-dir>/agent-runs` ledger (not this skill as the outer controller).
+- **Single story failure inside a run** → return bounded diagnosis/remediation evidence to the existing controller under the canonical completion contract; park only the failed story/dependencies and continue eligible independent authorized stories within sealed limits.
 - Do not raise sealed `maxIterations` to “keep remediating.”
 
 Read `references/pressure-scenarios.md` when changing this skill.

@@ -2,8 +2,8 @@
 name: work-run-state
 description: >-
   Use when initializing, reading, updating, or canceling a durable multi-story
-  work run under .agents/runs/ (ledger, progress, handoff, sealed iteration
-  budget). Not for implementing code.
+  work run under `<git-common-dir>/agent-runs` (ledger, progress, handoff,
+  sealed iteration budget). Not for implementing code.
 metadata:
   governing-skills-placement: user
   governing-skills-reason: Portable run-state leaf for execute/resume loops.
@@ -28,9 +28,9 @@ owns paths, schema, and CLI mutations.
   evidence/                         # optional logs and closeout artifacts
 ```
 
-Set `AGENT_RUNS_ROOT` to an absolute path only for an explicit isolated test or
-validated adapter. Do not use `~/.agents/runs/` or `.agents/runs/` as primary
-state. Do not use `.current-work` for story boards.
+`AGENT_RUNS_ROOT` is permitted only as an explicit absolute isolated-test or
+validated-adapter root. Controllers resolve `<git-common-dir>/agent-runs` and
+must not accept a caller or worker ambient override.
 
 ## Sealed budget
 
@@ -43,6 +43,7 @@ While the child runs, the loop appends a durable `progress.md` checkpoint with
 run/story identity, timestamp/elapsed time, the latest structured causal receipt
 or explicit unknown, resource usage or unknown, and remaining sealed allowance.
 The checkpoint continues the child; it never pauses work or changes the budget.
+The loop snapshots the sealed maximum once and cannot unseal it.
 
 Record the canonical delivery target: future B is reviewed green merge plus
 applicable staging, explicit C is production, and explicit PR/merge/local-only

@@ -63,7 +63,7 @@ Detect outer-loop via env `WORK_RUN_OUTER_LOOP=1` or user saying “one story on
 2. If no current plan/spec and ambiguity remains → `grill-me` then plan/spec skill.
 3. If plan/spec exists and is sufficient → **do not** re-grill.
 
-### 2. Init run (`work-run-state`)
+### 2. Init run (`<git-common-dir>/agent-runs`)
 
 1. Initialize only from a sufficient authorized request, consolidated preflight,
    or current plan/spec and durable bindings: real `runId`, tracking identity

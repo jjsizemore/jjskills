@@ -1,9 +1,9 @@
 ---
 name: resuming-work
 description: >-
-  Use when interrupted multi-story repository work must continue from
-  .agents/runs ledger, handoff, and progress (cold start). Not for brand-new
-  work (executing-work) or single-defect remediation without a run.
+  Use when interrupted multi-story repository work must continue from the
+  canonical `<git-common-dir>/agent-runs` ledger, handoff, and progress (cold
+  start). Not for brand-new work (executing-work) or single-defect remediation without a run.
 metadata:
   governing-skills-placement: user
   governing-skills-reason: Portable resume controller; assumes empty chat.

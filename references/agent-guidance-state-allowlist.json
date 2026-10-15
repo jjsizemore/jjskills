@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "path": "jjskills/.gitignore",
+      "classification": "config-protection",
+      "reason": "Ignores obsolete local ledger files so they cannot be committed.",
+      "owner": "jjskills"
+    },
+    {
+      "path": "jjskills/hk.pkl",
+      "classification": "config-protection",
+      "reason": "Protects obsolete local ledger paths during secret scanning.",
+      "owner": "jjskills"
+    },
+    {
+      "path": "jjskills/work-run-state/references/linear-followups.md",
+      "classification": "history",
+      "reason": "Historical follow-up records retain the retired path for provenance.",
+      "owner": "jjskills"
+    },
+    {
+      "path": "jjskills/scripts/test_guidance_source_scope.py",
+      "classification": "config-protection",
+      "reason": "Regression fixtures deliberately supply retired paths to verify source detection and private-evidence isolation.",
+      "owner": "jjskills"
+    },
+    {
+      "path": "dotfiles/.gitignore",
+      "classification": "config-protection",
+      "reason": "Ignores obsolete local ledger files so they cannot be committed.",
+      "owner": "dotfiles"
+    }
+  ]
+}
