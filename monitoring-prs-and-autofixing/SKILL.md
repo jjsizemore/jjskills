@@ -13,6 +13,8 @@ Use when a pull request needs follow-through on hosted checks, review comments, 
 ## Portable Compatibility
 
 - Confirm the trigger matches, then use the repository's supported remediation handoff for portability boundaries and handoff evidence. This entrypoint owns trigger, routing, evidence, and stop decisions.
+- Apply the [portable completion contract](../references/autonomous-completion-contract.md)
+  for evidence invalidators, one-watcher waits, recovery and terminal semantics.
 
 ## Contract
 
@@ -21,9 +23,12 @@ Use when a pull request needs follow-through on hosted checks, review comments, 
 - Preserve causal evidence and route unclear failures to `debugging-systematically`; route confirmed repairs to `remediating-root-causes` before any fix is pushed.
 ## Workflow
 
-- Check the current PR state, classify each failing check or review thread, reproduce failures locally, and preserve the exact failing boundary.
-- Use `debugging-systematically` for diagnosis, then use `remediating-root-causes` for the smallest durable fix and regression protection; validate the latest head before responding or pushing.
-- Re-check hosted results, review threads, merge conflicts, and independent review evidence after every action, recording commands, paths, SHAs, and remaining blockers.
+- Observe current PR head/base, required checks, review threads and mergeability
+  once at intake or a decisive event. Classify pending separately from failure.
+- Repair only actionable failures: diagnose with `debugging-systematically`,
+  then use `remediating-root-causes`; preserve boundary and regression evidence.
+- Re-observe affected hosted results after a changed head/base, review/check
+  event or repaired conflict—not after every unrelated action.
 
 ## Stop Condition
 
@@ -35,23 +40,22 @@ Use when a pull request needs follow-through on hosted checks, review comments, 
 
 ## Guidance
 
-- Continue monitoring and available bounded diagnosis/recovery until the latest head is clean and mergeable: required hosted checks completed successfully, requested changes addressed, and platform mergeability confirmed. Never suppress red CI or push unverified changes.
-- Apply the canonical completion contract before escalation; park only genuinely gated/exhausted dependencies, preserving exact boundary, last observed state, and eligible independent work.
+- Continue owned diagnosis/repair for actionable failures. For pending external
+  checks/review, register one watcher under the contract and continue independent work.
+- Park only genuinely gated/exhausted dependencies; preserve latest-head proof criteria.
 - Preserve relevant evidence, commands, paths, validation results, latest head SHA, and recovery ownership in the handoff.
 
-## The Loop
+## Event-driven decisions
 
-```
-REPEAT until PR is mergeable:
-  1. CHECK    — get current hosted checks and open review threads
-  2. TRIAGE   — classify failures and comments
-  3. DIAGNOSE — reproduce failures locally; do not push guesses
-  4. FIX      — make the smallest repair and validate locally
-  5. RESPOND  — push a verified fix or reply to the thread
-  6. REPORT   — record latest-head evidence and remaining blockers
-```
+| Observed state | Action |
+| --- | --- |
+| Actionable failed check, valid requested change or conflict | Preserve boundary; diagnose, repair, validate and push/respond. Observe the changed head's required results through the one watcher. |
+| Required CI/review still pending | Record WAITING_CI or the exact external review wait, run/head, watcher/owner and decisive event. Reuse unchanged source review; no new triage, duplicate watcher or repeated status request. |
+| Current head green, actionable threads resolved, mergeable, required review valid | Return the source-ready handoff; proceed only to the recorded authorized endpoint. |
 
-Stop when all required checks are green, actionable threads are resolved, and mergeability is confirmed.
+A new head/base invalidates the affected hosted binding, not automatically all
+unchanged local/source proof. Resume on a decisive event rather than unconditional
+polling; the contract bounds any final short checkpoint.
 
 ## Step 1: Check PR State
 
@@ -71,7 +75,9 @@ Push only after local validation passes. Stage changed files explicitly, use the
 
 ## Step 5: Post Status Comment
 
-After an action, post a concise status with the PR number, latest head SHA, checks, threads, fix or response, and remaining blocker or mergeability evidence.
+Post a concise status only for a decisive change: PR/head, check/thread outcome,
+verified fix/response and exact next action. Retain an unchanged waiting record
+without reposting it.
 
 ## Step 6: Merge Conflict Resolution
 

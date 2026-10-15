@@ -28,17 +28,17 @@ applicability result. It composes phase-bound evidence and returns exactly one
 terminal report: `VERIFIED`, `BLOCKED`, or `PAUSED`. It does not replace leaf
 ownership or invent evidence.
 
-Record the canonical delivery target at assignment: future B is reviewed green
-merge plus applicable staging; explicit C selects production without routine
-reapproval. Explicit PR/merge/local-only restrictions and existing sealed targets
-remain unchanged. Missing required evidence withholds completion, not reachable work.
+Bind the recorded endpoint and applicable authority delta under the portable
+contract; this controller does not infer scope expansion. Its evidence bindings
+permit retained proof with recorded source/input equivalence, not session-only
+freshness. Hosted results and required approvals remain current-head/base-bound.
 
 ## Closeout sequence
 
 1. **Pre-change** — confirm scope, task class, authority, acceptance criteria,
    and any immutable identity or handoff required by the repository adapter.
 2. **Pre-commit** — require focused intended paths, regression/contract proof,
-   and exact command output bound to the current head.
+   and exact command output bound to the executed candidate inputs.
 3. **Pre-push** — inspect staged paths, focused commits, clean intended diff,
    and passing applicable local gates before publishing.
 4. **Commit & push** — commit with semantic message including `Agent:` and `Model:` trailers. Push to the remote branch. If the user authorized local-only work, record the exception in the work-run ledger; otherwise push is mandatory and BLOCKS terminal state.
@@ -71,13 +71,9 @@ and shared-file work remains controller-sequenced.
 
 ## Blockers and output
 
-Do not cross approval-required/prohibited boundaries or claim completion with
-stale/missing evidence or failed gates. Perform the canonical contract's available
-internal recovery; preserve existing identities/approvals and scoped sealed limits.
-Park only gated/exhausted actions and dependencies; independent authorized lanes
-continue under their own remaining budgets to the actual recorded endpoint.
-Only the controller applies the canonical whole-run terminal/report/ACK conditions.
-A handoff grants no gated retry/poll/wake/delegation without decisive clearance.
+Apply the portable contract's evidence invalidators, bounded recovery, dependency/
+watcher ownership and scoped terminal/report rules. This controller composes leaf
+proof; it neither clears live gates nor duplicates unchanged reviews/checkpoints.
 
 Report current phase, task class, endpoint, immutable identity/diff bindings,
 applicable proof/oracle records, leaf handoffs, exact commands/results, and
