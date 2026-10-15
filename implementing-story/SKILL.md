@@ -1,9 +1,9 @@
 ---
 name: implementing-story
 description: >-
-  Use when implementing exactly one user story from an active .agents/runs
-  ledger (acceptance criteria, tests, mark-pass or mark-blocked). Not for
-  multi-story scheduling or PR closeout.
+  Use when implementing exactly one user story from an active
+  `<git-common-dir>/agent-runs` ledger (acceptance criteria, tests, mark-pass
+  or mark-blocked). Not for multi-story scheduling or PR closeout.
 metadata:
   governing-skills-placement: user
   governing-skills-reason: Single-story leaf for Ralph-style execute loops.
