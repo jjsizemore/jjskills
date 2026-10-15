@@ -1,8 +1,8 @@
 // hk — https://hk.jdx.dev — https://github.com/jdx/hk
 // Install hooks after clone: `hk install` (or once machine-wide: `hk install --global`).
 // Requires on PATH: hk, trufflehog, gitleaks  (e.g. brew install hk trufflehog gitleaks)
-amends "package://github.com/jdx/hk/releases/download/v1.53.0/hk@1.53.0#/Config.pkl"
-import "package://github.com/jdx/hk/releases/download/v1.53.0/hk@1.53.0#/Builtins.pkl"
+amends "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Builtins.pkl"
 
 // Never feed local tooling / caches into file-based steps.
 exclude = List(
