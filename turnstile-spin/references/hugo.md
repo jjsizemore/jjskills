@@ -14,7 +14,7 @@ For Hugo static sites. The widget renders on any page that includes the partial;
 	<div
 		class="cf-turnstile"
 		data-sitekey="{{ .Site.Params.turnstileSitekey }}"
-		data-action="turnstile-spin-v2"
+		data-action="subscribe"
 	></div>
 	<button type="submit">Subscribe</button>
 </form>
@@ -45,6 +45,16 @@ export async function onRequestPost({ request, env }) {
 	const form = await request.formData();
 	const token = form.get("cf-turnstile-response");
 
+	const expectedHostnames = new Set(
+		(env.TURNSTILE_HOSTNAMES ?? "")
+			.split(",")
+			.map((h) => h.trim())
+			.filter(Boolean),
+	);
+	if (expectedHostnames.size === 0) {
+		return new Response("forbidden", { status: 403 });
+	}
+
 	const r = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
 		method: "POST",
 		headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -54,15 +64,24 @@ export async function onRequestPost({ request, env }) {
 			remoteip: request.headers.get("CF-Connecting-IP"),
 		}),
 	});
-	const { success } = await r.json();
-	if (!success) return new Response("forbidden", { status: 403 });
+	const result = await r.json();
+	if (
+		r.ok !== true ||
+		result.success !== true ||
+		result.action !== "subscribe" ||
+		!expectedHostnames.has(result.hostname)
+	) {
+		return new Response("forbidden", { status: 403 });
+	}
 
 	// process subscribe
 	return new Response("ok");
 }
 ```
 
-Set the secret with `npx wrangler pages secret put TURNSTILE_SECRET` (or via the dashboard's Pages → your project → Settings → Environment variables → Add secret).
+`subscribe` is the stable action for this surface. Preserve an existing custom migration action and compare the returned action to the same value. Siteverify is mandatory for every widget mode, including pre-clearance. Set `TURNSTILE_HOSTNAMES` to the deployment-specific frontend hostnames; a production value must not include `localhost` or `127.0.0.1`.
+
+For Pages, use the dashboard: select the confirmed account, Pages project, and production or preview environment, then Settings → Environment variables → Add secret. Do not use an ambient-target CLI secret write. Keep the secret out of chat and verify the selected destination before saving it.
 
 **External backend**: any Node/Ruby/Python/Go handler can do the same call. See the [vanilla-html reference](./vanilla-html.md) for non-Cloudflare-specific snippets.
 
