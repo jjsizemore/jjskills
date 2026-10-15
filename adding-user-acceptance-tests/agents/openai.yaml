@@ -1,0 +1,4 @@
+interface:
+  display_name: "Adding User Acceptance Tests"
+  short_description: "Use when proving a user journey crosses real application boundaries and reaches its owned outcome."
+  default_prompt: "Use $adding-user-acceptance-tests to handle this user-acceptance-test task."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Using Headroom Context Efficiency"
+  short_description: "Use when context or tool output is bloated and reusable compression is needed."
+  default_prompt: "Use $using-headroom-context-efficiency to handle this context-efficiency task."
