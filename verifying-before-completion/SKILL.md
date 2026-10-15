@@ -20,8 +20,9 @@ decision.
 
 ## Contract
 
-- Make no completion claim without fresh evidence from this session; role-based
-  UAT is not replaced by a broad test command.
+- Make completion claims only from currently valid source/input-bound evidence
+  under the portable contract's invalidators; retained receipts may qualify.
+  Role-based UAT is not replaced by a broad test command.
 - Route unproven causal claims to `debugging-systematically` and requested
   repairs to `remediating-root-causes`.
 - If a PR is created or updated, resolve red checks and merge conflicts through
@@ -33,7 +34,7 @@ decision.
    specific invalidator changes an affected fact.
 2. **Select risk proof** — mechanical: deterministic checks, no mandatory review;
    behavior: targeted regression, affected checks, changed-path smoke and one
-   fresh independent review; high-impact: add identified material-risk checks.
+   currently valid independent review; high-impact: add identified material-risk checks.
    Authority/CI-lifecycle text is not mechanical just because it is Markdown.
 3. **Execute** — exercise the actual changed boundary and applicable roles.
    Do not add every repository suite or unrelated runtime/host UAT by default.
@@ -46,13 +47,10 @@ decision.
 
 ## Stop condition
 
-Do not claim completion with an unexercised path, stale/missing required evidence,
-or failed checks. Apply the canonical contract's available internal recovery and
-lane-scoped limits before classifying a human gate. Park only gated/exhausted roles
-and their dependencies; continue independent authorized work with its own remaining
-budgets to the actual recorded endpoint. Only the controller applies the canonical
-whole-run `BLOCKED`/`PAUSED` conditions and exact report/ACK rules. A handoff never
-authorizes gated retries, polling, wake-ups, or delegation without decisive clearance.
+Withhold completion for unexercised paths, invalid/missing required proof or failed
+checks. Apply the portable contract's recovery, dependency/watcher and terminal
+rules; this leaf returns role evidence or its exact scoped blocker, not whole-run
+completion or permission for gated retries.
 
 ## Role selection
 
@@ -69,7 +67,9 @@ Select every affected role:
 
 ## Completion bar
 
-- The diff matches scope, regression protection exists or its absence is explicit, every affected role passed or is explicitly blocked, required validation passed in this session, and remaining risks are named plainly.
+Claim completion only when ALL of the following are satisfied:
+
+- The diff matches scope, regression protection exists or its absence is explicit, every affected role passed or is explicitly blocked, required validation remains valid under the portable contract's evidence bindings, and remaining risks are named plainly.
 - Product code changes are **committed** with semantic message and `Agent:`/`Model:` trailers.
 - Changes are **pushed** to the remote branch (or a `local-only` exception is recorded in the work-run ledger with user authorization).
 - For product/UI changes, current post-push PR evidence must bind the authorized endpoint; after merge the closed PR and recorded current-head review satisfy this boundary. Attach Gitshot screenshots for affected UI/UX surfaces.
