@@ -38,12 +38,14 @@ Record the actual resource allowance at intake and seal `maxIterations`.
 Preserve active runs' existing caps; never raise/reset their budget or start a
 replacement run to evade exhaustion. Existing allocator defaults may supply an
 initial recorded cap when appropriate; they are not a new universal retry stop.
-Use canonical causal-progress recovery with an internal 30-minute checkpoint.
-While the child runs, the loop appends a durable `progress.md` checkpoint with
-run/story identity, timestamp/elapsed time, the latest structured causal receipt
-or explicit unknown, resource usage or unknown, and remaining sealed allowance.
-The checkpoint continues the child; it never pauses work or changes the budget.
-The loop snapshots the sealed maximum once and cannot unseal it.
+Use canonical causal-progress recovery with an internal 30-minute liveness
+checkpoint while the child runs. This is a durable run/story checkpoint, not
+per-tool bookkeeping: append the latest structured causal receipt or explicit
+unknown, resource usage or unknown, timestamp/elapsed time, and remaining sealed
+allowance. It continues the child and never pauses work or changes the budget.
+The separate bounded external-wait checkpoint in the portable contract applies
+only when eligible work is exhausted; it does not replace or reset this liveness
+interval. The loop snapshots the sealed maximum once and cannot unseal it.
 
 Record the canonical delivery target: future B is reviewed green merge plus
 applicable staging, explicit C is production, and explicit PR/merge/local-only

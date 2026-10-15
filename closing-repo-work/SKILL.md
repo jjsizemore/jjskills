@@ -55,6 +55,9 @@ freshness. Hosted results and required approvals remain current-head/base-bound.
    PR is closed and is not required to remain open.
 
 ## Leaf handoffs
+Load a capability leaf only when the current procedure actually needs it; do not
+load every specialist merely because repository delivery is in scope. Reuse a
+capable review already bound to the same immutable source and relevant context.
 
 | Capability | Owning leaf | Controller action |
 | --- | --- | --- |

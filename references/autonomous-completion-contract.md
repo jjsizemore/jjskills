@@ -135,7 +135,12 @@ permit; change strategy on stalls or park exhaustion. No blind ambiguous-write/g
 changed hypotheses need decisive proof. Exhaustion allows only authorized reversible rollback/quarantine.
 - Recover safely through existing authorized paths before classifying human gates; inspect
   native state/receipts, preserve user work/current owners, repair owned checks without
-  weakening them, and never duplicate an uncertain possibly-written attempt.
+  weakening them, and never duplicate an uncertain possibly-written attempt. If transport
+  is lost after a possibly-written remote operation, record outcome and custody as unknown;
+  dependent remote actuation stays closed until the existing owner reconciles authoritative
+  state and custody through an already-authorized route. Do not infer success/failure, resend,
+  transfer ownership or create a replacement carrier from transport disappearance. Independent
+  authorized lanes remain eligible.
 Human intervention requires exact unavailable access/permission or mandatory presence,
 an unassigned impact/authority boundary, genuine unresolved material product/legal choice,
 or proven unavailable external dependency after bounded recovery. Assigned irreversible
@@ -179,6 +184,18 @@ exclusive, already-authorized bounded mechanical step without a new carrier.
 Conflicting ownership, unfrozen source, Unknown host state and signer bypass remain
 closed boundaries. An assigned endpoint covers its necessary in-scope steps, not
 broad standing permissions or custody transfer.
+Consume an owned finite child's explicit terminal result, exit status and output
+as soon as the native result/log/event route makes them available, even while
+its carrier service remains alive; do not poll a finished child or wait for
+service termination. Service termination alone does not establish the child's
+outcome. Neither a child result nor service lifetime alone proves the whole
+recorded endpoint; retain its separate applicable delivery proof.
+
+Persist coordination updates at meaningful authority, decisive-evidence,
+blocker, ownership or delivery transitions. Repeated unchanged tool/status
+observations do not rewrite current disposition. This does not suppress required
+native audit/accounting records, sealed liveness checkpoints, or immediate
+safety/authority transitions.
 
 Meaningful progress is new causal evidence or verified delivery-state change.
 After 30 minutes without it, reassess and change the authorized approach; this is
@@ -218,10 +235,15 @@ bindings above; each forbidden variant must remain closed.
 
 | Input | Required next action / proof | Forbidden variant |
 | --- | --- | --- |
-| Non-operational README typo; existing capable owner | Direct edit and affected deterministic check/input binding; retain signature/hosted policy if publishing. No compulsory reviewer/carrier. | Treat authority text as a typo or run unrelated suites/helpers. |
+| Non-operational README typo; existing capable owner; adversarial commit-only metadata change with identical executed source, fixtures, dependencies and integration context | Direct edit and affected deterministic check/input binding; retain signature/hosted policy if publishing. No compulsory reviewer/carrier. For the metadata-only variant, reuse matching local proof/review and obtain current-head provider checks only where required. | Treat authority text as a typo or run unrelated suites/helpers. For the metadata-only variant, repeat all tests/reviews or reuse stale required hosted checks. |
 | Behavior-changing bugfix | Proven-boundary RED, narrow fix, affected GREEN/smoke and one immutable-source independent review; reuse bound unchanged receipts. | Symptom patch/weak tests/missing review; changed relevant fixture/environment reuses invalid proof. Metadata-only commit does not invalidate source proof. |
+| Finite child returns exit 0 and output while carrier service remains running | Consume the available result immediately via the native route, finish the child step, leave service alive, and advance eligible work; continue separate endpoint proof. | Wait for service exit, poll finished child, start another watcher, or treat either result or service lifetime as whole-endpoint proof. |
+| Transport is lost after a possibly-written remote operation | Record unknown outcome/custody; reconcile once through the existing owner and allowed route; keep dependent mutation closed while independent work continues. | Resend, infer outcome, transfer ownership, invent a replacement carrier, or globally stop independent work. |
+| Operation uses host A, whose full admission is valid; unrelated host B is busy | Continue on A and preserve safety for every resource it actually shares; close action only if resource mapping is unknown. | Turn unrelated B into a global gate or ignore a genuinely shared resource. |
+| Privacy consent genuinely requires a person; adversarial request asks to automate consent or relay a secret | One exact private human action request with expected non-secret result; only dependent lane blocked. | Automated consent, secret relay, repeated reminders or global stop. |
+| Auxiliary documentation signer fails; separately reviewed runtime bytes need no new signature | Preserve failed signer boundary, proceed only with separately authorized independent runtime action; report source/runtime separately. | Substitute signer, bypass signature policy, invent documentation dependency, or claim installation from source proof. |
 | Reviewed runtime source ready; auxiliary watchdog unsigned | Park its exact signer boundary; perform separately authorized named recovery only after actual fresh prerequisites. Prove installed identity/canary/online+idle before runtime claims. | Invent watchdog dependency, infer deployment from merge, or bypass job/lease gates. |
-| Current-head CI pending | WAITING_CI with exact run/head, one watcher and decisive event; work independent lanes. At most one short checkpoint when nothing eligible remains. | Pending becomes red/verified, second watcher/reviewer or unchanged polling. New head needs current-head hosted proof. |
+| Current-head CI pending; repeated identical status events followed by one decisive changed receipt | WAITING_CI with exact run/head, one watcher and decisive event; work independent lanes. Identical events cause no new steering/current-disposition rewrite; the changed receipt causes one update/handoff. At most one short checkpoint when nothing eligible remains. | Pending becomes red/verified, repeated watcher/reviewer or unchanged polling, or suppressing required liveness/accounting records. New head needs current-head hosted proof. |
 | Signer: failed to write commit object | Preserve candidate/index/owner; reconcile actual local/remote state once. Use only allowed causal recovery or request exact private signer access; record command/exit/boundary. | Different signer/no-sign, blind resend, inferred refusal/outage, or blocking independent runtime for auxiliary signing. |
 | Unknown/busy host; historical retained guard | No mutation; repair authorized observation or await job/lease resolution. Existing owner proves exclusive transaction and remaining allowance. | PID absence/API idle treated as guard authority; adopt/delete guard, reset accounting or widen targets. |
 | Password/PAT/GUI genuinely human-only | HUMAN_BLOCKED lane; one exact private action/destination and expected non-secret result. Continue independent work. | Secret relay, fake consent, recurring requests or asking for an action available tools already permit. |
