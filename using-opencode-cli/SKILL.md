@@ -12,11 +12,10 @@ metadata:
 Use this skill when invoking the **opencode CLI** as a separate coding agent for
 review, debugging, implementation checks, or parallel investigation.
 
-opencode is provider-agnostic: one CLI can run models from many providers
-(`opencode-go/*`, `openai/*`, `anthropic/*`, local, etc.). This makes it
-especially useful for **antagonistic cross-model review**, where the reviewer
-must be independent from the agent that produced the work — pick a different
-provider/model, not just a different CLI.
+opencode supports models from many providers and local routes. Reviewer
+independence comes from a capable reviewer distinct from the author and
+an independent read of the immutable subject; provider or model diversity
+may help but is not required.
 
 ## Guidance
 
@@ -32,13 +31,11 @@ provider/model, not just a different CLI.
 
 ```bash
 opencode --version          # confirm installed
-opencode auth list          # confirm at least one provider credential present
-opencode models             # list available provider/model IDs
 ```
 
-If `opencode auth list` is empty, run `opencode auth login` and pick a provider
-(or export the provider API key in the environment / `.env`). Models are listed
-in `provider/model` form (e.g. `openai/gpt-5.5-pro`, `opencode-go/glm-5.2`).
+Use an already configured, authorized route. If invocation fails because access
+is unavailable, report that exact boundary; do not enumerate provider quotas,
+change credentials, or expose secrets to select another route.
 
 ## Core Invocation: Non-Interactive `run`
 
@@ -54,7 +51,7 @@ Key flags (confirmed via `opencode run --help`):
 
 | Flag | Purpose |
 | --- | --- |
-| `-m, --model provider/model` | Pick the model. **Use a different provider/model than the work's author for antagonistic review.** |
+| `-m, --model provider/model` | Optionally select a model; provider/model choice does not establish review independence. |
 | `--agent <name>` | Use a built-in (`build`, `plan`, `general`, `explore`, `scout`) or custom agent. `plan` is read-only. |
 | `-f, --file <path>` | Attach file(s) (diff, spec, log) to the message. Repeatable. |
 | `--format json` | Emit raw JSON events instead of formatted text — parse for provenance/structured capture. |
@@ -67,38 +64,28 @@ Key flags (confirmed via `opencode run --help`):
 | `--print-logs --log-level DEBUG` | Debug invocation failures. |
 | `--pure` | Run without external plugins (isolate behavior). |
 
-## Antagonistic Cross-Model Review
+## Independent Review
 
-This is the primary reason to reach for opencode over a single-provider CLI.
-The reviewer's independence comes from a **different model**, so choose
-deliberately:
+When a capable independent reviewer is needed, pass the actual base/head and
+complete relevant caller context. Provider/model diversity is optional; do not
+add a second review or probe routes unless evidence shows the current reviewer
+lacks required capability or independence.
 
 ```bash
-# Orchestrator produced work with opencode-go/glm-5.2.
-# Dispatch an independent reviewer on a different provider:
-opencode run --dir "$REPO" -m openai/gpt-5.5-pro --agent plan \
+opencode run --dir "$REPO" --agent plan \
   --format json \
-  "You are a hostile merge gate. Review HEAD vs its base for correctness bugs, \
-missing regression guards, stale docs, and architecture violations. \
-Classify each finding Blocking / Advisory / Question / No issue. \
+  "Review HEAD vs its base for correctness bugs, missing regression guards, \
+stale docs, and architecture violations. Classify findings Blocking/Advisory/Question/No issue. \
 Base SHA: $BASE_SHA  Head SHA: $HEAD_SHA." \
   > /tmp/opencode-review.json
 ```
 
-Selection rules:
-
-- Match a **different provider** from the work's author when possible
-  (`openai/*` vs `opencode-go/*`), not just a different model on the same
-  provider.
-- Prefer the provider with the most remaining usage budget when multiple are
-  available (see `opencode stats`).
-- For read-only review, use `--agent plan` (file edits and bash default to
-  `ask`) or a custom read-only agent. See the permissions section below.
+- For read-only review, use `--agent plan` or a custom read-only agent.
 - Pass base/head SHAs, changed surfaces, validation already run, and known
-  rejected/deferred feedback in the prompt so the reviewer does not restate
-  resolved items.
-- A review pass only counts for the exact head it inspected. After any push,
-  re-run on the new head.
+  rejected/deferred feedback so review binds to the intended subject.
+- A review counts only when the reviewer independently reads the actual
+  immutable subject and relevant context. Refresh for changed source/context
+  or material findings, not commit-only metadata.
 
 ## Permissions In Non-Interactive Mode
 
@@ -128,7 +115,7 @@ will **block/hang** the run. Two safe recipes:
    Review only. Never edit files. Classify findings Blocking/Advisory/Question/No issue.
    ```
    ```bash
-   opencode run --dir "$REPO" -m openai/gpt-5.5-pro --agent review \
+   opencode run --dir "$REPO" --agent review \
      --dangerously-skip-permissions --format json "..." > /tmp/review.json
    ```
 
@@ -149,7 +136,8 @@ When `--dir` points at a git repo, opencode automatically reads that repo's
 and `.agents/skills/` (project + global). A dispatched reviewer therefore
 inherits the repo's architecture rules and can load repo skills — useful for
 context-enriched review, but remember it shares repo context with the
-orchestrator. Independence comes from the model, not from context isolation.
+orchestrator. Independence comes from a distinct, capable reviewer reading
+the subject, not provider/model or context isolation.
 
 ## Throughput: `serve` + `attach`
 
@@ -158,7 +146,7 @@ one headless server and attach each run to it:
 
 ```bash
 opencode serve --port 4096 --hostname 127.0.0.1 &   # once
-opencode run --attach http://127.0.0.1:4096 -m openai/gpt-5.5-pro "..."
+opencode run --attach http://127.0.0.1:4096 "..."
 ```
 
 `opencode serve` and `opencode web` both expose the attach surface. Set
@@ -186,7 +174,7 @@ of findings, and the resolving commit SHA when applicable.
 
 ## Dispatch As An External Agent
 
-When another skill (e.g. `orchestrating-external-agents`, `monitoring-prs-and-autofixing`, or a repo `requesting-code-review` override) needs an independent reviewer, opencode provides a flexible provider-neutral route. Prefer opencode when you need a **specific independent model** or one CLI that can fan out across providers.
+When another skill (e.g. `orchestrating-external-agents`, `monitoring-prs-and-autofixing`, or a repo `requesting-code-review` override) needs an independent reviewer, opencode provides a flexible route. Use any already-authorized capable reviewer; provider diversity is optional.
 
 ## Red Flags
 
@@ -195,9 +183,10 @@ When another skill (e.g. `orchestrating-external-agents`, `monitoring-prs-and-au
   one can answer.
 - Using `--dangerously-skip-permissions` with `--agent build` (all tools
   allowed) on a repo you do not want modified.
-- Counting an `opencode-go/glm-5.2` review of `opencode-go/glm-5.2` work as
-  independent. Same model is not independent; switch provider/model.
-- Reusing a clean review after a new push. Re-run on the latest head.
+- Counting the author's own self-review as independent. The reviewer must be
+  distinct and inspect the actual subject; a different provider/model alone
+  does not establish independence.
+- Reuse source review when the immutable source and relevant context are unchanged; required hosted checks and approvals still bind to the current PR head/base.
 - Letting the reviewer restate already-fixed or already-rejected items because
   the prompt omitted prior resolution state.
 - Dispatching without `--dir` when repo context matters, or assuming context

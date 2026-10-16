@@ -65,7 +65,6 @@ capable review already bound to the same immutable source and relevant context.
 | Role-based UAT | `verifying-before-completion` | Require applicable artifacts |
 | Review/mergeability | `completing-branch-pr` | Require latest-head result |
 | Hosted checks/review monitoring | `monitoring-prs-and-autofixing` | Require green checks and resolved threads |
-| Deployment/runtime proof | `closing-repo-work` | Require artifact and runtime evidence |
 | Owned failure repair | `debugging-systematically` then `remediating-root-causes` | Require diagnosis, repair, and revalidation |
 
 Leaves return proof or a blocker; they do not declare whole-run completion.

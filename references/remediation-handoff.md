@@ -28,4 +28,4 @@ Specify user status/retry/recovery, operator observability/notification, rollout
 
 ## External evaluation consent
 
-No external evaluator, provider, or data egress may be invoked from this handoff without explicit task-scoped consent. The deterministic bundle oracle makes zero external calls; `external-evaluation-gate.mjs` refuses unless passed `--consent external-evaluation` and records that refusal rather than silently falling back to an external service.
+External evaluation, providers, or data egress require explicit task-scoped consent and applicable native controls. Without consent, use local evidence and record external evaluation as not run; never silently substitute a service or claim an unobserved oracle or refusal.
