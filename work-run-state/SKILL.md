@@ -79,6 +79,9 @@ CLI invokes the fixed `closeout-verify.mjs` controller, which rechecks ledger,
 base/head/diff bindings and runs the checked-in project oracle. `WORK_RUN_COMPLETE`
 is emitted only after that verifier passes.
 
+The project oracle has a 10-minute deadline; its controller has 11 minutes,
+leaving one minute for evidence checks after a slow oracle.
+
 The fixed verifier queries GitHub and requires the PR's current head to equal
 the subject head for `pr`. `merge` also requires actual `mergedAt` and
 `mergeCommit` metadata, but does not claim live deployment. `staging` and

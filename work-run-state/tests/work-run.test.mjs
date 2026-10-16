@@ -10,6 +10,10 @@ import path from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
+import {
+  CLOSEOUT_ORACLE_TIMEOUT_MS,
+  CLOSEOUT_VERIFIER_TIMEOUT_MS,
+} from '../scripts/closeout-timeouts.mjs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CLI = path.join(__dirname, '..', 'scripts', 'work-run.mjs');
 const LOOP = path.join(__dirname, '..', 'scripts', 'work-run-loop.sh');
@@ -385,6 +389,11 @@ describe('work-run pick / mark-pass / seal', () => {
     assert.equal(s.runId, 'pick-run');
     assert.equal(s.incomplete, 2);
     assert.equal(s.complete, 0);
+  });
+
+  it('keeps closeout deadlines above slow project-oracle runtimes', () => {
+    assert.ok(CLOSEOUT_ORACLE_TIMEOUT_MS >= 360_000);
+    assert.ok(CLOSEOUT_VERIFIER_TIMEOUT_MS >= CLOSEOUT_ORACLE_TIMEOUT_MS + 60_000);
   });
 
   it(
