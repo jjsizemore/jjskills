@@ -49,10 +49,33 @@ freshness. Hosted results and required approvals remain current-head/base-bound.
 7. **Post-change** — when merge or deployment is in scope, bind actual merge
    SHA to artifact/release SHA, deployment result, runtime/version equality,
    authenticated smoke/UAT, tracking closure, and cleanup evidence.
-8. **Terminal** — run only after all applicable proof is present and an
-   independent oracle confirms it. A `VERIFIED` terminal state requires
-   committed+pushed code plus applicable post-push evidence; after merge, the
-   PR is closed and is not required to remain open.
+8. **Pre-yield frontier check** — before yielding or a terminal report, account
+   for every remaining authorized frontier (see below). Progress reports stay
+   allowed while work continues.
+9. **Terminal** — run only after all applicable proof is present, the pre-yield
+   frontier check is complete, and an independent oracle confirms it. A `VERIFIED`
+   terminal state requires committed+pushed code plus applicable post-push
+   evidence; after merge, the PR is closed and is not required to remain open.
+
+## Pre-yield frontier check
+
+A gated publication does not gate the session. Do not yield until every remaining
+authorized frontier (lane, ticket, review, dependent action) is completed or
+concretely gated. For each, record:
+
+- next causal action it can take now;
+- retained owner/scope, without taking over another owner's protected scope;
+- sufficient existing evidence, including an authoritative receipt that arrived
+  despite an unanswered owner;
+- concrete blocker, named by exact gate and owner, or `none`;
+- bounded recovery attempted/result, with the decisive resume input if gated.
+
+Execute a reachable action through its retained owner and consume the result;
+dispatch, an unanswered prompt or a status request is not recovery or completion.
+A scoped `BLOCKED`/`PAUSED` covers only its gated frontier and dependents and does
+not end independent work. Gated publication, preserved ownership, leases, signer,
+security, human-presence and sealed-budget limits stay in force; this check grants
+no scope, retry or actuation.
 
 ## Leaf handoffs
 Load a capability leaf only when the current procedure actually needs it; do not
