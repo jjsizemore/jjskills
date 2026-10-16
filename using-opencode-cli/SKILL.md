@@ -4,8 +4,7 @@ description: 'Use when invoking the opencode CLI (`opencode run`) as an external
 metadata:
   governing-skills-placement: user
   governing-skills-reason: General cross-repo CLI skill; repo-local skills with the
-    same name may override it. Peer of `using-claude-cli-agent`, `using-codex-cli-agent`,
-    and `using-antigravity-agy-cli`.
+    same name may override it.
 ---
 
 # Using opencode CLI

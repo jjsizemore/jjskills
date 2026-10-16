@@ -1,5 +1,6 @@
 ---
 name: planning-work
+description: >-
   Use to plan multi-step work end-to-end: explore, resolve open decisions, draft a
   durable plan with execution stories, and review for feasibility. Front door for
   the planning stage. Prefer repo-local planning-work when present. Not for implementation.
