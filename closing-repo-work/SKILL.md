@@ -88,7 +88,6 @@ capable review already bound to the same immutable source and relevant context.
 | Role-based UAT | `verifying-before-completion` | Require applicable artifacts |
 | Review/mergeability | `completing-branch-pr` | Require latest-head result |
 | Hosted checks/review monitoring | `monitoring-prs-and-autofixing` | Require green checks and resolved threads |
-| Deployment/runtime proof | `closing-deployment-pipelines` | Require artifact and runtime evidence |
 | Owned failure repair | `debugging-systematically` then `remediating-root-causes` | Require diagnosis, repair, and revalidation |
 
 Leaves return proof or a blocker; they do not declare whole-run completion.
@@ -130,17 +129,4 @@ recovery/rollback scope or `Not applicable — reason`.
 - For HTPC, follow its repository `AGENTS.md` for paths, stack order, labels,
   health checks, and rollback.
 
-The recorded endpoint's delivery criteria are:
-
-- `VERIFIED`: the applicable proof tier passed with an independent oracle **AND** all of:
-  - Product code changes are **committed** with semantic message and `Agent:`/`Model:` trailers.
-  - Changes are **pushed** to the remote branch, or a `local-only` exception is recorded in the work-run ledger with user authorization.
-  - For product/UI changes (feat/fix/refactor/perf touching frontend, desktop, or packages/ui), an **open PR** existed targeting `dev` (or the repo's feature trunk) and its body reflected the current head at push time.
-  - **Gitshot screenshots** were attached to the PR for every UI/UX diff. Upload and comment via `npx gitshot <image> | gh pr comment <n> --body-file -`.
-  - Docs-only, skill-only, or CI-only changes do not require a PR or screenshots for `VERIFIED`.
-  - After merge, the PR is closed; terminal verification uses the recorded post-push PR evidence and does not require an open PR.
-  - If any applicable item above is unmet, withhold `VERIFIED` and continue
-    reachable authorized work. Use `BLOCKED`/`PAUSED` only under the scoped
-    terminal conditions below.
-
-For the scoped terminal conditions referenced above, see [Portable Autonomous Completion Contract](../references/autonomous-completion-contract.md).
+The recorded endpoint's delivery criteria and scoped terminal conditions (`VERIFIED`, `BLOCKED`, `PAUSED`) follow the [Portable Autonomous Completion Contract](../references/autonomous-completion-contract.md). A `VERIFIED` state requires committed+pushed code, passing applicable proof tiers, and an independent oracle. Withhold completion for unmet criteria.

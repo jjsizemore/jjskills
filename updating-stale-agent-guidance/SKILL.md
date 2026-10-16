@@ -81,7 +81,7 @@ references to old names or commands. Classify each related artifact as:
 - missing, broken, cross-scope, divergent, or unknown.
 
 Use `governing-skills` for cross-tree skill inventory and mirror decisions. Use
-`governing-agent-files` for repository agent-file routing and inventory. Do not
+`writing-for-agents` for repository agent-file routing and inventory. Do not
 reimplement their placement or conflict rules here.
 
 ### 3. Prove the defect and define the smallest repair
@@ -116,8 +116,7 @@ Use the relevant existing skill rather than duplicating its procedure:
 
 - `writing-skills` for skill content, metadata, scenarios, or publication;
 - `governing-skills` for canonical placement, deduplication, and mirrors;
-- `governing-agent-files` for repository agent files and routing indexes;
-- `governing-prompts` for prompt ownership and prompt routing;
+- `writing-for-agents` for repository agent files, prompts, and routing indexes;
 - `migrating-agent-context` for broader AGENTS/bootstrap/context migrations;
 - `verifying-before-completion` for the final evidence gate;
 - the repository's root-cause/remediation workflow when stale guidance caused

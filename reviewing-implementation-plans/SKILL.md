@@ -2,19 +2,17 @@
 name: reviewing-implementation-plans
 description: >-
   Use when reviewing implementation plans for clarity, feasibility, completeness,
-  risk, or readiness before execution. Prefer antagonistic mode inside
-  planning-work / refining-work-iteratively until consensus.
+  risk, or readiness before execution. Prefer antagonistic mode inside planning-work.
 ---
 
 # Reviewing Implementation Plans
 
-Antagonistic acceptance gate for **plan artifacts** (not code). Used by
-**`planning-work`** and **`refining-work-iteratively`**.
+Antagonistic acceptance gate for **plan artifacts** (not code). Used by **`planning-work`**.
 
 ## When to use
 
 - After a plan draft is written (`writing-plans`)
-- Each consensus-loop pass on the **latest** plan version
+- Each review pass on the **latest** plan version
 - User asks “is this plan ready to execute?”
 
 ## Review checklist (Blocking / Advisory / Question)
@@ -41,7 +39,7 @@ For each finding, cite section/heading evidence and a concrete fix.
 - **Blocking:** …
 - **Advisory:** …
 - **Question:** …
-- **Nice-to-have:** … (only if polish-inclusive scope)
+- **Nice-to-have:** … (outside the assigned acceptance criteria; not a delivery gate)
 
 ### Verdict
 CLEAN | NEEDS_REVISION
@@ -52,5 +50,4 @@ the active scope on **this** version.
 
 ## Stop / handoff
 
-Return findings to `refining-work-iteratively` / `planning-work`. Do not implement
-code. Do not mark consensus yourself — the controller re-runs review after fixes.
+Return findings to `planning-work`. Do not implement code.
