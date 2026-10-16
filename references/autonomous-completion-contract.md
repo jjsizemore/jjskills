@@ -42,10 +42,17 @@ Actions are `AUTONOMOUS`, `APPROVAL_REQUIRED`, or `PROHIBITED`:
 
 - **AUTONOMOUS**: necessary assigned inspection, disjoint delegation, owned edits,
   checks/recovery and delivery within recorded ownership/access/impact/endpoint boundaries.
-  Assigned disposable CI fixture/cache replacement, named inactive runner busy-free
-  replacement, scoped CI credential creation through authorized access, or named obsolete
-  dataset deletion are task-implied; never expose secrets. Registration repair does not
-  authorize customer-account deletion or wider organization privileges.
+  An explicit assigned endpoint includes necessary bounded recovery and
+  gate-remediation actions within that scope. A failed gate blocks dependent
+  actions, not an already-authorized guarded repair. Repair requires current
+  owner/job/lease/guard evidence and revalidation before dependent action;
+  attempting repair never waives or passes the gate. If remediation crosses
+  assigned scope, ask only for that exact authority. Assigned disposable CI
+  fixture/cache replacement, named inactive runner busy-free replacement,
+  scoped CI credential creation through authorized access, or named obsolete
+  dataset deletion are task-implied; never expose secrets. Registration repair
+  does not authorize customer-account deletion or wider organization
+  privileges.
 - **APPROVAL_REQUIRED**: crossing project/environment, data/resource/privilege or delivery
   boundaries; unavailable/unauthorized access; mandatory human presence; material
   product/legal decisions; unresolved material security, collateral data-loss or release
@@ -79,7 +86,12 @@ cannot replace higher.
 | Product change | Targeted behavior regression, affected checks, changed-path smoke and one independent review |
 | Release-sensitive | Above plus identified release guardrails and expected artifact/SHA evidence |
 | Deployment/promotion | Authorized target's merge/artifact/deployment/runtime/version/UAT chain only |
-| Runner/fleet repair | Named lifecycle/canary and target-scope evidence under the selected supported procedure |
+| Runner/fleet repair | Target-scoped lifecycle and runtime/admission proof under the selected procedure. |
+
+Canaries are the selected procedure's default. Explicit authority for one named
+slot may omit only canary scheduling, not target-scoped runtime/admission proof.
+Fleet rollout and two-slot transitions still require the selected canary/
+lifecycle evidence.
 
 These rows do not create unrelated deployment, UX, host, or release work.
 
@@ -127,20 +139,17 @@ supported; whole-run terminal rules above remain unchanged.
 
 Record each failed boundary's stable ID, expected result, decisive artifact, hypothesis,
 change/result, owner, rollback and next command. Preserve sealed limits, identities,
-approvals, endpoints, freezes and original gates; never reset/raise sealed budgets, invent
-identity/endpoint or duplicate active implementation. New authorized initialization or
-recovery-rebinding uses actual native/durable IDs. Use existing resource caps/remaining
-budgets, not a universal retry stop. Continue causal progress while authority/resources
-permit; change strategy on stalls or park exhaustion. No blind ambiguous-write/gated retry;
-changed hypotheses need decisive proof. Exhaustion allows only authorized reversible rollback/quarantine.
-- Recover safely through existing authorized paths before classifying human gates; inspect
-  native state/receipts, preserve user work/current owners, repair owned checks without
-  weakening them, and never duplicate an uncertain possibly-written attempt. If transport
-  is lost after a possibly-written remote operation, record outcome and custody as unknown;
-  dependent remote actuation stays closed until the existing owner reconciles authoritative
-  state and custody through an already-authorized route. Do not infer success/failure, resend,
-  transfer ownership or create a replacement carrier from transport disappearance. Independent
-  authorized lanes remain eligible.
+approvals, endpoints, freezes and original gates; never reset/raise sealed budgets or invent
+identities/endpoints. Recover safely through existing authorized paths before classifying
+human gates: inspect native state/receipts, preserve user work/current owners, repair owned
+checks without weakening them, and use existing resource caps rather than a universal retry stop.
+No blind ambiguous-write or gated retries; changed hypotheses require decisive proof.
+If transport is lost after a possibly-written remote operation, record outcome and custody as
+unknown; dependent remote actuation stays closed until the existing owner reconciles
+authoritative state and custody through an already-authorized route. Do not infer
+success/failure, resend, transfer ownership or create a replacement carrier from transport
+disappearance. Independent authorized lanes remain eligible; exhaustion permits only authorized
+reversible rollback/quarantine.
 Human intervention requires exact unavailable access/permission or mandatory presence,
 an unassigned impact/authority boundary, genuine unresolved material product/legal choice,
 or proven unavailable external dependency after bounded recovery. Assigned irreversible
@@ -168,7 +177,6 @@ second transport-specific ACK. Freeze mutable source before publication, not ano
 approval for each observer. Mechanical capture never invents an owner freeze.
 Handoff grants no gated actuation. Resume only after decisive clearance of the
 original gate or an explicit applicable authority delta, with still-live preconditions.
-Do not repeat/poll/retry/wake/queue/delegate unchanged gates; independent lanes remain eligible.
 
 ## Delivery coordination
 
@@ -257,6 +265,7 @@ bindings above; each forbidden variant must remain closed.
 | Current-head CI pending; repeated identical status events followed by one decisive changed receipt | WAITING_CI with exact run/head, one watcher and decisive event; work independent lanes. Identical events cause no new steering/current-disposition rewrite; the changed receipt causes one update/handoff. At most one short checkpoint when nothing eligible remains. | Pending becomes red/verified, repeated watcher/reviewer or unchanged polling, or suppressing required liveness/accounting records. New head needs current-head hosted proof. |
 | Signer: failed to write commit object | Preserve candidate/index/owner; reconcile actual local/remote state once. Use only allowed causal recovery or request exact private signer access; record command/exit/boundary. | Different signer/no-sign, blind resend, inferred refusal/outage, or blocking independent runtime for auxiliary signing. |
 | Unknown/busy host; historical retained guard | No mutation; repair authorized observation or await job/lease resolution. Existing owner proves exclusive transaction and remaining allowance. | PID absence/API idle treated as guard authority; adopt/delete guard, reset accounting or widen targets. |
+| Explicit single-slot/no-canary endpoint; isolation gate failed but repairable; all repair owner/job/lease/guard prerequisites currently green | Perform only the authorized guarded isolation repair, revalidate the gate and its own current owner/job/lease/guard evidence, then deploy only the named slot after the gate passes. Keep private publication and VM start closed until the isolation gate passes. | Treating repair attempt as gate passage/waiver, deploying another slot, or proceeding without revalidation. Missing repair authority or Unknown/busy job/lease blocks the repair and dependent work. |
 | Password/PAT/GUI genuinely human-only | HUMAN_BLOCKED lane; one exact private action/destination and expected non-secret result. Continue independent work. | Secret relay, fake consent, recurring requests or asking for an action available tools already permit. |
 | Explicit new user scope supersedes NoHost | Record exact superseded scope/current delta; preserve signer/lease/job/owner/budget gates and pass fresh preconditions. | Bare continue/default changes endpoint, unrelated gate cleared, or planning-only authority executes host work. |
 | Diagnosed unavailable executor; capable alternate; applicable authority delta removes only a user-only fence | Transfer exact task/custody, immutable inputs, evidence, remaining allowance and acceptance; stop conflicting execution. Alternate reviewer independently reads the required immutable subject. | Replace a healthy/protected owner, transfer gated actuation, reset limits, skip independent review or treat no reply as a human gate. |
