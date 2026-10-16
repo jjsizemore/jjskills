@@ -153,7 +153,10 @@ change/result, owner, rollback and next command. Preserve sealed limits, identit
 approvals, endpoints, freezes and original gates; never reset/raise sealed budgets or invent
 identities/endpoints. Recover safely through existing authorized paths before classifying
 human gates: inspect native state/receipts, preserve user work/current owners, repair owned
-checks without weakening them, and use existing resource caps rather than a universal retry stop.
+checks without weakening them. Apply resource limits at their documented scope. Reassess
+conservative job-specific RAM/pressure/disk estimates within current authority; bind a
+concrete resource-safe action rather than a global stop, preserving actual hard limits and
+shared-resource custody. A heap ceiling is not total RSS or exclusive capacity.
 No blind ambiguous-write or gated retries; changed hypotheses require decisive proof.
 If transport is lost after a possibly-written remote operation, record outcome and custody as
 unknown; dependent remote actuation stays closed until the existing owner reconciles
