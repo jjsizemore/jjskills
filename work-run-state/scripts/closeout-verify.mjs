@@ -7,6 +7,7 @@
 import fs from 'node:fs';
 import { createHash } from 'node:crypto';
 import { execFileSync, spawnSync } from 'node:child_process';
+import { CLOSEOUT_ORACLE_TIMEOUT_MS } from './closeout-timeouts.mjs';
 
 function fail(message) {
   process.stderr.write(`${message}\n`);
@@ -47,7 +48,7 @@ function oracleResult(cwd, command) {
   const result = spawnSync(command[0], command.slice(1), {
     cwd,
     encoding: 'utf8',
-    timeout: 120_000,
+    timeout: CLOSEOUT_ORACLE_TIMEOUT_MS,
   });
   return {
     command,

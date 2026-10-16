@@ -12,6 +12,7 @@ import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { CLOSEOUT_VERIFIER_TIMEOUT_MS } from './closeout-timeouts.mjs';
 
 const FLOOR = 10;
 const HARD_CEILING = 30;
@@ -106,7 +107,7 @@ function runControllerVerifier(cwd, runId, ledgerPath, evidencePath, baseSha, su
       '--diff-digest',
       diffDigest,
     ],
-    { cwd, encoding: 'utf8', timeout: 120_000 },
+    { cwd, encoding: 'utf8', timeout: CLOSEOUT_VERIFIER_TIMEOUT_MS },
   );
   if (result.status !== 0 || result.signal) {
     const detail = result.stderr.trim();
