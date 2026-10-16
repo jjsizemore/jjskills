@@ -57,6 +57,13 @@ Actions are `AUTONOMOUS`, `APPROVAL_REQUIRED`, or `PROHIBITED`:
   dataset deletion are task-implied; never expose secrets. Registration repair
   does not authorize customer-account deletion or wider organization
   privileges.
+  An assigned endpoint includes the smallest causal repair to shared tooling required to reach it,
+  including tooling in another repository, when existing ownership permits the repair and
+  access, impact, resource and endpoint limits stay within recorded authority. Repository
+  location alone is not a project/environment impact expansion. Record necessity, owner and
+  bounded impact in the current disposition and proceed without routine approval. New
+  project/environment effects or data/resource/privilege/delivery expansion require exact
+  authority; explicit repository/write fences and all original gates still bind.
 - **APPROVAL_REQUIRED**: crossing project/environment, data/resource/privilege or delivery
   boundaries; unavailable/unauthorized access; mandatory human presence; material
   product/legal decisions; unresolved material security, collateral data-loss or release
