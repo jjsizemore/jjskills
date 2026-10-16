@@ -187,13 +187,7 @@ of findings, and the resolving commit SHA when applicable.
 
 ## Dispatch As An External Agent
 
-When another skill (e.g. `orchestrating-external-agents`,
-`refining-prs-iteratively`, `refining-work-iteratively`, or a repo
-`requesting-code-review` override) needs an independent reviewer, opencode is
-one option alongside `using-claude-cli-agent`, `using-codex-cli-agent`, and
-`using-antigravity-agy-cli`. Prefer opencode when you need a **specific
-independent model** that the other CLIs do not expose, or when you want one CLI
-that can fan out across several providers.
+When another skill (e.g. `orchestrating-external-agents`, `monitoring-prs-and-autofixing`, or a repo `requesting-code-review` override) needs an independent reviewer, opencode provides a flexible provider-neutral route. Prefer opencode when you need a **specific independent model** or one CLI that can fan out across providers.
 
 ## Red Flags
 

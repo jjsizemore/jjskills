@@ -12,22 +12,13 @@ Use after creating, editing, deleting, generating, staging, or committing an
 artifact, and before final responses, success claims, commits, pushes, PRs,
 releases, or handoffs.
 
-If the current repository has a repo-local `verifying-before-completion` skill,
-use that narrower override for repository-specific commands and standards.
-Apply the shared [portable autonomous completion contract](../references/autonomous-completion-contract.md);
-the local skill owns only its trigger, routing, evidence collection, and stop
-decision.
+Apply the shared [portable autonomous completion contract](../references/autonomous-completion-contract.md) for evidence invalidators, review requirements, and terminal rules. Repo-local overrides add local commands and standards.
 
-## Contract
+## Core Rules
 
-- Make completion claims only from currently valid source/input-bound evidence
-  under the portable contract's invalidators; retained receipts may qualify.
-  Role-based UAT is not replaced by a broad test command.
-- Route unproven causal claims to `debugging-systematically` and requested
-  repairs to `remediating-root-causes`.
-- If a PR is created or updated, resolve red checks and merge conflicts through
-  the repository's monitoring/remediation workflow before completion.
-
+- Make completion claims only from currently valid source/input-bound evidence.
+- Scale proof to change risk: mechanical changes need deterministic checks; behavior changes need targeted regression, affected checks, changed-path smoke, and one capable independent review.
+- Route unproven causal claims to `debugging-systematically` and confirmed repairs to `remediating-root-causes`.
 ## Workflow
 
 1. **Inventory** — reuse the consolidated scope/dirty/owner preflight until a
@@ -65,15 +56,13 @@ Select every affected role:
 - **Maintainer/reviewer** — readability, architecture boundaries, contracts,
   generated artifacts, and repository hygiene.
 
-## Completion bar
+## Completion Bar
 
-Claim completion only when ALL of the following are satisfied:
+Claim completion only when:
+1. The diff matches assigned scope without collateral changes.
+2. Focused regression coverage exists for behavior changes.
+3. Affected roles pass verification (or are documented `Not applicable — reason`).
+4. All required validation passes and binds the current head diff.
+5. For PR/merge/deploy endpoints, the required hosted/artifact proof is recorded per the completion contract.
 
-- The diff matches scope, regression protection exists or its absence is explicit, every affected role passed or is explicitly blocked, required validation remains valid under the portable contract's evidence bindings, and remaining risks are named plainly.
-- Product code changes are **committed** with semantic message and `Agent:`/`Model:` trailers.
-- Changes are **pushed** to the remote branch (or a `local-only` exception is recorded in the work-run ledger with user authorization).
-- For product/UI changes, current post-push PR evidence must bind the authorized endpoint; after merge the closed PR and recorded current-head review satisfy this boundary. Attach Gitshot screenshots for affected UI/UX surfaces.
-- Docs-only, skill-only, and CI-only changes do not require a PR or screenshots for `VERIFIED`.
-
-If any item is unmet, withhold `VERIFIED` and continue reachable authorized work.
-Use `BLOCKED`/`PAUSED` only under the canonical contract's scoped terminal conditions.
+Withhold completion for unexercised paths or failed checks; report exact blocker and owner.
