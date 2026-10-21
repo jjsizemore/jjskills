@@ -20,6 +20,7 @@
     "branchName": { "type": "string" },
     "description": { "type": "string" },
     "sourceSpec": { "type": ["string", "null"] },
+    "surface": { "type": "string" },
     "endpoint": {
       "type": "string",
       "enum": ["pr", "merge", "staging", "deploy", "local-only"]
@@ -30,6 +31,23 @@
     "status": {
       "type": "string",
       "enum": ["active", "completed", "cancelled", "blocked"]
+    },
+    "releaseSafeguards": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["admitted", "denied", "not_applicable", "unverified"]
+        },
+        "reason": { "type": "string" },
+        "evaluatedAt": { "type": "string" },
+        "evidencePath": { "type": "string" },
+        "missing": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
     },
     "userStories": {
       "type": "array",
@@ -60,6 +78,11 @@
           "tags": {
             "type": "array",
             "items": { "type": "string" }
+          },
+          "surface": { "type": "string" },
+          "classification": {
+            "type": "string",
+            "enum": ["prerequisite", "local-source", "release-action"]
           }
         }
       }

@@ -8,6 +8,7 @@ import fs from 'node:fs';
 import { createHash } from 'node:crypto';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { CLOSEOUT_ORACLE_TIMEOUT_MS } from './closeout-timeouts.mjs';
+import { evaluateReleaseAdmission } from './release-admission.mjs';
 
 function fail(message) {
   process.stderr.write(`${message}\n`);
@@ -103,7 +104,10 @@ function closeoutConfigDigest(cwd, baseSha) {
       cwd,
       encoding: 'buffer',
     });
-    return `sha256:${createHash('sha256').update(config).digest('hex')}`;
+    return {
+      digest: `sha256:${createHash('sha256').update(config).digest('hex')}`,
+      rollbackPolicy: JSON.parse(config.toString('utf8')).rollbackPolicy,
+    };
   } catch {
     fail('cannot resolve baseline closeout-command.json');
   }
@@ -132,7 +136,7 @@ const actualDigest = diffDigest(args.cwd, args['base-sha'], args['subject-head']
 if (
   ledger.runId !== args['run-id'] ||
   ledger.baseSha !== args['base-sha'] ||
-  ledger.closeoutConfigSha !== actualConfigSha ||
+  ledger.closeoutConfigSha !== actualConfigSha.digest ||
   evidence.runId !== args['run-id'] ||
   evidence.status !== 'VERIFIED' ||
   evidence.baseSha !== args['base-sha'] ||
@@ -191,6 +195,26 @@ if (hasEndpoint && ['staging', 'deploy'].includes(ledger.endpoint)) {
       !/^[a-f0-9]{40,64}$/u.test(proof.expectedArtifactSha || '') ||
       proof.artifactSha !== proof.expectedArtifactSha) {
     fail('closeout verifier project oracle delivery observations do not bind the authorized target');
+  }
+  const safeguardsEvidence = proof.releaseSafeguards;
+  if (!safeguardsEvidence) {
+    fail('closeout verifier requires verified release safeguards admission in project oracle delivery observations');
+  }
+  const targetSurface = typeof ledger.surface === 'string' && ledger.surface.trim() ? ledger.surface.trim() : null;
+  if (!targetSurface) {
+    fail('closeout verifier requires a recorded run target surface for this delivery target');
+  }
+  const admission = evaluateReleaseAdmission({
+    cwd: args.cwd,
+    evidence: safeguardsEvidence,
+    endpoint: ledger.endpoint,
+    expectedSurface: targetSurface,
+    rollbackPolicy: actualConfigSha.rollbackPolicy,
+    subjectHead: args['subject-head'],
+    action: 'release-closeout',
+  });
+  if (!admission.admitted) {
+    fail(`closeout verifier release safeguards admission failed: ${admission.reason}`);
   }
 }
 if (

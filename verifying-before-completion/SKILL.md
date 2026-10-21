@@ -27,6 +27,14 @@ decision.
   repairs to `remediating-root-causes`.
 - If a PR is created or updated, resolve red checks and merge conflicts through
   the repository's monitoring/remediation workflow before completion.
+- For changes reducing release gates or executing releases, require verified
+  release safeguards admission under the portable contract before completion.
+  Local-only or documentation work requires justified scoped not_applicable;
+  high-impact surfaces cannot bypass safeguards via file-extension claims.
+- Apply the portable contract for review: mechanical work needs deterministic
+  checks; behavior work needs one capable independent review. Advisory findings
+  are nonblocking; review convergence is bound to three rounds for an unchanged
+  strategy.
 
 ## Workflow
 

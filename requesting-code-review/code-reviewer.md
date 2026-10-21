@@ -72,6 +72,15 @@ Task tool (general-purpose):
     so the implementer can confirm whether the deviation was intentional.
     If you find issues with the plan itself rather than the implementation,
     say so.
+    Delegate finding triage to the canonical completion contract: classify each
+    finding by material correctness, security, data-loss, or acceptance impact.
+    Validated must-fix risks (correctness bugs, broken functionality, security,
+    architecture violations, test gaps, data loss) block merge and cannot be
+    waived. Advisory, style, polish, and pre-existing unrelated findings are
+    nonblocking; agents validate/triage findings, technically resolve false
+    positives, and do not manufacture user approvals or demand tracked tickets
+    for every optional improvement. Subsequent review covers actual fixes/delta
+    and affected integration, retaining unaffected settled proof.
 
     ## Output Format
 
