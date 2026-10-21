@@ -57,6 +57,9 @@ targets and existing sealed targets remain unchanged.
 node ~/.agents/skills/work-run-state/scripts/work-run.mjs <command> ...
 ```
 
+The CLI resolves installed directory/file symlinks before its entrypoint check;
+invoking through `~/.agents/skills` executes the same admission gates as the source path.
+
 | Command | Purpose |
 | --- | --- |
 | `init` | Create run, seal budget, set ACTIVE |

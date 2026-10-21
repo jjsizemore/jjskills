@@ -1221,6 +1221,19 @@ process.stdout.write(JSON.stringify({ releaseSafeguards: payload }));
     assert.match(res.stderr + res.stdout, /requires explicit --endpoint and --surface/i);
   });
 
+  it('enforces release admission when invoked through the installed skills symlink', () => {
+    const installed = path.join(repo, 'installed-skills');
+    fs.symlinkSync(path.resolve(__dirname, '..', '..'), installed, 'dir');
+    const linkedCli = path.join(installed, 'work-run-state', 'scripts', 'work-run.mjs');
+    for (const flags of [[], ['--preserve-symlinks-main']]) {
+      const res = spawnSync(process.execPath, [...flags, linkedCli, 'admission', '--require-admitted'], {
+        cwd: repo, encoding: 'utf8', timeout: 5_000,
+      });
+      assert.equal(res.status, 1, res.stderr + res.stdout);
+      assert.match(res.stderr, /requires explicit --endpoint and --surface/i);
+    }
+  });
+
   it('rejects high-impact surface attempting not_applicable via file extension', () => {
     const ev = {
       repo: resolveExpectedRepo(repo),
