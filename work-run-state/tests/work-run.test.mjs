@@ -18,6 +18,11 @@ import { resolveExpectedRepo } from '../scripts/release-admission.mjs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CLI = path.join(__dirname, '..', 'scripts', 'work-run.mjs');
 const LOOP = path.join(__dirname, '..', 'scripts', 'work-run-loop.sh');
+const ROLLBACK_POLICY = {
+  owner: 'fixture-oncall',
+  procedure: 'fixture release rollback drill',
+  recoveryTarget: '120s',
+};
 
 function run(args, cwd, env = {}, options = {}) {
   const normalized =
@@ -634,7 +639,7 @@ const subjectHead = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8
 process.stdout.write(JSON.stringify({ deliveryProof: { ...observation, subjectHead } }));
 `);
     fs.writeFileSync(path.join(repo, 'closeout-command.json'),
-      JSON.stringify({ closeoutCommand: [process.execPath, 'delivery-probe.mjs'] }));
+      JSON.stringify({ closeoutCommand: [process.execPath, 'delivery-probe.mjs'], rollbackPolicy: ROLLBACK_POLICY }));
     assert.equal(spawnSync('git', ['add', 'accepted-stories.json', 'delivery-probe.mjs', 'closeout-command.json'], { cwd: repo }).status, 0);
     assert.equal(spawnSync('git', [
       '-c', 'core.hooksPath=/dev/null', 'commit', '--no-gpg-sign', '-q', '-m', 'fixed delivery probe',
@@ -667,6 +672,7 @@ process.stdout.write(JSON.stringify({ deliveryProof: { ...observation, subjectHe
           exercised: true,
           immutableTarget: 'a'.repeat(64),
           recoveryTarget: '120s',
+          recoveryTime: '60s',
           schemaCompatible: true,
         },
       },
@@ -735,7 +741,7 @@ const subjectHead = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8
 process.stdout.write(JSON.stringify({ deliveryProof: { ...observation, subjectHead } }));
 `);
     fs.writeFileSync(path.join(repo, 'closeout-command.json'),
-      JSON.stringify({ closeoutCommand: [process.execPath, 'delivery-probe.mjs'] }));
+      JSON.stringify({ closeoutCommand: [process.execPath, 'delivery-probe.mjs'], rollbackPolicy: ROLLBACK_POLICY }));
     assert.equal(spawnSync('git', ['add', 'accepted-stories.json', 'delivery-probe.mjs', 'closeout-command.json'], { cwd: repo }).status, 0);
     assert.equal(spawnSync('git', [
       '-c', 'core.hooksPath=/dev/null', 'commit', '--no-gpg-sign', '-q', '-m', 'probe lacking safeguards',
@@ -757,7 +763,7 @@ process.stdout.write(JSON.stringify({ deliveryProof: { ...observation, subjectHe
       evaluatedAt: new Date().toISOString(),
       staging: { validated: true, isolatedFromProduction: true, blastRadius: 'internal-staging', probeUrl: 'https://staging.internal/health', promotionCriteria: 'ok' },
       detection: { owner: 'team', signal: 'err > 0', trigger: 'alert', deployedIdentityBound: true },
-      rollback: { exercised: true, immutableTarget: 'a'.repeat(64), recoveryTarget: '120s', schemaCompatible: true },
+      rollback: { exercised: true, immutableTarget: 'a'.repeat(64), recoveryTarget: '120s', recoveryTime: '60s', schemaCompatible: true },
     };
     const evidencePath = closeoutEvidence(repo, { releaseSafeguards: forgedSafeguards }, 'staging-missing-safeguards');
     const result = run(['complete', '--closeout-evidence', evidencePath], repo, { FAKE_GH_MODE: 'merged' });
@@ -777,7 +783,7 @@ const subjectHead = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8
 process.stdout.write(JSON.stringify({ deliveryProof: { ...observation, subjectHead } }));
 `);
     fs.writeFileSync(path.join(repo, 'closeout-command.json'),
-      JSON.stringify({ closeoutCommand: [process.execPath, 'delivery-probe.mjs'] }));
+      JSON.stringify({ closeoutCommand: [process.execPath, 'delivery-probe.mjs'], rollbackPolicy: ROLLBACK_POLICY }));
     assert.equal(spawnSync('git', ['add', 'accepted-stories.json', 'delivery-probe.mjs', 'closeout-command.json'], { cwd: repo }).status, 0);
     assert.equal(spawnSync('git', [
       '-c', 'core.hooksPath=/dev/null', 'commit', '--no-gpg-sign', '-q', '-m', 'probe with wrong-surface safeguards',
@@ -795,7 +801,7 @@ process.stdout.write(JSON.stringify({ deliveryProof: { ...observation, subjectHe
         evaluatedAt: new Date().toISOString(),
         staging: { validated: true, isolatedFromProduction: true, blastRadius: 'internal-staging', probeUrl: 'https://staging.internal/health', promotionCriteria: 'ok' },
         detection: { owner: 'team', signal: 'err > 0', trigger: 'alert', deployedIdentityBound: true },
-        rollback: { exercised: true, immutableTarget: 'a'.repeat(64), recoveryTarget: '120s', schemaCompatible: true },
+        rollback: { exercised: true, immutableTarget: 'a'.repeat(64), recoveryTarget: '120s', recoveryTime: '60s', schemaCompatible: true },
       },
     }));
     assert.equal(init('staging', 'staging-wrong-surface', 'backend-api').status, 0);
@@ -842,12 +848,13 @@ describe('release safeguards admission enforcement', () => {
         exercised: true,
         immutableTarget: 'a'.repeat(64),
         recoveryTarget: '120s',
+        recoveryTime: '60s',
         schemaCompatible: true,
       },
     };
   };
 
-  const commitProbe = (safeguardsPayload) => {
+  const commitProbe = (safeguardsPayload, rollbackPolicy = ROLLBACK_POLICY) => {
     fs.writeFileSync(
       path.join(repo, 'admission-probe.mjs'),
       `import { execFileSync } from 'node:child_process';
@@ -861,7 +868,7 @@ process.stdout.write(JSON.stringify({ releaseSafeguards: payload }));
     );
     fs.writeFileSync(
       path.join(repo, 'closeout-command.json'),
-      JSON.stringify({ closeoutCommand: [process.execPath, 'admission-probe.mjs'] }),
+      JSON.stringify({ closeoutCommand: [process.execPath, 'admission-probe.mjs'], rollbackPolicy }),
     );
     spawnSync('git', ['add', 'admission-probe.mjs', 'closeout-command.json'], { cwd: repo });
     spawnSync('git', ['-c', 'core.hooksPath=/dev/null', 'commit', '--no-gpg-sign', '-q', '-m', 'set admission probe'], { cwd: repo });
@@ -922,11 +929,99 @@ process.stdout.write(JSON.stringify({ releaseSafeguards: payload }));
     assert.match(res1.stdout + res1.stderr, /immutable artifact/i);
 
     const ev2 = validSafeguards(repo);
-    ev2.rollback.recoveryTarget = 'fast';
+    ev2.rollback.recoveryTime = 'fast';
     commitProbe(ev2);
     const res2 = run(['admission', '--endpoint', 'staging'], repo);
     assert.notEqual(res2.status, 0);
     assert.match(res2.stdout + res2.stderr, /measured recovery time/i);
+  });
+
+  it('rejects mutable image tags, branch/ref aliases, and abbreviated rollback identities', () => {
+    for (const target of [
+      'registry.example/app:latest', 'registry.example/app:v1', 'main', 'refs/heads/main',
+      'origin/main', 'HEAD~1', 'refs/tags/v1', 'abc1234',
+    ]) {
+      const safeguards = validSafeguards(repo);
+      safeguards.rollback.immutableTarget = target;
+      commitProbe(safeguards);
+      const res = run(['admission', '--endpoint', 'staging'], repo);
+      assert.notEqual(res.status, 0, target);
+      assert.match(res.stdout + res.stderr, /content-pinned/i, target);
+    }
+  });
+
+  it('accepts full commit/content hashes and digest-pinned rollback artifacts within the procedure RTO', () => {
+    for (const target of [
+      'a'.repeat(40), 'b'.repeat(64), `sha256:${'c'.repeat(64)}`,
+      `registry.example/app@sha256:${'d'.repeat(64)}`,
+    ]) {
+      const safeguards = validSafeguards(repo);
+      safeguards.rollback.immutableTarget = target;
+      safeguards.rollback.recoveryTime = '120000ms'; // Exactly the declared two-minute RTO.
+      safeguards.rollback.recoveryTarget = '2 minutes';
+      commitProbe(safeguards);
+      const res = run(['admission', '--endpoint', 'staging'], repo);
+      assert.equal(res.status, 0, res.stdout + res.stderr);
+      assert.equal(JSON.parse(res.stdout).status, 'admitted');
+    }
+  });
+
+  it('rejects goal-only evidence, malformed durations, missing measured time, and RTO misses', () => {
+    const cases = [
+      [{ recoveryTime: undefined, recoveryTarget: '900000 minutes' }, /measured recovery time/],
+      [{ recoveryTime: undefined }, /measured recovery time/],
+      ...['', '-1s', 'NaNs', 'Infinitys', '2 steps', '1s trailing', '0s', `${'9'.repeat(400)}s`, -1, NaN, Infinity]
+        .map((recoveryTime) => [{ recoveryTime }, /measured recovery time/]),
+      [{ recoveryTime: '121s' }, /exceeds.*RTO/],
+      [{ recoveryTime: '900000 minutes' }, /exceeds.*RTO/],
+      [{ recoveryTarget: 'fast' }, /recovery target.*baseline/],
+      [{ recoveryTime: '1s', recoveryTarget: '900000 minutes' }, /recovery target.*baseline/],
+    ];
+    for (const [overrides, message] of cases) {
+      const safeguards = validSafeguards(repo);
+      Object.assign(safeguards.rollback, overrides);
+      commitProbe(safeguards);
+      const res = run(['admission', '--endpoint', 'staging'], repo);
+      assert.notEqual(res.status, 0, JSON.stringify(overrides));
+      assert.match(res.stdout + res.stderr, message);
+    }
+  });
+
+  it('requires a declared repo/procedure-owned RTO rather than the observation setting its own limit', () => {
+    for (const policy of [
+      null, {}, { ...ROLLBACK_POLICY, owner: '' }, { ...ROLLBACK_POLICY, procedure: '' },
+      ...['-1s', 'NaN', 'Infinity', '0s', `${'9'.repeat(400)}s`]
+        .map((recoveryTarget) => ({ ...ROLLBACK_POLICY, recoveryTarget })),
+    ]) {
+      commitProbe(validSafeguards(repo), policy);
+      const res = run(['admission', '--endpoint', 'staging'], repo);
+      assert.notEqual(res.status, 0);
+      assert.match(res.stdout + res.stderr, /repo\/procedure-owned RTO/);
+    }
+  });
+
+  it('cannot relax the sealed RTO by replacing the candidate configuration', () => {
+    commitProbe(validSafeguards(repo));
+    const stories = path.join(runsRoot(repo), 'rto-stories.json');
+    fs.mkdirSync(runsRoot(repo), { recursive: true });
+    fs.writeFileSync(stories, JSON.stringify([{
+      id: 'release', title: 'release', acceptanceCriteria: ['ok'], priority: 1,
+      passes: false, classification: 'release-action', surface: 'backend-api',
+    }]));
+    const init = run([
+      'init', '--run-id', 'rto-run', '--project', 'fixture', '--branch', 'fixture',
+      '--description', 'sealed RTO', '--stories-file', stories, '--endpoint', 'staging',
+    ], repo);
+    assert.equal(init.status, 0, init.stderr);
+    const slow = validSafeguards(repo);
+    slow.rollback.recoveryTime = '121s';
+    slow.rollback.recoveryTarget = '900000 minutes';
+    commitProbe(slow, { ...ROLLBACK_POLICY, recoveryTarget: '900000 minutes' });
+    const admission = run(['admission', '--endpoint', 'staging'], repo);
+    assert.notEqual(admission.status, 0);
+    assert.match(admission.stdout + admission.stderr, /baseline.*RTO|exceeds.*RTO/);
+    const bump = run(['bump-iteration', '--story', 'release'], repo);
+    assert.notEqual(bump.status, 0);
   });
   it('rejects deployment endpoint attempting not_applicable', () => {
     const ev = {

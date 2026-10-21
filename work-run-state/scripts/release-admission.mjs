@@ -99,6 +99,18 @@ export function resolveExpectedRepo(cwd) {
   }
 }
 
+// Durations are explicit, finite positive quantities with units, never target prose.
+function durationMs(value) {
+  if (typeof value !== 'string') return null;
+  const match = value.trim().match(/^(\d+(?:\.\d+)?)\s*(ms|s|sec|seconds?|m|min|minutes?|h|hours?)$/u);
+  if (!match) return null;
+  const factor = match[2] === 'ms' ? 1
+    : /^(?:s|sec|seconds?)$/u.test(match[2]) ? 1000
+    : /^(?:m|min|minutes?)$/u.test(match[2]) ? 60_000 : 3_600_000;
+  const ms = Number(match[1]) * factor;
+  return Number.isFinite(ms) && ms > 0 ? ms : null;
+}
+
 /**
  * Validates release safeguard prerequisites for repository admission.
  * Table stakes before reducing release/human gates or executing changes justified by reversibility.
@@ -113,6 +125,7 @@ export function evaluateReleaseAdmission({
   endpoint,
   expectedEnvironment,
   expectedSurface,
+  rollbackPolicy,
   subjectHead,
   action,
   maxAgeMs = DEFAULT_MAX_SAFEGUARD_AGE_MS,
@@ -315,7 +328,7 @@ export function evaluateReleaseAdmission({
     }
   }
 
-  // 8. Rollback: AND of exercised, immutable target (no 'latest' / 'revert'), explicit measured recovery time, and schema compatibility
+  // Rollback observations must meet the RTO owned by the baseline repo/procedure.
   if (!ev.rollback || typeof ev.rollback !== 'object') {
     missing.push('fast rollback evidence (missing)');
   } else {
@@ -323,15 +336,22 @@ export function evaluateReleaseAdmission({
       missing.push('rollback mechanism not exercised');
     }
     const target = typeof ev.rollback.immutableTarget === 'string' ? ev.rollback.immutableTarget.trim() : '';
-    if (!target || /^(git revert|revert|latest|current|head|main|master)$/i.test(target)) {
-      missing.push('rollback immutable target (must be immutable artifact/config, not bare git revert, latest, or branch head)');
+    if (!/^(?:[a-f0-9]{40}|(?:sha256:)?[a-f0-9]{64}|[^\s]+@sha256:[a-f0-9]{64})$/u.test(target)) {
+      missing.push('rollback immutable artifact/config identity must be content-pinned: full commit/content SHA or sha256 digest');
     }
-    const recTime =
-      (typeof ev.rollback.recoveryTime === 'string' ? ev.rollback.recoveryTime.trim() : '') ||
-      (typeof ev.rollback.recoveryTarget === 'string' ? ev.rollback.recoveryTarget.trim() : '');
-    const hasMeasuredTime = /\d+\s*(s|m|sec|min|seconds|minutes|ms)/i.test(recTime);
-    if (!hasMeasuredTime) {
-      missing.push('rollback lacks explicit measured recovery time (e.g. 120s or 5m)');
+    const targetMs = durationMs(rollbackPolicy?.recoveryTarget);
+    if (!rollbackPolicy?.owner?.trim?.() || !rollbackPolicy?.procedure?.trim?.() || targetMs === null) {
+      missing.push('rollback requires a repo/procedure-owned RTO in baseline rollbackPolicy');
+    }
+    const declaredTargetMs = durationMs(ev.rollback.recoveryTarget);
+    if (declaredTargetMs === null || declaredTargetMs !== targetMs) {
+      missing.push('rollback recovery target must match the baseline repo/procedure RTO');
+    }
+    const measuredMs = durationMs(ev.rollback.recoveryTime);
+    if (measuredMs === null) {
+      missing.push('rollback lacks valid measured recovery time distinct from the recovery target');
+    } else if (targetMs !== null && measuredMs > targetMs) {
+      missing.push('rollback measured recovery time exceeds the repo/procedure RTO');
     }
     if (ev.rollback.schemaCompatible !== true || ev.rollback.incompatible === true) {
       missing.push('rollback state/schema compatibility not verified or incompatible');

@@ -120,8 +120,11 @@ rollout, require evidence of:
    and explicit promotion criteria.
 2. **Working regression detection** with an accountable owner, actionable signal, trigger/threshold,
    and deployed identity binding.
-3. **Exercised fast rollback/disable** to a known-good immutable artifact/config (not bare git revert,
-   latest, or branch head) with explicit measured recovery time and verified state/schema compatibility.
+3. **Exercised fast rollback/disable** to a known-good content-pinned artifact/config
+   (full commit/content SHA or digest-pinned identity, never a mutable tag/branch).
+   Require actual measured recovery duration distinct from the configured recovery
+   target, within the baseline repo/procedure-owned RTO, and verified state/schema
+   compatibility. Target goals alone do not demonstrate recovery speed.
 
 Mere flags, empty runbooks, generic 200 health, Git revert, mutable tags, or stale/wrong-repo
 receipts do not prove readiness. Evidence binds exact normalized repo, surface, environment,

@@ -104,7 +104,10 @@ function closeoutConfigDigest(cwd, baseSha) {
       cwd,
       encoding: 'buffer',
     });
-    return `sha256:${createHash('sha256').update(config).digest('hex')}`;
+    return {
+      digest: `sha256:${createHash('sha256').update(config).digest('hex')}`,
+      rollbackPolicy: JSON.parse(config.toString('utf8')).rollbackPolicy,
+    };
   } catch {
     fail('cannot resolve baseline closeout-command.json');
   }
@@ -133,7 +136,7 @@ const actualDigest = diffDigest(args.cwd, args['base-sha'], args['subject-head']
 if (
   ledger.runId !== args['run-id'] ||
   ledger.baseSha !== args['base-sha'] ||
-  ledger.closeoutConfigSha !== actualConfigSha ||
+  ledger.closeoutConfigSha !== actualConfigSha.digest ||
   evidence.runId !== args['run-id'] ||
   evidence.status !== 'VERIFIED' ||
   evidence.baseSha !== args['base-sha'] ||
@@ -206,6 +209,7 @@ if (hasEndpoint && ['staging', 'deploy'].includes(ledger.endpoint)) {
     evidence: safeguardsEvidence,
     endpoint: ledger.endpoint,
     expectedSurface: targetSurface,
+    rollbackPolicy: actualConfigSha.rollbackPolicy,
     subjectHead: args['subject-head'],
     action: 'release-closeout',
   });

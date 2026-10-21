@@ -310,6 +310,7 @@ function parseOracleConfig(cwd, baseSha) {
   }
   return {
     command,
+    rollbackPolicy: config.rollbackPolicy,
     configSha: `sha256:${createHash('sha256').update(raw).digest('hex')}`,
   };
 }
@@ -376,6 +377,7 @@ export function executeBaselineSafeguardsProbe({
     endpoint,
     expectedEnvironment,
     expectedSurface,
+    rollbackPolicy: oracleConfig.rollbackPolicy,
     subjectHead: curHead,
     action,
   });
@@ -462,6 +464,7 @@ function cmdInit(cwd, args) {
             cwd,
             evidence: obs,
             endpoint: args.endpoint,
+            rollbackPolicy: oracleConfig.rollbackPolicy,
             subjectHead: baseSha,
             action: 'init-admission',
           });
@@ -820,6 +823,7 @@ function cmdAdmission(cwd, args) {
       endpoint,
       expectedEnvironment,
       expectedSurface,
+      rollbackPolicy: parseOracleConfig(cwd, baseSha).rollbackPolicy,
       subjectHead: curHead,
       action: args.action || 'release-admission',
     });
