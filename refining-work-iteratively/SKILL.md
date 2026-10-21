@@ -28,11 +28,12 @@ has no new findings in the selected review scope.
   tradeoff decision that cannot be answered from the work itself.
 - If a narrower repo-local skill exists for the same loop, prefer it for
   repo-specific mechanics and keep this skill as the general process boundary.
-- For independent cross-model antagonistic review, dispatch the review skill via
-  an external CLI agent: `orchestrating-external-agents` with
-  `using-opencode-cli`, `using-claude-cli-agent`, `using-codex-cli-agent`, or
-  `using-antigravity-agy-cli`. Independence comes from a different model, not
-  just a different CLI.
+
+## Canonical Authority
+
+Apply the [portable autonomous completion contract](../references/autonomous-completion-contract.md)
+for review capability, finding triage, proof tiers, evidence invalidators, and review convergence bounds.
+Fresh-context independent review satisfies the requirement without universally demanding a different model.
 
 ## Initial Framing
 
@@ -86,9 +87,11 @@ and rerun the review prompt with tighter evidence requirements.
 
 Use one of these scopes before starting the loop:
 
-- **Default actionable scope**: stop when there are no new Blocking, Advisory,
-  or Question items. Nice-to-have findings may be recorded, accepted if cheap,
-  deferred, or explicitly left as polish debt.
+- **Default actionable scope**: stop when there are no new Blocking or Question
+  items. Advisory findings are nonblocking; agents validate/triage findings,
+  technically resolve false positives, and do not manufacture user approvals or
+  demand tracked tickets for every optional improvement. Nice-to-have findings
+  may be recorded, accepted if cheap, deferred, or explicitly left as polish debt.
 - **Polish-inclusive scope**: stop only when there are no new Blocking,
   Advisory, Question, or Nice-to-have items. Use this when the user asks for
   extra refinement, premium polish, exhaustive cleanup, or explicitly says to
@@ -107,7 +110,8 @@ For each finding, apply the relevant receiving skill before changing the work:
 2. Decide whether the finding is accepted, rejected, or deferred.
 3. Fix accepted findings with the narrowest durable change.
 4. Record rejected findings with technical evidence, not preference.
-5. Defer findings only with explicit user approval or a tracked follow-up.
+5. Defer optional or advisory findings with recorded technical rationale;
+   do not manufacture user approvals or demand tracked tickets for optional improvements.
 6. Run the narrowest validation that should fail without the fix, then broader
    validation when the touched surface warrants it.
 
@@ -125,8 +129,8 @@ Repeat the loop on the latest work only:
 5. Summarize what changed and what was rejected or deferred.
 6. Run the review again against the updated version.
 
-Prior clean reviews do not count after the work changes. A review pass only
-counts for the version it inspected.
+Subsequent review passes cover actual fixes/delta and affected integration,
+retaining unaffected settled proof, and rejecting repeated resolved findings.
 
 ## Stop Condition
 
@@ -137,9 +141,17 @@ Stop only when all are true:
 - Accepted findings from earlier passes are fixed.
 - Rejected findings have evidence strong enough that a future reviewer can
   understand the decision.
-- Deferred findings are explicitly accepted by the user or tracked as follow-up.
+- Validated must-fix items remain blockers and cannot be waived. Deferred
+  advisory, style, or optional findings have recorded technical rationale,
+  without manufacturing user approvals or demanding tracked tickets.
 - Validation appropriate to the changed surface has run, or the exact blocker is
   documented.
+- A maximum of three review/fix rounds is permitted for an unchanged strategy,
+  after which the owner autonomously reconsiders/simplifies or changes strategy
+  with causal evidence within remaining existing resource limits. No blind
+  infinite loop, reset-by-renaming, automatic approval at cap, automatic human
+  “continue” checkpoint, or invented independent new budget. Validated must-fix
+  risks remain closed.
 
 For pull requests, prefer `refining-prs-iteratively` when live PR state,
 mergeability, hosted checks, unresolved threads, or target-branch freshness are

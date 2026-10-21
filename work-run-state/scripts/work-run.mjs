@@ -13,6 +13,7 @@ import { createHash } from 'node:crypto';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { CLOSEOUT_VERIFIER_TIMEOUT_MS } from './closeout-timeouts.mjs';
+import { evaluateReleaseAdmission } from './release-admission.mjs';
 
 const FLOOR = 10;
 const HARD_CEILING = 30;
@@ -191,14 +192,59 @@ function defaultHandoff(ledger, runId) {
   ].join('\n');
 }
 
-function pickNext(ledger) {
-  if (['completed', 'cancelled', 'paused'].includes(ledger.status)) return null;
-  const open = (ledger.userStories || []).filter((story) =>
-    !story.passes && !story.blockedReason && (story.tags || []).every((tag) => {
-      if (!tag.startsWith('serial-after:')) return true;
-      return ledger.userStories.some((candidate) => candidate.id === tag.slice(13) && candidate.passes);
-    })
+export function resolveTargetSurface(story, ledger) {
+  if (story?.surface && typeof story.surface === 'string' && story.surface.trim()) {
+    return story.surface.trim().toLowerCase();
+  }
+  const tags = story?.tags || [];
+  const surfaceTag = tags.find((t) => String(t).toLowerCase().startsWith('surface:'));
+  if (surfaceTag) {
+    return surfaceTag.slice(8).trim().toLowerCase();
+  }
+  if (ledger?.surface && typeof ledger.surface === 'string' && ledger.surface.trim()) {
+    return ledger.surface.trim().toLowerCase();
+  }
+  return null;
+}
+
+export function isStoryReleaseDependent(story, ledger) {
+  if (!story) return false;
+  const tags = (story.tags || []).map((t) => String(t).toLowerCase());
+  return tags.some((t) =>
+    ['release', 'deploy', 'production', 'reduced-gates', 'staging', 'release-action'].includes(t)
   );
+}
+
+export function isStoryEligible(story, ledger, cwd = process.cwd()) {
+  if (story.passes || story.blockedReason) return false;
+  const tags = story.tags || [];
+  const serialAfterOk = tags.every((tag) => {
+    if (!tag.startsWith('serial-after:')) return true;
+    return ledger.userStories.some((candidate) => candidate.id === tag.slice(13) && candidate.passes);
+  });
+  if (!serialAfterOk) return false;
+
+  if (isStoryReleaseDependent(story, ledger)) {
+    const curHead = currentHead(cwd);
+    const expectedSurface = resolveTargetSurface(story, ledger);
+    if (!expectedSurface) return false;
+    const adm = executeBaselineSafeguardsProbe({
+      cwd,
+      baseSha: ledger.baseSha,
+      subjectHead: curHead,
+      endpoint: ledger.endpoint,
+      expectedSurface,
+      action: 'release-pick',
+      timeoutMs: 10_000,
+    });
+    if (!adm.admitted || adm.status === 'not_applicable') return false;
+  }
+  return true;
+}
+
+function pickNext(ledger, cwd = process.cwd()) {
+  if (['completed', 'cancelled', 'paused'].includes(ledger.status)) return null;
+  const open = (ledger.userStories || []).filter((story) => isStoryEligible(story, ledger, cwd));
   open.sort((a, b) => a.priority - b.priority || a.id.localeCompare(b.id));
   return open[0] || null;
 }
@@ -222,13 +268,13 @@ function parseOracleConfig(cwd, baseSha) {
       encoding: 'buffer',
     });
   } catch {
-    die('missing repository closeout-command.json at run base');
+    throw new Error('missing repository closeout-command.json at run base');
   }
   let config;
   try {
     config = JSON.parse(raw.toString('utf8'));
   } catch {
-    die('repository closeout-command.json at run base is invalid JSON');
+    throw new Error('repository closeout-command.json at run base is invalid JSON');
   }
   const command = config.closeoutCommand;
   const executable = Array.isArray(command) ? path.basename(command[0] || '') : '';
@@ -239,12 +285,79 @@ function parseOracleConfig(cwd, baseSha) {
     !new Set(['node', 'pnpm', 'npm', 'yarn', 'bun', 'python', 'python3']).has(executable) ||
     (executable === 'node' && command.some((part) => ['-e', '--eval', '-p', '--print'].includes(part)))
   ) {
-    die('closeout-command.json closeoutCommand must be a project-owned test command');
+    throw new Error('closeout-command.json closeoutCommand must be a project-owned test command');
   }
   return {
     command,
     configSha: `sha256:${createHash('sha256').update(raw).digest('hex')}`,
   };
+}
+
+export function executeBaselineSafeguardsProbe({
+  cwd,
+  baseSha,
+  subjectHead,
+  endpoint,
+  expectedEnvironment,
+  expectedSurface,
+  action = 'release-admission',
+  timeoutMs = 30_000,
+}) {
+  const curHead = subjectHead || currentHead(cwd);
+  const oracleBase = baseSha || curHead;
+  let oracleConfig;
+  try {
+    oracleConfig = parseOracleConfig(cwd, oracleBase);
+  } catch (err) {
+    return {
+      admitted: false,
+      status: 'denied',
+      reason: `release safeguards admission denied: cannot resolve baseline project probe at ${oracleBase}: ${err.message}`,
+      missing: ['baseline project probe command'],
+    };
+  }
+
+  const probeRun = spawnSync(oracleConfig.command[0], oracleConfig.command.slice(1), {
+    cwd,
+    encoding: 'utf8',
+    timeout: timeoutMs,
+  });
+
+  if (probeRun.status !== 0 || probeRun.signal) {
+    return {
+      admitted: false,
+      status: 'denied',
+      reason: `release safeguards admission denied: project probe execution failed with exit code ${probeRun.status}`,
+      missing: ['passing project probe execution'],
+    };
+  }
+
+  let observedPayload;
+  try {
+    observedPayload = JSON.parse(probeRun.stdout);
+  } catch {
+    return {
+      admitted: false,
+      status: 'denied',
+      reason: 'release safeguards admission denied: project probe did not output valid JSON observations',
+      missing: ['valid JSON output from project probe'],
+    };
+  }
+
+  const observedSafeguards =
+    observedPayload.releaseSafeguards ||
+    observedPayload.deliveryProof?.releaseSafeguards ||
+    observedPayload;
+
+  return evaluateReleaseAdmission({
+    cwd,
+    evidence: observedSafeguards,
+    endpoint,
+    expectedEnvironment,
+    expectedSurface,
+    subjectHead: curHead,
+    action,
+  });
 }
 
 function cmdInit(cwd, args) {
@@ -294,7 +407,12 @@ function cmdInit(cwd, args) {
     die('stories-file contains duplicate story IDs');
   }
   const baseSha = currentHead(cwd);
-  const oracleConfig = parseOracleConfig(cwd, baseSha);
+  let oracleConfig;
+  try {
+    oracleConfig = parseOracleConfig(cwd, baseSha);
+  } catch (err) {
+    die(err.message);
+  }
 
   let maxIterations;
   if (args['max-iterations']) {
@@ -303,8 +421,47 @@ function cmdInit(cwd, args) {
   } else {
     maxIterations = computeMaxIterations(stories.length, riskBonusFromStories(stories));
   }
-
   const now = new Date().toISOString();
+  if (args['safeguards-evidence']) {
+    die('forbidden: caller safeguards evidence override is rejected; safeguards resolve from baseline project oracle');
+  }
+  let releaseSafeguards = null;
+  if (['staging', 'deploy'].includes(args.endpoint)) {
+    try {
+      const probeRun = spawnSync(oracleConfig.command[0], oracleConfig.command.slice(1), {
+        cwd,
+        encoding: 'utf8',
+        timeout: 30_000,
+      });
+      if (probeRun.status === 0 && !probeRun.signal) {
+        const payload = JSON.parse(probeRun.stdout);
+        const obs = payload.releaseSafeguards || payload.deliveryProof?.releaseSafeguards;
+        if (obs) {
+          const adm = evaluateReleaseAdmission({
+            cwd,
+            evidence: obs,
+            endpoint: args.endpoint,
+            subjectHead: baseSha,
+            action: 'init-admission',
+          });
+          releaseSafeguards = {
+            status: adm.status,
+            reason: adm.reason,
+            evaluatedAt: now,
+          };
+        }
+      }
+    } catch {
+      // probe did not run or output safeguards
+    }
+    if (!releaseSafeguards) {
+      releaseSafeguards = {
+        status: 'unverified',
+        reason: 'safeguards evidence required from project oracle before dependent release execution or closeout',
+        evaluatedAt: now,
+      };
+    }
+  }
   const ledger = {
     version: 1,
     runId,
@@ -312,6 +469,7 @@ function cmdInit(cwd, args) {
     branchName: args.branch,
     description: args.description,
     sourceSpec: args['source-spec'],
+    surface: args.surface ? String(args.surface).trim() : null,
     endpoint: args.endpoint,
     trackingProvider: args['tracking-provider'],
     trackingIssueId: args['tracking-issue-id'],
@@ -327,6 +485,7 @@ function cmdInit(cwd, args) {
     status: 'active',
     closeoutStatus: null,
     userStories: stories,
+    releaseSafeguards,
   };
 
   fs.mkdirSync(path.join(dir, 'evidence'), { recursive: true });
@@ -346,7 +505,7 @@ function cmdPick(cwd, args) {
   const runId = resolveRunId(cwd, args);
   if (!runId) die('no ACTIVE run; pass --run-id or init first');
   const { data } = readLedger(cwd, runId);
-  const next = pickNext(data);
+  const next = pickNext(data, cwd);
   if (!next) {
     process.stdout.write(JSON.stringify({ ok: true, done: true, story: null }) + '\n');
     return;
@@ -406,10 +565,38 @@ function cmdBumpIteration(cwd, args) {
   const runId = resolveRunId(cwd, args);
   if (!runId) die('no ACTIVE run');
   const { path: lp, data } = readLedger(cwd, runId);
-  const next = pickNext(data);
+  const next = pickNext(data, cwd);
   if (!next || (args.story && args.story !== next.id)) {
     die('selected story is gated, dependent, cancelled, or globally suspended');
   }
+
+  if (isStoryReleaseDependent(next, data)) {
+    const curHead = currentHead(cwd);
+    const expectedSurface = resolveTargetSurface(next, data);
+    if (!expectedSurface) {
+      die('release-dependent action rejected: target release surface must be specified in story or ledger metadata');
+    }
+    const adm = executeBaselineSafeguardsProbe({
+      cwd,
+      baseSha: data.baseSha,
+      subjectHead: curHead,
+      endpoint: data.endpoint,
+      expectedSurface,
+      action: 'release-deployment',
+      timeoutMs: 30_000,
+    });
+    if (!adm.admitted || adm.status === 'not_applicable') {
+      die(`release-dependent action rejected: ${adm.reason || 'release action cannot use not_applicable'}`);
+    }
+    data.releaseSafeguards = {
+      status: adm.status,
+      reason: adm.reason,
+      evaluatedAt: new Date().toISOString(),
+      evaluatedHead: curHead,
+      surface: expectedSurface,
+    };
+  }
+
   if (data.iteration >= data.maxIterations) {
     die(
       `iteration budget exhausted: ${data.iteration}/${data.maxIterations} (sealed ${data.budgetSealedAt})`,
@@ -526,6 +713,123 @@ function cmdComplete(cwd, args) {
   const line = `WORK_RUN_COMPLETE run-id=${runId}`;
   process.stdout.write(JSON.stringify({ ok: true, completion: line }) + '\n');
 }
+function cmdAdmission(cwd, args) {
+  if (args['probe-command']) {
+    die('forbidden: caller probe command override is rejected; probe must resolve from baseline configuration');
+  }
+  if (args['subject-head']) {
+    die('forbidden: caller subject-head override is rejected; subject head resolves from repository HEAD');
+  }
+  const subjectHead = currentHead(cwd);
+  const endpoint = args.endpoint || null;
+  const expectedEnvironment = args.environment || null;
+  const expectedSurface = args.surface || null;
+  const requireAdmitted =
+    Boolean(args['require-admitted'] || args['require-admission']) ||
+    ['release-actuation', 'release-deployment', 'reduced-gates'].includes(args.action);
+
+  let callerEvidence = null;
+  if (args.evidence) {
+    try {
+      callerEvidence = JSON.parse(fs.readFileSync(args.evidence, 'utf8'));
+    } catch {
+      die(`cannot read admission evidence: ${args.evidence}`);
+    }
+  }
+
+  // Handle scoped not_applicable if declared
+  if (callerEvidence?.status === 'not_applicable') {
+    if (requireAdmitted) {
+      const res = {
+        admitted: false,
+        status: 'denied',
+        reason: 'release safeguards admission denied: release or reduced-gate actuation requires status: admitted with all three safeguards; not_applicable cannot authorize release actions',
+        missing: ['release safeguards (release actuation cannot use not_applicable)'],
+      };
+      if (args.enforce || args.strict) die(res.reason);
+      process.stdout.write(JSON.stringify(res, null, 2) + '\n');
+      process.exit(1);
+    }
+    const naResult = evaluateReleaseAdmission({
+      cwd,
+      evidence: callerEvidence,
+      endpoint,
+      expectedEnvironment,
+      expectedSurface,
+      subjectHead,
+      action: args.action || 'release-admission',
+    });
+    if (!naResult.admitted) {
+      if (args.enforce || args.strict) die(naResult.reason);
+      process.stdout.write(JSON.stringify(naResult, null, 2) + '\n');
+      process.exit(1);
+    }
+    process.stdout.write(JSON.stringify(naResult, null, 2) + '\n');
+    return;
+  }
+  const curHead = currentHead(cwd);
+  let baseSha = null;
+  const runId = resolveRunId(cwd, args);
+  if (runId) {
+    try {
+      const { data } = readLedger(cwd, runId);
+      baseSha = data.baseSha;
+    } catch {}
+  }
+  if (!baseSha) {
+    baseSha = curHead;
+  }
+
+  const result = executeBaselineSafeguardsProbe({
+    cwd,
+    baseSha,
+    subjectHead: curHead,
+    endpoint,
+    expectedEnvironment,
+    expectedSurface,
+    action: args.action || 'release-admission',
+  });
+
+  if (callerEvidence && result.admitted) {
+    const callerResult = evaluateReleaseAdmission({
+      cwd,
+      evidence: callerEvidence,
+      endpoint,
+      expectedEnvironment,
+      expectedSurface,
+      subjectHead: curHead,
+      action: args.action || 'release-admission',
+    });
+    if (!callerResult.admitted) {
+      if (args.enforce || args.strict) die(callerResult.reason);
+      process.stdout.write(JSON.stringify(callerResult, null, 2) + '\n');
+      process.exit(1);
+    }
+  }
+
+  if (!result.admitted || (requireAdmitted && result.status !== 'admitted')) {
+    const reason = result.reason || 'release actuation requires status: admitted with all three safeguards';
+    if (args.enforce || args.strict) {
+      die(reason);
+    }
+    process.stdout.write(JSON.stringify({ ...result, admitted: false, status: 'denied', reason }, null, 2) + '\n');
+    process.exit(1);
+  }
+  if (runId) {
+    try {
+      const { path: lp, data } = readLedger(cwd, runId);
+      data.releaseSafeguards = {
+        status: result.status,
+        reason: result.reason,
+        evaluatedAt: new Date().toISOString(),
+      };
+      writeLedger(lp, data);
+    } catch {
+      // ignore if not a work-run root
+    }
+  }
+  process.stdout.write(JSON.stringify(result, null, 2) + '\n');
+}
 
 function main() {
   const argv = process.argv.slice(2);
@@ -544,6 +848,7 @@ Commands:
   set-max --max-iterations N   (always rejected after seal)
   status
   append --text TEXT
+  admission --evidence PATH [--endpoint E] [--subject-head S] [--environment ENV] [--surface SURF]
   complete --closeout-evidence PATH
 
 State: <git-common-dir>/agent-runs/ (or AGENT_RUNS_ROOT)
@@ -576,6 +881,9 @@ State: <git-common-dir>/agent-runs/ (or AGENT_RUNS_ROOT)
       return cmdCancel(cwd, args);
     case 'complete':
       return cmdComplete(cwd, args);
+    case 'admission':
+    case 'check-admission':
+      return cmdAdmission(cwd, args);
     default:
       die(`unknown command: ${cmd}`);
   }

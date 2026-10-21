@@ -71,15 +71,32 @@ scope/authority uncertainty needs exact resolution. `PROHIBITED` takes precedenc
 Use smallest sufficient change-risk/acceptance proof. Mechanical work needs deterministic
 checks, not mandatory review; behavior work needs targeted regression, affected checks,
 changed-path smoke and one capable independent review bound to the current subject.
+Fresh-context independence does not universally require a different model. Extra reviewer
+is required only for concrete identified risk or explicit protected repository policy.
+Advisory, style, and pre-existing unrelated findings are nonblocking; agents validate/triage
+findings, technically resolve false positives, and do not manufacture user approvals or
+demand tracked tickets for every optional improvement. Initial review is scoped to the
+work; subsequent review covers actual fixes/delta and affected integration, retains
+unaffected settled proof, and rejects repeated resolved findings.
+A maximum of three review/fix rounds is permitted for an unchanged strategy, after which
+the owner autonomously reconsiders/simplifies or changes strategy with causal evidence
+within remaining existing resource limits. No blind infinite loop, reset-by-renaming,
+automatic approval at cap, automatic human “continue” checkpoint, or invented independent
+new budget. Validated must-fix risks remain closed. Escalate only real contract-defined gates.
+Honor actual user-invoked exhaustive/polish scope, but still bound convergence.
 High-impact work adds checks for identified material risk, not every suite.
 Authority/CI-lifecycle guidance is not low risk merely because Markdown/configuration.
 Record guidance, diagnostics, user/operator status, recovery/rollback and ownership;
 use `Not applicable — reason` for absent boundaries. Apply the evidence bindings below,
-not a session-only freshness test. Equivalent providers may satisfy review capability,
-unless a retained reviewer/owner is protected; missing review cannot.
+not a session-only freshness test. Equivalent providers may satisfy review capability
+unless an explicitly protected reviewer/owner must remain in the path; required
+independent review cannot be omitted. A capable independent agent review, bound to
+the exact change/diff and applicable base, satisfies the independent-review
+requirement unless actual repository policy or branch protection explicitly
+requires GitHub approval. A pending reviewer request alone is not a gate: check
+actual policy and route an eligible reviewer when approval is required.
 Mechanical checks may supply the independent deterministic oracle. Lower proof tiers
 cannot replace higher.
-
 | Task class | Applicable boundary evidence (scaled by change risk) |
 | --- | --- |
 | Documentation/skill-only | Contract/Markdown checks; behavior/authority guidance adds real pressure/smoke and one independent review |
@@ -87,7 +104,53 @@ cannot replace higher.
 | Release-sensitive | Above plus identified release guardrails and expected artifact/SHA evidence |
 | Deployment/promotion | Authorized target's merge/artifact/deployment/runtime/version/UAT chain only |
 | Runner/fleet repair | Named lifecycle/canary and target-scope evidence under the selected supported procedure |
+These rows do not create unrelated deployment, UX, host, or release work.
 
+### Release safeguard prerequisites
+
+All current and future repositories and new onboarding paths inherit prerequisite
+safeguards via canonical global contract and existing execution and closeout entrypoints,
+including repository overrides. This is a real applicability/admission check, not a promise
+that unexamined repositories are operationally ready.
+
+Before reducing release/human gates or executing a change justified by reversibility/limited
+rollout, require evidence of:
+1. **Bounded staging/canary/internal validation** separated from production, with concrete
+   observation proof (probe URL, test run ID, or observation command), bounded blast radius,
+   and explicit promotion criteria.
+2. **Working regression detection** with an accountable owner, actionable signal, trigger/threshold,
+   and deployed identity binding.
+3. **Exercised fast rollback/disable** to a known-good immutable artifact/config (not bare git revert,
+   latest, or branch head) with explicit measured recovery time and verified state/schema compatibility.
+
+Mere flags, empty runbooks, generic 200 health, Git revert, mutable tags, or stale/wrong-repo
+receipts do not prove readiness. Evidence binds exact normalized repo, surface, environment,
+relevant release/change identity, and timestamp freshness window. Missing, unknown, or incomplete
+proof cannot pass.
+
+Scoped `not_applicable` requires an explicit justification and is permitted only for non-release
+work (such as local-only source tooling or documentation). Release endpoints (`staging`, `deploy`)
+and production/staging environments cannot claim `not_applicable`. File extension alone does not
+establish low risk: authority guidance, CI, installers, auto-update, and migrations are high-impact
+surfaces that cannot bypass release safeguards via file-extension justification.
+
+If safeguards are absent, autonomously implement and verify needed applicable prerequisites first
+when assignment authority and access permit; otherwise retain stronger review/release gates and block
+only dependent reduced-gate/release actions with exact missing proof. Documentation-only and
+local-source work need not invent a staging server or unrelated production work. Guidance-only
+changes cannot be claimed to have provisioned every repository's deployment infrastructure.
+The admission check runs on the actual execution/release path, not only optional prose.
+Before executing deployment, promotion, or reduced-gate release actions (across all execution
+workflows, including multi-story runs, single-story execution, and non-ledger operations),
+execute the canonical admission check:
+
+```bash
+node ~/.agents/skills/work-run-state/scripts/work-run.mjs admission --endpoint <endpoint> --surface <surface> [--environment <env>]
+```
+
+The check executes the baseline project probe, verifies current subject and environment bindings,
+and exits 0 only when all three safeguards pass. If admission fails or is not executed,
+dependent release/reduced-gate actuation is strictly `PROHIBITED`.
 These rows do not create unrelated deployment, UX, host, or release work.
 
 ### Evidence bindings and invalidators
@@ -267,3 +330,10 @@ bindings above; each forbidden variant must remain closed.
 | Password/PAT/GUI genuinely human-only | HUMAN_BLOCKED lane; one exact private action/destination and expected non-secret result. Continue independent work. | Secret relay, fake consent, recurring requests or asking for an action available tools already permit. |
 | Explicit new user scope supersedes NoHost | Record exact superseded scope/current delta; preserve signer/lease/job/owner/budget gates and pass fresh preconditions. | Bare continue/default changes endpoint, unrelated gate cleared, or planning-only authority executes host work. |
 | Diagnosed unavailable executor; capable alternate; applicable authority delta removes only a user-only fence | Transfer exact task/custody, immutable inputs, evidence, remaining allowance and acceptance; stop conflicting execution. Alternate reviewer independently reads the required immutable subject. | Replace a healthy/protected owner, transfer gated actuation, reset limits, skip independent review or treat no reply as a human gate. |
+| Mechanical edit; no behavior change | Deterministic check and input binding; no mandatory reviewer or staging ceremony. | Compulsory review loop or staging deployment ceremony for mechanical text change. |
+| Scoped behavior fix; one capable independent reviewer passes; advisory style comment present | Treat advisory as nonblocking; complete verified delivery without blocking on optional style notes or manufacturing user approval. | Blocking merge on advisory/style items or requiring tracked tickets for every nitpick. |
+| Review round 3 on unchanged failing strategy | Owner autonomously reconsiders/simplifies or changes strategy using causal evidence within remaining resource limits. | Blind infinite review loop, reset-by-renaming, automatic approval at round cap, or automatic human continue prompt. |
+| Release/staging change missing any safeguard (staging, detection, or rollback) | Deny release safeguards admission and block dependent reduced-gate/release action with exact missing proof; retain stronger gates. | Proceeding on reduced release path without bounded staging, actionable detection, or exercised fast rollback. |
+| Release change with wrong repo, stale timestamp, or bare git revert rollback | Deny admission with exact binding/rollback mismatch; require immutable artifact target and fresh bound receipt. | Accepting wrong-repo proof, stale receipts, or bare git revert as rollback readiness. |
+| Local-source documentation change claiming not_applicable | Validate non-release scope and allow not_applicable with explicit justification; no invented staging server. | Inventing staging/production infrastructure for non-release local source work. |
+| Installer or authority guidance claiming not_applicable via Markdown/script extension | Deny admission: high-impact surfaces cannot bypass release safeguards via file-extension justification. | Treating high-impact authority or installer changes as low risk merely because of Markdown or script file extensions. |

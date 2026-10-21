@@ -36,19 +36,31 @@ freshness. Hosted results and required approvals remain current-head/base-bound.
 ## Closeout sequence
 
 1. **Pre-change** — confirm scope, task class, authority, acceptance criteria,
-   and any immutable identity or handoff required by the repository adapter.
+   any immutable identity or handoff required by the repository adapter, and
+   release safeguards admission prerequisites for release-sensitive or reduced-gate work.
 2. **Pre-commit** — require focused intended paths, regression/contract proof,
    and exact command output bound to the executed candidate inputs.
 3. **Pre-push** — inspect staged paths, focused commits, clean intended diff,
-   and passing applicable local gates before publishing.
+   and passing applicable local gates before publishing. If the push itself
+   directly triggers deployment/promotion or actuates reduced release gates,
+   require verified release safeguards admission under the portable contract
+   before publishing; pushing prerequisite implementation, tests, or fixes
+   to establish safeguards remains permitted under existing review/check gates.
+   Local-only or documentation work requires justified scoped not_applicable;
+   high-impact surfaces (installers, authority guidance, auto-update, migrations,
+   CI) cannot bypass safeguards via file-extension claims.
 4. **Commit & push** — commit with semantic message including `Agent:` and `Model:` trailers. Push to the remote branch. If the user authorized local-only work, record the exception in the work-run ledger; otherwise push is mandatory and BLOCKS terminal state.
 5. **PR & screenshots** — for product/UI delivery, bind the feature-trunk PR's current head and attach Gitshot proof for affected UI/UX. A merged PR is evidenced by its recorded post-push/current-head review, not by requiring it to remain open.
 6. **Review/hosted** — bind the carrier SHA, PR URL, latest reviewed head,
-   required checks, review threads, and mergeability. Requested merge,
-   green-CI, or a healthy unversioned endpoint is not proof.
-7. **Post-change** — when merge or deployment is in scope, bind actual merge
-   SHA to artifact/release SHA, deployment result, runtime/version equality,
-   authenticated smoke/UAT, tracking closure, and cleanup evidence.
+   required checks, review threads, and mergeability. One capable independent
+   review satisfies review requirements for behavior/high-impact work; advisory,
+   style, and pre-existing unrelated findings are nonblocking under the canonical
+   contract. Requested merge, green-CI, or a healthy unversioned endpoint is not proof.
+7. **Post-change** — when merge or deployment is in scope, require verified
+   release safeguards admission immediately before actual promotion, deployment,
+   or reduced-gate actuation; bind actual merge SHA to artifact/release SHA,
+   deployment result, runtime/version equality, authenticated smoke/UAT, tracking
+   closure, and cleanup evidence.
 8. **Pre-yield frontier check** — before yielding or a terminal report, account
    for every remaining authorized frontier (see below). Progress reports stay
    allowed while work continues.

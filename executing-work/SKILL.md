@@ -70,6 +70,8 @@ Detect outer-loop via env `WORK_RUN_OUTER_LOOP=1` or user saying “one story on
    (or explicit `not_applicable` reason), source basis, branch/worktree identity,
    and exact ordered story IDs. Recover metadata from actual native/durable state;
    never invent an ID. Hold only for genuinely missing material scope or authority.
+   Release endpoints (`staging`, `deploy`) require verified release safeguards admission
+   under the canonical contract; scoped not_applicable requires justified non-release work.
 2. Form stories from an existing plan appendix or sufficient preflight scope;
    use one story when sufficient. A whole-plan artifact is not required.
 3. `work-run-state` init seals the budget. Do not raise the maximum later.
@@ -77,8 +79,9 @@ Detect outer-loop via env `WORK_RUN_OUTER_LOOP=1` or user saying “one story on
 ### 3. Loop
 
 While incomplete stories and iteration &lt; sealed max:
-
-1. `pick` next story.
+1. `pick` next story. Release-dependent stories require verified release safeguards
+   admission and target surface before child dispatch; prerequisite and local-source
+   stories remain runnable.
 2. `implementing-story` (mid tier implement; low tier explore).
 3. On failure → apply the canonical recovery rules within remaining sealed attempts;
    park only genuinely gated/dependent stories and continue independent authorized stories.
@@ -89,8 +92,10 @@ While incomplete stories and iteration &lt; sealed max:
 
 1. `verifying-before-completion` for final role-based gates.
 2. Behavior/high-impact changes receive one fresh capable independent review
-   bound to the current delta/proof; equivalent providers may substitute.
+   bound to the current delta/proof under the canonical completion contract;
+   advisory, style, and pre-existing unrelated findings are nonblocking.
    Mechanical changes use deterministic checks without mandatory review.
+   Review convergence is bound to maximum three rounds for an unchanged strategy.
 3. `closing-repo-work` composes local, hosted, runtime, and UAT proof where
    applicable.
 4. Complete the ledger only after the closeout controller returns `VERIFIED`;

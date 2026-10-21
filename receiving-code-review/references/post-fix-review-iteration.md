@@ -45,3 +45,12 @@ for r in reviews:
   the comment was resolved or the line was outdated.
 - A green `gh pr checks` only means CI passed — it does NOT mean the review
   is approved or that no new inline comments exist.
+- Post-fix review covers actual fixes/delta and affected integration, retaining
+  unaffected settled proof, and rejecting repeated resolved findings.
+- Advisory, style, and pre-existing unrelated findings are nonblocking; agents
+  validate/triage findings, technically resolve false positives, and do not
+  manufacture user approvals or demand tracked tickets for every optional
+  improvement.
+- A maximum of three review/fix rounds is permitted for an unchanged strategy,
+  after which the owner autonomously reconsiders/simplifies or changes strategy
+  with causal evidence within remaining existing resource limits.

@@ -40,8 +40,15 @@ Use when a pull request needs follow-through on hosted checks, review comments, 
 
 ## Guidance
 
-- Continue owned diagnosis/repair for actionable failures. For pending external
-  checks/review, register one watcher under the contract and continue independent work.
+- Continue owned diagnosis/repair for actionable failures. For pending hosted
+  checks, register one watcher. Classify PR review requests under the canonical
+  completion contract before recording a review wait; continue independent work.
+- Triage review findings under the canonical contract: validated must-fix risks
+  require remediation; advisory, style, and pre-existing unrelated findings are
+  nonblocking.
+- Review convergence: bound review/fix loops by the canonical completion contract
+  (maximum three review/fix rounds for an unchanged strategy before autonomous
+  strategy reconsideration).
 - Park only genuinely gated/exhausted dependencies; preserve latest-head proof criteria.
 - Preserve relevant evidence, commands, paths, validation results, latest head SHA, and recovery ownership in the handoff.
 

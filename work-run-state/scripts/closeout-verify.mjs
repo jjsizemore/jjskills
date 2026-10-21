@@ -8,6 +8,7 @@ import fs from 'node:fs';
 import { createHash } from 'node:crypto';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { CLOSEOUT_ORACLE_TIMEOUT_MS } from './closeout-timeouts.mjs';
+import { evaluateReleaseAdmission } from './release-admission.mjs';
 
 function fail(message) {
   process.stderr.write(`${message}\n`);
@@ -191,6 +192,20 @@ if (hasEndpoint && ['staging', 'deploy'].includes(ledger.endpoint)) {
       !/^[a-f0-9]{40,64}$/u.test(proof.expectedArtifactSha || '') ||
       proof.artifactSha !== proof.expectedArtifactSha) {
     fail('closeout verifier project oracle delivery observations do not bind the authorized target');
+  }
+  const safeguardsEvidence = proof.releaseSafeguards;
+  if (!safeguardsEvidence) {
+    fail('closeout verifier requires verified release safeguards admission in project oracle delivery observations');
+  }
+  const admission = evaluateReleaseAdmission({
+    cwd: args.cwd,
+    evidence: safeguardsEvidence,
+    endpoint: ledger.endpoint,
+    subjectHead: args['subject-head'],
+    action: 'release-closeout',
+  });
+  if (!admission.admitted) {
+    fail(`closeout verifier release safeguards admission failed: ${admission.reason}`);
   }
 }
 if (

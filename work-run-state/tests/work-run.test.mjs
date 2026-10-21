@@ -14,6 +14,7 @@ import {
   CLOSEOUT_ORACLE_TIMEOUT_MS,
   CLOSEOUT_VERIFIER_TIMEOUT_MS,
 } from '../scripts/closeout-timeouts.mjs';
+import { resolveExpectedRepo } from '../scripts/release-admission.mjs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CLI = path.join(__dirname, '..', 'scripts', 'work-run.mjs');
 const LOOP = path.join(__dirname, '..', 'scripts', 'work-run-loop.sh');
@@ -298,6 +299,19 @@ describe('work-run init', () => {
     const forced = run([...args, '--force'], repo);
     assert.notEqual(forced.status, 0);
     assert.match(forced.stderr + forced.stdout, /cannot overwrite active/i);
+  });
+  it('rejects caller safeguards-evidence override at init', () => {
+    const storiesPath = path.join(repo, 'stories.json');
+    fs.writeFileSync(storiesPath, JSON.stringify([{ id: 'US-001', title: 'A', acceptanceCriteria: ['c'], passes: false }]));
+    const forgedPath = path.join(repo, 'forged.json');
+    fs.writeFileSync(forgedPath, JSON.stringify({ status: 'admitted' }));
+    const r = run([
+      'init', '--run-id', 'no-override', '--project', 'p', '--branch', 'b',
+      '--description', 'd', '--stories-file', storiesPath, '--endpoint', 'staging',
+      '--safeguards-evidence', forgedPath,
+    ], repo);
+    assert.notEqual(r.status, 0);
+    assert.match(r.stderr, /caller safeguards evidence override is rejected/i);
   });
 });
 
@@ -629,6 +643,32 @@ process.stdout.write(JSON.stringify({ deliveryProof: { ...observation, subjectHe
       endpoint: 'staging', environment: 'staging', runtimeSha: head,
       checksPassed: true, expectedRuntimeVersion: 'fixture-v1', runtimeVersion: 'fixture-v1',
       expectedArtifactSha: 'a'.repeat(64), artifactSha: 'a'.repeat(64),
+      releaseSafeguards: {
+        repo: resolveExpectedRepo(repo),
+        surface: 'staging-service',
+        environment: 'staging',
+        changeIdentity: head,
+        evaluatedAt: new Date().toISOString(),
+        staging: {
+          validated: true,
+          isolatedFromProduction: true,
+          blastRadius: 'internal-staging',
+          probeUrl: 'https://staging.internal/health',
+          promotionCriteria: 'error_rate < 0.001 for 10m',
+        },
+        detection: {
+          owner: 'oncall-team',
+          signal: 'p99_latency_ms > 500',
+          trigger: 'error_rate > 0.01',
+          deployedIdentityBound: true,
+        },
+        rollback: {
+          exercised: true,
+          immutableTarget: 'a'.repeat(64),
+          recoveryTarget: '120s',
+          schemaCompatible: true,
+        },
+      },
     };
     const writeObservation = (overrides = {}) =>
       fs.writeFileSync(observationPath, JSON.stringify({ ...expected, ...overrides }));
@@ -659,7 +699,19 @@ process.stdout.write(JSON.stringify({ deliveryProof: { ...observation, subjectHe
     assert.equal(result.status, 0, result.stderr + result.stdout);
     assert.equal(readJson(path.join(runsRoot(repo), 'accepted-global', 'ledger.json')).status, 'completed');
 
-    writeObservation({ endpoint: 'deploy', environment: 'production' });
+    writeObservation({
+      endpoint: 'deploy',
+      environment: 'production',
+      releaseSafeguards: {
+        ...expected.releaseSafeguards,
+        surface: 'deploy-service',
+        environment: 'production',
+        staging: {
+          ...expected.releaseSafeguards.staging,
+          blastRadius: 'canary-10pct',
+        },
+      },
+    });
     assert.equal(init('deploy', 'accepted-deploy').status, 0);
     for (const story of ['A', 'B', 'C']) assert.equal(run(['mark-pass', '--story', story], repo).status, 0);
     const deployEvidence = closeoutEvidence(repo, {}, 'accepted-deploy');
@@ -669,6 +721,354 @@ process.stdout.write(JSON.stringify({ deliveryProof: { ...observation, subjectHe
       { FAKE_GH_MODE: 'merged' },
     );
     assert.equal(deploy.status, 0, deploy.stderr + deploy.stdout);
+  });
+
+  it('rejects closeout when oracle lacks releaseSafeguards even if caller supplies forged evidence', () => {
+    const observationPath = path.join(runsRoot(repo), 'runtime-observation.json');
+    fs.mkdirSync(runsRoot(repo), { recursive: true });
+    fs.writeFileSync(path.join(repo, 'delivery-probe.mjs'), `
+import fs from 'node:fs';
+import { execFileSync } from 'node:child_process';
+const observation = JSON.parse(fs.readFileSync(${JSON.stringify(observationPath)}, 'utf8'));
+const subjectHead = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+process.stdout.write(JSON.stringify({ deliveryProof: { ...observation, subjectHead } }));
+`);
+    fs.writeFileSync(path.join(repo, 'closeout-command.json'),
+      JSON.stringify({ closeoutCommand: [process.execPath, 'delivery-probe.mjs'] }));
+    assert.equal(spawnSync('git', ['add', 'accepted-stories.json', 'delivery-probe.mjs', 'closeout-command.json'], { cwd: repo }).status, 0);
+    assert.equal(spawnSync('git', [
+      '-c', 'core.hooksPath=/dev/null', 'commit', '--no-gpg-sign', '-q', '-m', 'probe lacking safeguards',
+    ], { cwd: repo }).status, 0);
+    const head = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).stdout.trim();
+    const probeObservation = {
+      endpoint: 'staging', environment: 'staging', runtimeSha: head,
+      checksPassed: true, expectedRuntimeVersion: 'fixture-v1', runtimeVersion: 'fixture-v1',
+      expectedArtifactSha: 'a'.repeat(64), artifactSha: 'a'.repeat(64),
+    };
+    fs.writeFileSync(observationPath, JSON.stringify(probeObservation));
+    assert.equal(init('staging', 'staging-missing-safeguards').status, 0);
+    for (const story of ['A', 'B', 'C']) assert.equal(run(['mark-pass', '--story', story], repo).status, 0);
+    const forgedSafeguards = {
+      repo: resolveExpectedRepo(repo),
+      surface: 'staging-service',
+      environment: 'staging',
+      changeIdentity: head,
+      evaluatedAt: new Date().toISOString(),
+      staging: { validated: true, isolatedFromProduction: true, blastRadius: 'internal-staging', probeUrl: 'https://staging.internal/health', promotionCriteria: 'ok' },
+      detection: { owner: 'team', signal: 'err > 0', trigger: 'alert', deployedIdentityBound: true },
+      rollback: { exercised: true, immutableTarget: 'a'.repeat(64), recoveryTarget: '120s', schemaCompatible: true },
+    };
+    const evidencePath = closeoutEvidence(repo, { releaseSafeguards: forgedSafeguards }, 'staging-missing-safeguards');
+    const result = run(['complete', '--closeout-evidence', evidencePath], repo, { FAKE_GH_MODE: 'merged' });
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /requires verified release safeguards admission in project oracle delivery observations/i);
+  });
+});
+
+describe('release safeguards admission enforcement', () => {
+  let repo;
+  beforeEach(() => {
+    repo = makeRepo();
+  });
+  afterEach(() => {
+    fs.rmSync(repo, { recursive: true, force: true });
+    fs.rmSync(runsRoot(repo), { recursive: true, force: true });
+  });
+
+  const validSafeguards = (cwd) => {
+    const head = spawnSync('git', ['rev-parse', 'HEAD'], { cwd, encoding: 'utf8' }).stdout.trim();
+    return {
+      repo: resolveExpectedRepo(cwd),
+      surface: 'backend-api',
+      environment: 'staging',
+      changeIdentity: head,
+      evaluatedAt: new Date().toISOString(),
+      staging: {
+        validated: true,
+        isolatedFromProduction: true,
+        blastRadius: 'internal-staging',
+        probeUrl: 'https://staging.internal/probe',
+        promotionCriteria: 'error_rate < 0.001 for 10m',
+      },
+      detection: {
+        owner: 'core-team',
+        signal: 'http_error_rate_5xx > 0.01',
+        trigger: 'threshold_exceeded',
+        deployedIdentityBound: true,
+      },
+      rollback: {
+        exercised: true,
+        immutableTarget: 'a'.repeat(64),
+        recoveryTarget: '120s',
+        schemaCompatible: true,
+      },
+    };
+  };
+
+  const commitProbe = (safeguardsPayload) => {
+    fs.writeFileSync(
+      path.join(repo, 'admission-probe.mjs'),
+      `import { execFileSync } from 'node:child_process';
+const head = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+const payload = ${JSON.stringify(safeguardsPayload)};
+if (!payload.changeIdentity || payload.changeIdentity !== 'stale-head') {
+  payload.changeIdentity = head;
+}
+process.stdout.write(JSON.stringify({ releaseSafeguards: payload }));
+`,
+    );
+    fs.writeFileSync(
+      path.join(repo, 'closeout-command.json'),
+      JSON.stringify({ closeoutCommand: [process.execPath, 'admission-probe.mjs'] }),
+    );
+    spawnSync('git', ['add', 'admission-probe.mjs', 'closeout-command.json'], { cwd: repo });
+    spawnSync('git', ['-c', 'core.hooksPath=/dev/null', 'commit', '--no-gpg-sign', '-q', '-m', 'set admission probe'], { cwd: repo });
+  };
+
+  it('rejects caller probe-command or subject-head overrides', () => {
+    const probeOverride = run(['admission', '--probe-command', 'echo 1'], repo);
+    assert.notEqual(probeOverride.status, 0);
+    assert.match(probeOverride.stderr + probeOverride.stdout, /caller probe command override is rejected/i);
+
+    const headOverride = run(['admission', '--subject-head', 'a'.repeat(40)], repo);
+    assert.notEqual(headOverride.status, 0);
+    assert.match(headOverride.stderr + headOverride.stdout, /caller subject-head override is rejected/i);
+  });
+
+  it('rejects forged caller JSON assertions when unconfirmed by controller probe', () => {
+    const forged = validSafeguards(repo);
+    commitProbe(forged);
+    const evPath = path.join(repo, 'forged-caller-assertions.json');
+    fs.writeFileSync(evPath, JSON.stringify({ ...forged, repo: 'local:/nonexistent/other-repo' }));
+    const res = run(['admission', '--evidence', evPath, '--endpoint', 'staging'], repo);
+    assert.notEqual(res.status, 0);
+    assert.match(res.stdout + res.stderr, /repo binding mismatch/i);
+  });
+
+  it('admits release safeguards from a real controller-executed baseline probe drill', () => {
+    const safeguards = validSafeguards(repo);
+    commitProbe(safeguards);
+
+    const res = run(['admission', '--endpoint', 'staging'], repo);
+    assert.equal(res.status, 0, res.stderr + res.stdout);
+    const out = JSON.parse(res.stdout);
+    assert.equal(out.status, 'admitted');
+  });
+
+  it('rejects unbounded staging blast radius or missing promotion criteria', () => {
+    const ev1 = validSafeguards(repo);
+    ev1.staging.blastRadius = 'unbounded';
+    commitProbe(ev1);
+    const res1 = run(['admission', '--endpoint', 'staging'], repo);
+    assert.notEqual(res1.status, 0);
+    assert.match(res1.stdout + res1.stderr, /bounded blast radius/i);
+
+    const ev2 = validSafeguards(repo);
+    delete ev2.staging.promotionCriteria;
+    commitProbe(ev2);
+    const res2 = run(['admission', '--endpoint', 'staging'], repo);
+    assert.notEqual(res2.status, 0);
+    assert.match(res2.stdout + res2.stderr, /promotion criteria/i);
+  });
+
+  it('rejects mutable rollback targets and unmeasured recovery targets', () => {
+    const ev1 = validSafeguards(repo);
+    ev1.rollback.immutableTarget = 'latest';
+    commitProbe(ev1);
+    const res1 = run(['admission', '--endpoint', 'staging'], repo);
+    assert.notEqual(res1.status, 0);
+    assert.match(res1.stdout + res1.stderr, /immutable artifact/i);
+
+    const ev2 = validSafeguards(repo);
+    ev2.rollback.recoveryTarget = 'fast';
+    commitProbe(ev2);
+    const res2 = run(['admission', '--endpoint', 'staging'], repo);
+    assert.notEqual(res2.status, 0);
+    assert.match(res2.stdout + res2.stderr, /measured recovery time/i);
+  });
+  it('rejects deployment endpoint attempting not_applicable', () => {
+    const ev = {
+      repo: resolveExpectedRepo(repo),
+      surface: 'backend-api',
+      environment: 'staging',
+      changeIdentity: spawnSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).stdout.trim(),
+      evaluatedAt: new Date().toISOString(),
+      status: 'not_applicable',
+      notApplicableReason: 'attempted bypass on staging endpoint',
+    };
+    const p = path.join(repo, 'na-deploy.json');
+    fs.writeFileSync(p, JSON.stringify(ev));
+    const res = run(['admission', '--evidence', p, '--endpoint', 'staging'], repo);
+    assert.notEqual(res.status, 0);
+    assert.match(res.stdout + res.stderr, /release targets cannot claim not_applicable/i);
+  });
+
+  it('rejects wrong repository host or owner even when repository basename matches', () => {
+    spawnSync('git', ['remote', 'add', 'origin', 'https://github.com/fixture/repo.git'], { cwd: repo });
+    const wrongOwner = validSafeguards(repo);
+    wrongOwner.repo = 'github.com/attacker/repo';
+    commitProbe(wrongOwner);
+    const resOwner = run(['admission', '--endpoint', 'staging'], repo);
+    assert.notEqual(resOwner.status, 0);
+    assert.match(resOwner.stdout + resOwner.stderr, /repo binding mismatch/i);
+
+    const wrongHost = validSafeguards(repo);
+    wrongHost.repo = 'gitlab.com/fixture/repo';
+    commitProbe(wrongHost);
+    const resHost = run(['admission', '--endpoint', 'staging'], repo);
+    assert.notEqual(resHost.status, 0);
+    assert.match(resHost.stdout + resHost.stderr, /repo binding mismatch/i);
+  });
+
+  it('rejects wrong environment, stale changeIdentity, or expired timestamp', () => {
+    const evWrongEnv = validSafeguards(repo);
+    evWrongEnv.environment = 'production';
+    commitProbe(evWrongEnv);
+    const resEnv = run(['admission', '--endpoint', 'staging'], repo);
+    assert.notEqual(resEnv.status, 0);
+    assert.match(resEnv.stdout + resEnv.stderr, /environment mismatch/i);
+
+    const evStale = validSafeguards(repo);
+    evStale.changeIdentity = 'stale-head';
+    commitProbe(evStale);
+    const resStale = run(['admission', '--endpoint', 'staging'], repo);
+    assert.notEqual(resStale.status, 0);
+    assert.match(resStale.stdout + resStale.stderr, /changeIdentity mismatch/i);
+
+    const evExpired = validSafeguards(repo);
+    evExpired.evaluatedAt = new Date(Date.now() - 7200000).toISOString();
+    commitProbe(evExpired);
+    const resExpired = run(['admission', '--endpoint', 'staging'], repo);
+    assert.notEqual(resExpired.status, 0);
+    assert.match(resExpired.stdout + resExpired.stderr, /freshness evidence expired/i);
+  });
+
+  it('rejects candidate closeout-command.json replacement from authorizing dispatch', () => {
+    const storiesFile = path.join(repo, 'staged-stories.json');
+    fs.writeFileSync(storiesFile, JSON.stringify([
+      { id: 'US-001', title: 'Prod Release Action', acceptanceCriteria: ['ok'], priority: 1, passes: false, tags: ['release'] },
+    ]));
+    assert.equal(run(['init', '--run-id', 'tamper-run', '--project', 'fixture', '--branch', 'fixture', '--description', 'tamper test', '--stories-file', storiesFile, '--endpoint', 'staging'], repo).status, 0);
+
+    const fakeSafeguards = validSafeguards(repo);
+    fs.writeFileSync(path.join(repo, 'fake-probe.mjs'), `process.stdout.write(JSON.stringify({ releaseSafeguards: ${JSON.stringify(fakeSafeguards)} }));`);
+    fs.writeFileSync(path.join(repo, 'closeout-command.json'), JSON.stringify({ closeoutCommand: [process.execPath, 'fake-probe.mjs'] }));
+    spawnSync('git', ['add', 'fake-probe.mjs', 'closeout-command.json'], { cwd: repo });
+    spawnSync('git', ['-c', 'core.hooksPath=/dev/null', 'commit', '--no-gpg-sign', '-q', '-m', 'tamper closeout command'], { cwd: repo });
+
+    const pick = JSON.parse(run(['pick', '--run-id', 'tamper-run'], repo).stdout);
+    assert.equal(pick.story, null);
+
+    const bump = run(['bump-iteration', '--run-id', 'tamper-run', '--story', 'US-001'], repo);
+    assert.notEqual(bump.status, 0);
+    assert.match(bump.stderr, /selected story is gated, dependent, cancelled, or globally suspended/i);
+  });
+
+  it('denies bump-iteration and child launch on dependent release story when safeguards change after initial admission', () => {
+    const validState = validSafeguards(repo);
+    commitProbe(validState);
+
+    const storiesFile = path.join(repo, 'staged-stories.json');
+    fs.writeFileSync(storiesFile, JSON.stringify([
+      { id: 'US-001', title: 'Prerequisite Fix', acceptanceCriteria: ['ok'], priority: 1, passes: false },
+      { id: 'US-002', title: 'Prod Release Action', acceptanceCriteria: ['ok'], priority: 2, passes: false, tags: ['release'], surface: 'backend-api' },
+    ]));
+    assert.equal(run(['init', '--run-id', 'preaction-run', '--project', 'fixture', '--branch', 'fixture', '--description', 'preaction test', '--stories-file', storiesFile, '--endpoint', 'staging'], repo).status, 0);
+
+    const pick1 = JSON.parse(run(['pick', '--run-id', 'preaction-run'], repo).stdout);
+    assert.equal(pick1.id, 'US-001');
+    assert.equal(run(['mark-pass', '--run-id', 'preaction-run', '--story', 'US-001'], repo).status, 0);
+
+    // Tamper probe state: change baseline probe to output invalid/stale safeguards
+    fs.writeFileSync(
+      path.join(repo, 'admission-probe.mjs'),
+      `process.stdout.write(JSON.stringify({ releaseSafeguards: { ...${JSON.stringify(validState)}, changeIdentity: 'stale-head' } }));`,
+    );
+    spawnSync('git', ['add', 'admission-probe.mjs'], { cwd: repo });
+    spawnSync('git', ['-c', 'core.hooksPath=/dev/null', 'commit', '--no-gpg-sign', '-q', '-m', 'stale probe output'], { cwd: repo });
+
+    const pick2 = JSON.parse(run(['pick', '--run-id', 'preaction-run'], repo).stdout);
+    assert.equal(pick2.story, null);
+
+    const bump = run(['bump-iteration', '--run-id', 'preaction-run', '--story', 'US-002'], repo);
+    assert.notEqual(bump.status, 0);
+    assert.match(bump.stderr, /selected story is gated, dependent, cancelled, or globally suspended/i);
+  });
+
+  it('denies bump-iteration on release story when probe observations bind a different surface', () => {
+    const validState = validSafeguards(repo);
+    validState.surface = 'worker-service';
+    commitProbe(validState);
+
+    const storiesFile = path.join(repo, 'surface-stories.json');
+    fs.writeFileSync(storiesFile, JSON.stringify([
+      { id: 'US-001', title: 'Backend Release', acceptanceCriteria: ['ok'], priority: 1, passes: false, tags: ['release'], surface: 'backend-api' },
+    ]));
+    assert.equal(run(['init', '--run-id', 'wrong-surface-run', '--project', 'fixture', '--branch', 'fixture', '--description', 'surface test', '--stories-file', storiesFile, '--endpoint', 'staging'], repo).status, 0);
+
+    const pick = JSON.parse(run(['pick', '--run-id', 'wrong-surface-run'], repo).stdout);
+    assert.equal(pick.story, null);
+
+    const bump = run(['bump-iteration', '--run-id', 'wrong-surface-run', '--story', 'US-001'], repo);
+    assert.notEqual(bump.status, 0);
+    assert.match(bump.stderr, /selected story is gated, dependent, cancelled, or globally suspended/i);
+  });
+
+  it('rejects high-impact surface attempting not_applicable via file extension', () => {
+    const ev = {
+      repo: resolveExpectedRepo(repo),
+      surface: 'installer-and-authority-guidance',
+      environment: 'local',
+      changeIdentity: spawnSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).stdout.trim(),
+      evaluatedAt: new Date().toISOString(),
+      status: 'not_applicable',
+      notApplicableReason: 'low risk markdown docs and scripts',
+    };
+    const p = path.join(repo, 'high-impact-na.json');
+    fs.writeFileSync(p, JSON.stringify(ev));
+    const res = run(['admission', '--evidence', p, '--endpoint', 'local-only'], repo);
+    assert.notEqual(res.status, 0);
+    assert.match(res.stdout + res.stderr, /high-impact surfaces.*cannot bypass release safeguards/i);
+  });
+
+  it('admits justified not_applicable on local-only non-high-impact work', () => {
+    const ev = {
+      repo: resolveExpectedRepo(repo),
+      surface: 'local-test-fixture',
+      environment: 'local',
+      changeIdentity: spawnSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).stdout.trim(),
+      evaluatedAt: new Date().toISOString(),
+      status: 'not_applicable',
+      notApplicableReason: 'local test fixture with no runtime release surface',
+    };
+    const p = path.join(repo, 'justified-na.json');
+    fs.writeFileSync(p, JSON.stringify(ev));
+    const res = run(['admission', '--evidence', p, '--endpoint', 'local-only'], repo);
+    assert.equal(res.status, 0, res.stderr + res.stdout);
+    const out = JSON.parse(res.stdout);
+    assert.equal(out.status, 'not_applicable');
+  });
+
+  it('rejects not_applicable when --require-admitted is passed for release actuation', () => {
+    const ev = {
+      repo: resolveExpectedRepo(repo),
+      surface: 'local-test-fixture',
+      environment: 'local',
+      changeIdentity: spawnSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).stdout.trim(),
+      evaluatedAt: new Date().toISOString(),
+      status: 'not_applicable',
+      notApplicableReason: 'local test fixture with no runtime release surface',
+    };
+    const p = path.join(repo, 'justified-na.json');
+    fs.writeFileSync(p, JSON.stringify(ev));
+
+    const resNormal = run(['admission', '--evidence', p, '--endpoint', 'local-only'], repo);
+    assert.equal(resNormal.status, 0);
+    assert.equal(JSON.parse(resNormal.stdout).status, 'not_applicable');
+
+    const resRelease = run(['admission', '--evidence', p, '--endpoint', 'local-only', '--require-admitted'], repo);
+    assert.notEqual(resRelease.status, 0);
+    assert.match(resRelease.stdout + resRelease.stderr, /release.*actuation cannot use not_applicable|requires status: admitted/i);
   });
 });
 it('records an in-flight checkpoint before child release and preserves child outcomes and sealed budget', async () => {

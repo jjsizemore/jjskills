@@ -20,6 +20,11 @@ current head is proven clean.
 - Prefer narrower repo-local overrides, but keep this skill as loop controller
   unless the repo-local skill explicitly replaces it.
 
+## Canonical Authority
+
+Apply the [portable autonomous completion contract](../references/autonomous-completion-contract.md)
+for task classification, review requirements, finding triage, proof tiers, evidence invalidators,
+and review convergence bounds. Do not reimplement or drift from the canonical rules.
 ## Loop
 
 1. Refresh live GitHub state: base/head, head SHA, mergeability, review
@@ -36,10 +41,11 @@ current head is proven clean.
    - Failed check: reproduce the first concrete failure locally, fix, validate.
    - Pending check: watch with the repo's normal monitor; if it cannot reach a
      conclusion, report a pending blocker. Pending is not clean.
-3. After any fix, response, conflict resolution, or push, restart on the new
-   head SHA.
-4. When no live blockers remain, run `requesting-code-review` for antagonistic
-   latest-head review. If it finds issues, restart.
+3. Subsequent review covers actual fixes/delta and affected integration under the canonical
+   contract, retaining unaffected settled proof, and rejecting repeated resolved findings.
+4. When no live blockers remain and review is required for the change class, run
+   `requesting-code-review` for antagonistic latest-head review. Advance the loop within
+   canonical convergence limits.
 
 ## Stop Condition
 
@@ -48,20 +54,21 @@ Stop only when all are true on the current PR head SHA:
 - PR is mergeable and not blocked by conflicts.
 - No unresolved actionable threads or latest-head comments remain.
 - Required checks pass; none are pending.
-- At least two independent latest-head antagonistic review passes found no
-  blocking or advisory issues, unless the user accepts a documented reviewer
-  availability limitation.
+- Applicable boundary evidence under the canonical completion contract is satisfied:
+  mechanical work needs deterministic checks, not mandatory review; behavior work needs
+  one capable independent review without unresolved blocking issues.
+- Advisory, style, and pre-existing unrelated findings are nonblocking under the canonical
+  contract; agents validate/triage findings without manufacturing user approvals.
+- Review convergence complies with the canonical contract: maximum three review/fix rounds
+  for an unchanged strategy before autonomous strategy reconsideration.
 - Rejected review items have PR-visible technical responses with provenance.
 - Final handoff records PR number, head SHA, reviews, checks, merge state,
   commits pushed, and validation commands.
 
 ## Definitions
 
-- **Independent reviewer/provider:** distinct source, such as human, GitHub
-  Copilot, `code-review-syncvia`, or an external CLI agent
-  (`using-opencode-cli`, `using-claude-cli-agent`, `using-codex-cli-agent`,
-  `using-antigravity-agy-cli`). Independence comes from a different model, not
-  just a different CLI. Same reviewer or same model rerun twice does not count.
+- **Independent reviewer/provider:** see [portable completion contract](../references/autonomous-completion-contract.md);
+  fresh-context independent review satisfies the requirement without universally demanding a different model.
 - **Actionable feedback:** requests or implies code, test, docs, behavior,
   release, security, or architecture change, or needs technical rejection.
 - **Provenance:** agent, model, PR number, comment/review ID when available,
@@ -71,10 +78,8 @@ Stop only when all are true on the current PR head SHA:
   `pnpm lint`, `pnpm test`, and `pnpm exec lefthook run pre-commit`.
 - **Unreproducible failed check:** document exact check, local command, blocker,
   and evidence. Do not call clean until resolved or user-accepted.
-- **Unavailable second reviewer:** if no second independent review source exists
-  and the user does not accept that limitation, report a blocker. Do not call
-  clean.
-
+- **Review convergence:** bound by the [portable completion contract](../references/autonomous-completion-contract.md)
+  (maximum three review/fix rounds for an unchanged strategy before autonomous strategy reconsideration).
 ## Antagonistic Review Prompt
 
 Ask reviewers to treat the latest head as a merge gate and look for reasons not

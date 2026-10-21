@@ -67,6 +67,7 @@ node ~/.agents/skills/work-run-state/scripts/work-run.mjs <command> ...
 | `append` | Append to progress.md |
 | `cancel` | Clear ACTIVE; keep history |
 | `complete` | All pass + bound evidence + controller verifier → clear ACTIVE |
+| `admission` | Evaluate baseline-bound project probe against release safeguards prerequisites |
 | `set-max` | Always rejected after seal |
 
 New `init` calls require `--endpoint pr|merge|staging|deploy|local-only`. The
@@ -89,9 +90,12 @@ the subject head for `pr`. `merge` also requires actual `mergedAt` and
 JSON `deliveryProof`: endpoint, subjectHead, environment, runtimeSha,
 checksPassed, expectedRuntimeVersion/runtimeVersion and
 expectedArtifactSha/artifactSha. The oracle must obtain independent
-runtime/artifact observations, not echo caller claims. `local-only` requires no
-PR or deployment proof.
-
+runtime/artifact observations, not echo caller claims. `staging` and `deploy`
+additionally require verified `releaseSafeguards` observations from the project
+oracle (bounded staging with promotion criteria, actionable regression detection,
+and exercised fast rollback to an immutable target). Dependent release stories
+are gated at `pick` and `bump-iteration` before child launch until admission passes.
+`local-only` requires no PR or deployment proof.
 ## Model tier
 
 Status/pick/ledger I/O: **low** tier when delegating. Never use **high** for pure status.
