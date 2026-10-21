@@ -197,10 +197,15 @@ if (hasEndpoint && ['staging', 'deploy'].includes(ledger.endpoint)) {
   if (!safeguardsEvidence) {
     fail('closeout verifier requires verified release safeguards admission in project oracle delivery observations');
   }
+  const targetSurface = typeof ledger.surface === 'string' && ledger.surface.trim() ? ledger.surface.trim() : null;
+  if (!targetSurface) {
+    fail('closeout verifier requires a recorded run target surface for this delivery target');
+  }
   const admission = evaluateReleaseAdmission({
     cwd: args.cwd,
     evidence: safeguardsEvidence,
     endpoint: ledger.endpoint,
+    expectedSurface: targetSurface,
     subjectHead: args['subject-head'],
     action: 'release-closeout',
   });

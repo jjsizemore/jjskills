@@ -863,7 +863,7 @@ Commands:
   init --run-id ID --project P --branch B --description D --stories-file F
        --endpoint pr|merge|staging|deploy|local-only --source-spec S
        --tracking-provider P --tracking-issue-id I --tracking-key K --tracking-url U
-       [--max-iterations N] [--force]
+       [--surface S] [--max-iterations N] [--force]
   pick [--run-id ID]
   mark-pass --story ID [--note TEXT]
   mark-blocked --story ID --reason TEXT

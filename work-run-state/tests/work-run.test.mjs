@@ -524,10 +524,11 @@ describe('accepted autonomy global enforcement', () => {
     fs.rmSync(repo, { recursive: true, force: true });
     fs.rmSync(runsRoot(repo), { recursive: true, force: true });
   });
-  const init = (endpoint, runId = 'accepted-global') => run([
+  const init = (endpoint, runId = 'accepted-global', surface = null) => run([
     'init', '--run-id', runId, '--project', 'fixture',
     '--branch', 'fixture', '--description', 'accepted global boundaries',
     '--stories-file', storiesPath, '--endpoint', endpoint, '--max-iterations', '8',
+    ...(surface ? ['--surface', surface] : []),
   ], repo);
   const commitStories = () => {
     assert.equal(spawnSync('git', ['add', 'accepted-stories.json'], { cwd: repo }).status, 0);
@@ -673,7 +674,7 @@ process.stdout.write(JSON.stringify({ deliveryProof: { ...observation, subjectHe
     const writeObservation = (overrides = {}) =>
       fs.writeFileSync(observationPath, JSON.stringify({ ...expected, ...overrides }));
     writeObservation();
-    assert.equal(init('staging').status, 0);
+    assert.equal(init('staging', 'accepted-global', 'staging-service').status, 0);
     for (const story of ['A', 'B', 'C']) assert.equal(run(['mark-pass', '--story', story], repo).status, 0);
     const evidence = closeoutEvidence(repo, {}, 'accepted-global');
     const wrongMerge = run(
@@ -712,7 +713,7 @@ process.stdout.write(JSON.stringify({ deliveryProof: { ...observation, subjectHe
         },
       },
     });
-    assert.equal(init('deploy', 'accepted-deploy').status, 0);
+    assert.equal(init('deploy', 'accepted-deploy', 'deploy-service').status, 0);
     for (const story of ['A', 'B', 'C']) assert.equal(run(['mark-pass', '--story', story], repo).status, 0);
     const deployEvidence = closeoutEvidence(repo, {}, 'accepted-deploy');
     const deploy = run(
@@ -746,7 +747,7 @@ process.stdout.write(JSON.stringify({ deliveryProof: { ...observation, subjectHe
       expectedArtifactSha: 'a'.repeat(64), artifactSha: 'a'.repeat(64),
     };
     fs.writeFileSync(observationPath, JSON.stringify(probeObservation));
-    assert.equal(init('staging', 'staging-missing-safeguards').status, 0);
+    assert.equal(init('staging', 'staging-missing-safeguards', 'staging-service').status, 0);
     for (const story of ['A', 'B', 'C']) assert.equal(run(['mark-pass', '--story', story], repo).status, 0);
     const forgedSafeguards = {
       repo: resolveExpectedRepo(repo),
@@ -762,6 +763,47 @@ process.stdout.write(JSON.stringify({ deliveryProof: { ...observation, subjectHe
     const result = run(['complete', '--closeout-evidence', evidencePath], repo, { FAKE_GH_MODE: 'merged' });
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /requires verified release safeguards admission in project oracle delivery observations/i);
+  });
+
+  it('rejects closeout when oracle safeguards bind a different surface than the recorded run target', () => {
+    commitStories();
+    const observationPath = path.join(runsRoot(repo), 'runtime-observation.json');
+    fs.mkdirSync(runsRoot(repo), { recursive: true });
+    fs.writeFileSync(path.join(repo, 'delivery-probe.mjs'), `
+import fs from 'node:fs';
+import { execFileSync } from 'node:child_process';
+const observation = JSON.parse(fs.readFileSync(${JSON.stringify(observationPath)}, 'utf8'));
+const subjectHead = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+process.stdout.write(JSON.stringify({ deliveryProof: { ...observation, subjectHead } }));
+`);
+    fs.writeFileSync(path.join(repo, 'closeout-command.json'),
+      JSON.stringify({ closeoutCommand: [process.execPath, 'delivery-probe.mjs'] }));
+    assert.equal(spawnSync('git', ['add', 'accepted-stories.json', 'delivery-probe.mjs', 'closeout-command.json'], { cwd: repo }).status, 0);
+    assert.equal(spawnSync('git', [
+      '-c', 'core.hooksPath=/dev/null', 'commit', '--no-gpg-sign', '-q', '-m', 'probe with wrong-surface safeguards',
+    ], { cwd: repo }).status, 0);
+    const head = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).stdout.trim();
+    fs.writeFileSync(observationPath, JSON.stringify({
+      endpoint: 'staging', environment: 'staging', runtimeSha: head,
+      checksPassed: true, expectedRuntimeVersion: 'fixture-v1', runtimeVersion: 'fixture-v1',
+      expectedArtifactSha: 'a'.repeat(64), artifactSha: 'a'.repeat(64),
+      releaseSafeguards: {
+        repo: resolveExpectedRepo(repo),
+        surface: 'worker-service',
+        environment: 'staging',
+        changeIdentity: head,
+        evaluatedAt: new Date().toISOString(),
+        staging: { validated: true, isolatedFromProduction: true, blastRadius: 'internal-staging', probeUrl: 'https://staging.internal/health', promotionCriteria: 'ok' },
+        detection: { owner: 'team', signal: 'err > 0', trigger: 'alert', deployedIdentityBound: true },
+        rollback: { exercised: true, immutableTarget: 'a'.repeat(64), recoveryTarget: '120s', schemaCompatible: true },
+      },
+    }));
+    assert.equal(init('staging', 'staging-wrong-surface', 'backend-api').status, 0);
+    for (const story of ['A', 'B', 'C']) assert.equal(run(['mark-pass', '--story', story], repo).status, 0);
+    const evidencePath = closeoutEvidence(repo, {}, 'staging-wrong-surface');
+    const result = run(['complete', '--closeout-evidence', evidencePath], repo, { FAKE_GH_MODE: 'merged' });
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /surface mismatch/i);
   });
 });
 
@@ -845,7 +887,7 @@ process.stdout.write(JSON.stringify({ releaseSafeguards: payload }));
     assert.match(res.stdout + res.stderr, /repo binding mismatch/i);
   });
 
-  it('admits release safeguards from a real controller-executed baseline probe drill', () => {
+  it('admits release safeguards from controller-executed baseline probe output', () => {
     const safeguards = validSafeguards(repo);
     commitProbe(safeguards);
 
