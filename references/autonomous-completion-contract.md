@@ -142,15 +142,16 @@ changes cannot be claimed to have provisioned every repository's deployment infr
 The admission check runs on the actual execution/release path, not only optional prose.
 Before executing deployment, promotion, or reduced-gate release actions (across all execution
 workflows, including multi-story runs, single-story execution, and non-ledger operations),
-execute the canonical admission check:
+execute the canonical admission check with `--require-admitted`:
 
 ```bash
-node ~/.agents/skills/work-run-state/scripts/work-run.mjs admission --endpoint <endpoint> --surface <surface> [--environment <env>]
+node ~/.agents/skills/work-run-state/scripts/work-run.mjs admission --endpoint <endpoint> --surface <surface> [--environment <env>] --require-admitted
 ```
 
-The check executes the baseline project probe, verifies current subject and environment bindings,
-and exits 0 only when all three safeguards pass. If admission fails or is not executed,
-dependent release/reduced-gate actuation is strictly `PROHIBITED`.
+The check executes the baseline project probe, verifies current subject, target surface, and environment
+bindings, and exits 0 only when all three safeguards pass with `status: "admitted"`. Scoped `not_applicable`
+is permitted only for non-release local/source work and cannot authorize release or reduced-gate actuation.
+If admission fails, is denied, or is not executed, dependent release/reduced-gate actuation is strictly `PROHIBITED`.
 These rows do not create unrelated deployment, UX, host, or release work.
 
 ### Evidence bindings and invalidators

@@ -970,7 +970,7 @@ process.stdout.write(JSON.stringify({ releaseSafeguards: payload }));
 
     const storiesFile = path.join(repo, 'staged-stories.json');
     fs.writeFileSync(storiesFile, JSON.stringify([
-      { id: 'US-001', title: 'Prerequisite Fix', acceptanceCriteria: ['ok'], priority: 1, passes: false },
+      { id: 'US-001', title: 'Prerequisite Fix', acceptanceCriteria: ['ok'], priority: 1, passes: false, classification: 'prerequisite' },
       { id: 'US-002', title: 'Prod Release Action', acceptanceCriteria: ['ok'], priority: 2, passes: false, tags: ['release'], surface: 'backend-api' },
     ]));
     assert.equal(run(['init', '--run-id', 'preaction-run', '--project', 'fixture', '--branch', 'fixture', '--description', 'preaction test', '--stories-file', storiesFile, '--endpoint', 'staging'], repo).status, 0);
@@ -1012,6 +1012,76 @@ process.stdout.write(JSON.stringify({ releaseSafeguards: payload }));
     const bump = run(['bump-iteration', '--run-id', 'wrong-surface-run', '--story', 'US-001'], repo);
     assert.notEqual(bump.status, 0);
     assert.match(bump.stderr, /selected story is gated, dependent, cancelled, or globally suspended/i);
+  });
+
+  it('proves an unclassified release-capable story cannot launch a child while a scoped prerequisite can', () => {
+    // Repository without passing release admission probe
+    const storiesFile = path.join(repo, 'unclassified-stories.json');
+    fs.writeFileSync(storiesFile, JSON.stringify([
+      { id: 'US-001', title: 'Scoped Prerequisite Tooling', acceptanceCriteria: ['ok'], priority: 1, passes: false, tags: ['prerequisite'] },
+      { id: 'US-002', title: 'Untagged Deployment Story', acceptanceCriteria: ['ok'], priority: 2, passes: false },
+    ]));
+    assert.equal(run(['init', '--run-id', 'fail-closed-run', '--project', 'fixture', '--branch', 'fixture', '--description', 'fail-closed test', '--stories-file', storiesFile, '--endpoint', 'staging'], repo).status, 0);
+
+    // 1. Explicitly scoped prerequisite is eligible and picked
+    const pick1 = JSON.parse(run(['pick', '--run-id', 'fail-closed-run'], repo).stdout);
+    assert.equal(pick1.id, 'US-001');
+
+    // Loop would spawn child for US-001
+    const loop1 = spawnSync('bash', [LOOP, '--run-id', 'fail-closed-run', '--dry-run', '--max-iterations', '1'], {
+      cwd: repo, encoding: 'utf8',
+      env: { ...process.env, AGENT_RUNS_ROOT: runsRoot(repo) },
+    });
+    assert.match(loop1.stdout, /\[dry-run\] would spawn/);
+
+    // Complete prerequisite
+    assert.equal(run(['mark-pass', '--run-id', 'fail-closed-run', '--story', 'US-001'], repo).status, 0);
+
+    // 2. Untagged US-002 on staging endpoint is fail-closed: cannot be picked!
+    const pick2 = JSON.parse(run(['pick', '--run-id', 'fail-closed-run'], repo).stdout);
+    assert.equal(pick2.story, null);
+
+    // bump-iteration refuses
+    const bump = run(['bump-iteration', '--run-id', 'fail-closed-run', '--story', 'US-002'], repo);
+    assert.notEqual(bump.status, 0);
+    assert.match(bump.stderr, /selected story is gated, dependent, cancelled, or globally suspended/i);
+
+    // Loop refuses to launch child and halts
+    const loop2 = spawnSync('bash', [LOOP, '--run-id', 'fail-closed-run', '--dry-run', '--max-iterations', '1'], {
+      cwd: repo, encoding: 'utf8',
+      env: { ...process.env, AGENT_RUNS_ROOT: runsRoot(repo) },
+    });
+    assert.match(loop2.stderr, /Stopping: status=active reason=no-reachable-story/);
+    assert.doesNotMatch(loop2.stdout, /\[dry-run\] would spawn/);
+  });
+
+  it('treats explicit release-action classification as release-dependent on pr endpoints', () => {
+    const storiesFile = path.join(repo, 'classification-stories.json');
+    fs.writeFileSync(storiesFile, JSON.stringify([
+      { id: 'US-001', title: 'Release Action Without Tag', acceptanceCriteria: ['ok'], priority: 1, passes: false, classification: 'release-action', surface: 'backend-api' },
+    ]));
+    assert.equal(run(['init', '--run-id', 'classification-run', '--project', 'fixture', '--branch', 'fixture', '--description', 'classification test', '--stories-file', storiesFile, '--endpoint', 'pr'], repo).status, 0);
+    const pick = JSON.parse(run(['pick', '--run-id', 'classification-run'], repo).stdout);
+    assert.equal(pick.story, null);
+    const bump = run(['bump-iteration', '--run-id', 'classification-run', '--story', 'US-001'], repo);
+    assert.notEqual(bump.status, 0);
+    assert.match(bump.stderr, /selected story is gated, dependent, cancelled, or globally suspended/i);
+  });
+
+  it('fails closed on contradictory prerequisite and release tags', () => {
+    const storiesFile = path.join(repo, 'contradictory-stories.json');
+    fs.writeFileSync(storiesFile, JSON.stringify([
+      { id: 'US-001', title: 'Contradictory Story', acceptanceCriteria: ['ok'], priority: 1, passes: false, tags: ['prerequisite', 'deploy'], surface: 'backend-api' },
+    ]));
+    assert.equal(run(['init', '--run-id', 'contradictory-run', '--project', 'fixture', '--branch', 'fixture', '--description', 'contradictory test', '--stories-file', storiesFile, '--endpoint', 'pr'], repo).status, 0);
+    const pick = JSON.parse(run(['pick', '--run-id', 'contradictory-run'], repo).stdout);
+    assert.equal(pick.story, null);
+  });
+
+  it('rejects --require-admitted without explicit endpoint and surface bindings', () => {
+    const res = run(['admission', '--require-admitted'], repo);
+    assert.notEqual(res.status, 0);
+    assert.match(res.stderr + res.stdout, /requires explicit --endpoint and --surface/i);
   });
 
   it('rejects high-impact surface attempting not_applicable via file extension', () => {
@@ -1066,7 +1136,7 @@ process.stdout.write(JSON.stringify({ releaseSafeguards: payload }));
     assert.equal(resNormal.status, 0);
     assert.equal(JSON.parse(resNormal.stdout).status, 'not_applicable');
 
-    const resRelease = run(['admission', '--evidence', p, '--endpoint', 'local-only', '--require-admitted'], repo);
+    const resRelease = run(['admission', '--evidence', p, '--endpoint', 'local-only', '--surface', 'local-test-fixture', '--require-admitted'], repo);
     assert.notEqual(resRelease.status, 0);
     assert.match(resRelease.stdout + resRelease.stderr, /release.*actuation cannot use not_applicable|requires status: admitted/i);
   });

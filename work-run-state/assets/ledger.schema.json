@@ -79,7 +79,11 @@
             "type": "array",
             "items": { "type": "string" }
           },
-          "surface": { "type": "string" }
+          "surface": { "type": "string" },
+          "classification": {
+            "type": "string",
+            "enum": ["prerequisite", "local-source", "release-action"]
+          }
         }
       }
     }

@@ -29,12 +29,30 @@ function gitHead(cwd) {
 }
 
 function normalizeRemote(raw) {
-  let str = raw.trim().toLowerCase();
+  let str = String(raw || '').trim();
+  str = str.replace(/\/+$/u, '');
   str = str.replace(/\.git$/i, '');
-  str = str.replace(/^(?:https?:\/\/|ssh:\/\/git@|git@)/i, '');
-  str = str.replace(/:/g, '/');
-  str = str.replace(/^\/+|\/+$/g, '');
-  return str;
+  // scp-like [user@]host:path (but not scheme URLs)
+  if (!/^[a-z][a-z0-9+.-]*:\/\//i.test(str)) {
+    const scp = str.match(/^(?:[^@\/\s]+@)?([^:\/\s]+):(.+)$/u);
+    if (scp) {
+      const host = scp[1].toLowerCase();
+      const p = scp[2].replace(/^\/+|\/+$/gu, '');
+      return p ? `${host}/${p}`.toLowerCase() : host;
+    }
+  }
+  try {
+    const u = new URL(str.includes('://') ? str : `ssh://${str}`);
+    const host = u.hostname.toLowerCase();
+    const p = u.pathname.replace(/^\/+|\/+$/gu, '');
+    return p ? `${host}/${p}`.toLowerCase() : host;
+  } catch {
+    let s = str.toLowerCase();
+    s = s.replace(/^(?:https?:\/\/|ssh:\/\/|git@)/i, '');
+    s = s.replace(/:/gu, '/');
+    s = s.replace(/^\/+|\/+$/gu, '');
+    return s;
+  }
 }
 
 export function normalizeRepoIdentity(raw, cwd = process.cwd()) {

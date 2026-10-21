@@ -209,12 +209,33 @@ export function resolveTargetSurface(story, ledger) {
 
 export function isStoryReleaseDependent(story, ledger) {
   if (!story) return false;
+  // Explicit release-action classification is release-dependent (independent of endpoint)
+  if (story.classification === 'release-action') {
+    return true;
+  }
   const tags = (story.tags || []).map((t) => String(t).toLowerCase());
-  return tags.some((t) =>
+  // Explicit release tags are release-dependent; prerequisite cannot waive them (fail closed)
+  const isReleaseTagged = tags.some((t) =>
     ['release', 'deploy', 'production', 'reduced-gates', 'staging', 'release-action'].includes(t)
   );
+  if (isReleaseTagged) {
+    return true;
+  }
+  if (
+    story.classification === 'prerequisite' ||
+    story.classification === 'local-source' ||
+    tags.includes('prerequisite') ||
+    tags.includes('local-source') ||
+    tags.includes('local-only')
+  ) {
+    return false;
+  }
+  // Fail-closed: on release-capable endpoints, untagged/unclassified stories are release-dependent
+  if (['staging', 'deploy'].includes(ledger?.endpoint)) {
+    return true;
+  }
+  return false;
 }
-
 export function isStoryEligible(story, ledger, cwd = process.cwd()) {
   if (story.passes || story.blockedReason) return false;
   const tags = story.tags || [];
@@ -727,7 +748,9 @@ function cmdAdmission(cwd, args) {
   const requireAdmitted =
     Boolean(args['require-admitted'] || args['require-admission']) ||
     ['release-actuation', 'release-deployment', 'reduced-gates'].includes(args.action);
-
+  if (requireAdmitted && (!endpoint || !expectedSurface)) {
+    die('release safeguards admission denied: --require-admitted requires explicit --endpoint and --surface bindings');
+  }
   let callerEvidence = null;
   if (args.evidence) {
     try {
