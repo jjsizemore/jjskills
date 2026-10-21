@@ -42,10 +42,19 @@ Actions are `AUTONOMOUS`, `APPROVAL_REQUIRED`, or `PROHIBITED`:
 
 - **AUTONOMOUS**: necessary assigned inspection, disjoint delegation, owned edits,
   checks/recovery and delivery within recorded ownership/access/impact/endpoint boundaries.
-  Assigned disposable CI fixture/cache replacement, named inactive runner busy-free
-  replacement, scoped CI credential creation through authorized access, or named obsolete
-  dataset deletion are task-implied; never expose secrets. Registration repair does not
-  authorize customer-account deletion or wider organization privileges.
+  An explicit assigned endpoint includes necessary bounded recovery and
+  gate-remediation actions within that scope. A failed gate blocks dependent
+  actions, not an already-authorized guarded repair. Repair requires current
+  owner/job/lease/guard evidence and revalidation before dependent action;
+  attempting repair never waives or passes the gate. If remediation crosses
+  assigned scope, ask only for that exact authority. Assigned disposable CI
+  fixture/cache replacement, named inactive runner busy-free replacement,
+  scoped CI credential creation through authorized access, or named obsolete
+  dataset deletion are task-implied; never expose secrets. Registration repair
+  does not authorize customer-account deletion or wider organization
+  privileges.
+  Bounded recovery never bypasses security, credential/consent, access, data-loss,
+  billing, resource, job, lease, guard, or mandatory human-presence gates.
   An assigned endpoint includes the smallest causal repair to shared tooling required to reach it,
   including tooling in another repository, when existing ownership permits the repair and
   access, impact, resource and endpoint limits stay within recorded authority. Repository
@@ -103,8 +112,12 @@ cannot replace higher.
 | Product change | Targeted behavior regression, affected checks, changed-path smoke and one independent review |
 | Release-sensitive | Above plus identified release guardrails and expected artifact/SHA evidence |
 | Deployment/promotion | Authorized target's merge/artifact/deployment/runtime/version/UAT chain only |
-| Runner/fleet repair | Named lifecycle/canary and target-scope evidence under the selected supported procedure |
-These rows do not create unrelated deployment, UX, host, or release work.
+| Runner/fleet repair | Target-scoped lifecycle and runtime/admission proof under the selected procedure. |
+
+Canaries are the selected procedure's default. Explicit authority for one named
+slot may omit only canary scheduling, not target-scoped runtime/admission proof.
+Fleet rollout and two-slot transitions still require the selected canary/
+lifecycle evidence.
 
 ### Release safeguard prerequisites
 
@@ -166,7 +179,7 @@ without recreating unchanged source evidence.
 | Evidence | Reuse / refresh boundary |
 | --- | --- |
 | Local RED/GREEN, contracts, smoke | Reuse matching executed bytes, fixtures, commands, relevant dependency/interface/environment and consumer context. Refresh affected proof for changes to those inputs, insufficient binding or contradictory results. Session/time, helper, commit metadata or index-only divergence alone does not invalidate matching tested working bytes. |
-| Independent source review | Reuse the same immutable source/diff and relevant base/integration context with sufficient reviewer capability/scope/proof. Refresh for changed source/context, insufficient proof or a material finding. Record equivalence for commit-only rebinding; platform latest-head approval rules still apply. |
+| Independent source review | Reuse the same immutable source/diff and relevant base/integration context with sufficient reviewer capability/scope/proof. Refresh for changed source/context, insufficient proof or a material finding. Record equivalence for commit-only rebinding; any policy-required GitHub approval follows the hosted current-head/base binding below. |
 | Required hosted checks/merge | Provider results and required approvals must bind the actual current PR head and applicable base. A changed head/base, check requirement or discarded approval requires the affected new provider result; another SHA's green checks are insufficient. |
 | Authority/ownership preflight | Refresh affected actions for explicit scope delta, custody/access change or conflicting authoritative receipt; unrelated source tests remain reusable. |
 | Host/job/lease/lifecycle/canary | Meet the selected procedure's freshness, same-window and exclusive-transaction rules. Refresh for mutation, process/session/guard transition, elapsed procedure window or Unknown/incomplete/contradictory state. Matching source bytes never extend live-host proof indefinitely. |
@@ -331,6 +344,7 @@ bindings above; each forbidden variant must remain closed.
 | Current-head CI pending; repeated identical status events followed by one decisive changed receipt | WAITING_CI with exact run/head, one watcher and decisive event; work independent lanes. Identical events cause no new steering/current-disposition rewrite; the changed receipt causes one update/handoff. At most one short checkpoint when nothing eligible remains. | Pending becomes red/verified, repeated watcher/reviewer or unchanged polling, or suppressing required liveness/accounting records. New head needs current-head hosted proof. |
 | Signer: failed to write commit object | Preserve candidate/index/owner; reconcile actual local/remote state once. Use only allowed causal recovery or request exact private signer access; record command/exit/boundary. | Different signer/no-sign, blind resend, inferred refusal/outage, or blocking independent runtime for auxiliary signing. |
 | Unknown/busy host; historical retained guard | No mutation; repair authorized observation or await job/lease resolution. Existing owner proves exclusive transaction and remaining allowance. | PID absence/API idle treated as guard authority; adopt/delete guard, reset accounting or widen targets. |
+| Explicit single-slot/no-canary endpoint; isolation gate failed but repairable; all repair owner/job/lease/guard prerequisites currently green | Perform only the authorized guarded isolation repair, revalidate the gate and its own current owner/job/lease/guard evidence, then deploy only the named slot after the gate passes. Keep private publication and VM start closed until the isolation gate passes. | Treating repair attempt as gate passage/waiver, deploying another slot, or proceeding without revalidation. Missing repair authority or Unknown/busy job/lease blocks the repair and dependent work. |
 | Password/PAT/GUI genuinely human-only | HUMAN_BLOCKED lane; one exact private action/destination and expected non-secret result. Continue independent work. | Secret relay, fake consent, recurring requests or asking for an action available tools already permit. |
 | Explicit new user scope supersedes NoHost | Record exact superseded scope/current delta; preserve signer/lease/job/owner/budget gates and pass fresh preconditions. | Bare continue/default changes endpoint, unrelated gate cleared, or planning-only authority executes host work. |
 | Diagnosed unavailable executor; capable alternate; applicable authority delta removes only a user-only fence | Transfer exact task/custody, immutable inputs, evidence, remaining allowance and acceptance; stop conflicting execution. Alternate reviewer independently reads the required immutable subject. | Replace a healthy/protected owner, transfer gated actuation, reset limits, skip independent review or treat no reply as a human gate. |
