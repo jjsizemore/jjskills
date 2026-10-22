@@ -100,6 +100,20 @@ and exercised fast rollback to an immutable target). Dependent release stories
 are gated at `pick` and `bump-iteration` before child launch until admission passes.
 `local-only` requires no PR or deployment proof.
 
+The trusted baseline `closeout-command.json` may declare a separate
+`admissionCommand: ["node", "scripts/release-safeguards.mjs"]` (or a direct
+Python script). Admission executes that project-owned script for fresh JSON
+`releaseSafeguards` observations; ordinary closeout still executes
+`closeoutCommand`. Existing configurations without `admissionCommand` retain
+their closeout-command fallback. This separates a test suite from the bounded
+safety probe; it does not supply or waive staging, detection, or exercised
+rollback evidence, and caller command overrides remain rejected. The dedicated script
+must be a regular, non-symlink repository file whose bytes match the sealed baseline.
+Admission (including run initialization) supplies controller-owned
+`WORK_RUN_EXPECTED_HEAD`, `WORK_RUN_EXPECTED_ENVIRONMENT`, and
+`WORK_RUN_EXPECTED_SURFACE`, replacing ambient values; observed evidence must still
+pass the independent binding and safeguard checks.
+
 The trusted baseline `closeout-command.json` declares
 `rollbackPolicy: { owner, procedure, recoveryTarget: "120s" }`, using the repo's
 actual procedure-owned RTO, not a universal limit. Oracle observations include
