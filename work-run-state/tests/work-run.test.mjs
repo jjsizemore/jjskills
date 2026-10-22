@@ -15,6 +15,7 @@ import {
   CLOSEOUT_VERIFIER_TIMEOUT_MS,
 } from '../scripts/closeout-timeouts.mjs';
 import { resolveExpectedRepo } from '../scripts/release-admission.mjs';
+import { executeBaselineSafeguardsProbe } from '../scripts/work-run.mjs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CLI = path.join(__dirname, '..', 'scripts', 'work-run.mjs');
 const LOOP = path.join(__dirname, '..', 'scripts', 'work-run-loop.sh');
@@ -854,7 +855,7 @@ describe('release safeguards admission enforcement', () => {
     };
   };
 
-  const commitProbe = (safeguardsPayload, rollbackPolicy = ROLLBACK_POLICY) => {
+  const commitProbe = (safeguardsPayload, rollbackPolicy = ROLLBACK_POLICY, config = {}) => {
     fs.writeFileSync(
       path.join(repo, 'admission-probe.mjs'),
       `import { execFileSync } from 'node:child_process';
@@ -868,7 +869,7 @@ process.stdout.write(JSON.stringify({ releaseSafeguards: payload }));
     );
     fs.writeFileSync(
       path.join(repo, 'closeout-command.json'),
-      JSON.stringify({ closeoutCommand: [process.execPath, 'admission-probe.mjs'], rollbackPolicy }),
+      JSON.stringify({ closeoutCommand: [process.execPath, 'admission-probe.mjs'], rollbackPolicy, ...config }),
     );
     spawnSync('git', ['add', 'admission-probe.mjs', 'closeout-command.json'], { cwd: repo });
     spawnSync('git', ['-c', 'core.hooksPath=/dev/null', 'commit', '--no-gpg-sign', '-q', '-m', 'set admission probe'], { cwd: repo });
@@ -902,6 +903,114 @@ process.stdout.write(JSON.stringify({ releaseSafeguards: payload }));
     assert.equal(res.status, 0, res.stderr + res.stdout);
     const out = JSON.parse(res.stdout);
     assert.equal(out.status, 'admitted');
+  });
+
+  it('uses a separate baseline admission probe without running ordinary closeout', () => {
+    const marker = path.join(repo, 'closeout-ran');
+    fs.writeFileSync(path.join(repo, 'ordinary-closeout.mjs'),
+      `import fs from 'node:fs'; fs.writeFileSync(${JSON.stringify(marker)}, 'ran'); console.log('contracts passed');`);
+    spawnSync('git', ['add', 'ordinary-closeout.mjs'], { cwd: repo });
+    commitProbe(validSafeguards(repo), ROLLBACK_POLICY, {
+      closeoutCommand: [process.execPath, 'ordinary-closeout.mjs'],
+      admissionCommand: [process.execPath, 'admission-probe.mjs'],
+    });
+    const result = run(['admission', '--endpoint', 'staging', '--surface', 'backend-api',
+      '--environment', 'staging', '--require-admitted'], repo);
+    assert.equal(result.status, 0, result.stderr + result.stdout);
+    assert.equal(JSON.parse(result.stdout).status, 'admitted');
+    assert.equal(fs.existsSync(marker), false, 'admission must not execute the ordinary closeout suite');
+    const stories = path.join(repo, 'stories.json');
+    fs.writeFileSync(stories, JSON.stringify([{ id: 'release', title: 'release',
+      acceptanceCriteria: ['ok'], priority: 1, passes: false,
+      classification: 'release-action', surface: 'backend-api' }]));
+    const initialized = run(['init', '--run-id', 'separate-probe', '--project', 'fixture',
+      '--branch', 'fixture', '--description', 'separate admission', '--stories-file', stories,
+      '--endpoint', 'staging', '--surface', 'backend-api'], repo);
+    assert.equal(initialized.status, 0, initialized.stdout + initialized.stderr);
+    const ledger = readJson(path.join(runsRoot(repo), 'separate-probe', 'ledger.json'));
+    assert.equal(ledger.releaseSafeguards.status, 'admitted');
+    assert.deepEqual(ledger.closeoutCommand, [process.execPath, 'ordinary-closeout.mjs']);
+    assert.equal(fs.existsSync(marker), false, 'initial admission must not execute ordinary closeout');
+  });
+
+  it('rejects admission probe bytes changed after the sealed baseline', () => {
+    commitProbe(validSafeguards(repo), ROLLBACK_POLICY,
+      { admissionCommand: [process.execPath, 'admission-probe.mjs'] });
+    const baseSha = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).stdout.trim();
+    fs.appendFileSync(path.join(repo, 'admission-probe.mjs'), '\n// candidate-controlled probe change\n');
+    spawnSync('git', ['add', 'admission-probe.mjs'], { cwd: repo });
+    spawnSync('git', ['-c', 'core.hooksPath=/dev/null', 'commit', '--no-gpg-sign', '-q',
+      '-m', 'candidate changes probe'], { cwd: repo });
+    const result = executeBaselineSafeguardsProbe({ cwd: repo, baseSha, endpoint: 'staging' });
+    assert.equal(result.admitted, false);
+    assert.match(result.reason, /baseline.*admission.*script|admission.*script.*baseline/i);
+  });
+
+  it('passes controller bindings to the admission probe over caller environment', () => {
+    commitProbe(validSafeguards(repo), ROLLBACK_POLICY,
+      { admissionCommand: [process.execPath, 'admission-probe.mjs'] });
+    fs.appendFileSync(path.join(repo, 'admission-probe.mjs'), `
+if (process.env.WORK_RUN_EXPECTED_HEAD !== head ||
+    process.env.WORK_RUN_EXPECTED_ENVIRONMENT !== 'staging' ||
+    process.env.WORK_RUN_EXPECTED_SURFACE !== 'backend-api') process.exit(2);
+`);
+    spawnSync('git', ['add', 'admission-probe.mjs'], { cwd: repo });
+    spawnSync('git', ['-c', 'core.hooksPath=/dev/null', 'commit', '--no-gpg-sign', '-q',
+      '-m', 'probe checks controller bindings'], { cwd: repo });
+    const result = run(['admission', '--endpoint', 'staging', '--surface', 'backend-api',
+      '--require-admitted'], repo, { WORK_RUN_EXPECTED_HEAD: 'forged',
+      WORK_RUN_EXPECTED_ENVIRONMENT: 'production', WORK_RUN_EXPECTED_SURFACE: 'forged' });
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    assert.equal(JSON.parse(result.stdout).status, 'admitted');
+  });
+
+  it('rejects missing, symlinked, and outside-repository admission scripts', () => {
+    commitProbe(validSafeguards(repo), ROLLBACK_POLICY,
+      { admissionCommand: [process.execPath, 'admission-probe.mjs'] });
+    const probe = path.join(repo, 'admission-probe.mjs');
+    const outside = path.join(runsRoot(repo), 'outside-probe.mjs');
+    const baseSha = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).stdout.trim();
+    fs.mkdirSync(runsRoot(repo), { recursive: true });
+    fs.copyFileSync(probe, outside);
+    fs.unlinkSync(probe);
+    let result = executeBaselineSafeguardsProbe({ cwd: repo, baseSha, endpoint: 'staging' });
+    assert.equal(result.admitted, false);
+    fs.symlinkSync(outside, probe);
+    result = executeBaselineSafeguardsProbe({ cwd: repo, baseSha, endpoint: 'staging' });
+    assert.equal(result.admitted, false);
+    assert.match(result.reason, /baseline.*admission.*script|admission.*script.*baseline/i);
+  });
+
+  it('rejects invalid admission commands without falling back to a passing closeout probe', () => {
+    for (const admissionCommand of [
+      null, [], ['sh', 'admission-probe.mjs'], [process.execPath, '--eval', 'console.log(1)'],
+      [process.execPath, '../outside.mjs'], [process.execPath, '/tmp/outside.mjs'],
+      [process.execPath, 'admission-probe.mjs', '--extra'],
+      [process.execPath, 'C:outside.mjs'], [12, 'admission-probe.mjs'],
+      ['./node', 'admission-probe.mjs'], ['/tmp/node', 'admission-probe.mjs'],
+    ]) {
+      commitProbe(validSafeguards(repo), ROLLBACK_POLICY, { admissionCommand });
+      const result = run(['admission', '--endpoint', 'staging'], repo);
+      assert.notEqual(result.status, 0, JSON.stringify(admissionCommand));
+      assert.match(result.stdout + result.stderr, /admissionCommand/i);
+    }
+  });
+
+  it('keeps rollback and environment gates on a separate admission probe', () => {
+    const config = { admissionCommand: [process.execPath, 'admission-probe.mjs'] };
+    const unexercised = validSafeguards(repo);
+    unexercised.rollback.exercised = false;
+    commitProbe(unexercised, ROLLBACK_POLICY, config);
+    const rollback = run(['admission', '--endpoint', 'deploy', '--surface', 'backend-api',
+      '--environment', 'staging', '--require-admitted'], repo);
+    assert.notEqual(rollback.status, 0);
+    assert.match(rollback.stdout + rollback.stderr, /exercised/i);
+
+    commitProbe(validSafeguards(repo), ROLLBACK_POLICY, config);
+    const environment = run(['admission', '--endpoint', 'deploy', '--surface', 'backend-api',
+      '--environment', 'production', '--require-admitted'], repo);
+    assert.notEqual(environment.status, 0);
+    assert.match(environment.stdout + environment.stderr, /environment.*mismatch/i);
   });
 
   it('rejects unbounded staging blast radius or missing promotion criteria', () => {

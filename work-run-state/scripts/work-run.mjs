@@ -298,7 +298,7 @@ function parseOracleConfig(cwd, baseSha) {
     throw new Error('repository closeout-command.json at run base is invalid JSON');
   }
   const command = config.closeoutCommand;
-  const executable = Array.isArray(command) ? path.basename(command[0] || '') : '';
+  const executable = Array.isArray(command) && typeof command[0] === 'string' ? path.basename(command[0]) : '';
   if (
     !Array.isArray(command) ||
     command.length === 0 ||
@@ -308,11 +308,52 @@ function parseOracleConfig(cwd, baseSha) {
   ) {
     throw new Error('closeout-command.json closeoutCommand must be a project-owned test command');
   }
+  const admissionCommand = config.admissionCommand;
+  const admissionExecutable = Array.isArray(admissionCommand) && typeof admissionCommand[0] === 'string'
+    ? path.basename(admissionCommand[0]) : '';
+  const admissionFile = Array.isArray(admissionCommand) ? admissionCommand[1] : '';
+  if (admissionCommand !== undefined && (
+    !Array.isArray(admissionCommand) ||
+    admissionCommand.length !== 2 ||
+    !['node', 'python', 'python3'].includes(admissionExecutable) ||
+    (admissionCommand[0] !== admissionExecutable && admissionCommand[0] !== process.execPath) ||
+    typeof admissionFile !== 'string' ||
+    path.isAbsolute(admissionFile) ||
+    path.win32.isAbsolute(admissionFile) ||
+    /^[A-Za-z]:/u.test(admissionFile) ||
+    admissionFile.startsWith('-') ||
+    admissionFile.split(/[\\/]/u).some((part) => !part || part === '.' || part === '..') ||
+    !/\.(?:mjs|cjs|js|py)$/iu.test(admissionFile)
+  )) {
+    throw new Error('closeout-command.json admissionCommand must invoke one repository-owned script directly');
+  }
   return {
     command,
+    admissionCommand,
     rollbackPolicy: config.rollbackPolicy,
     configSha: `sha256:${createHash('sha256').update(raw).digest('hex')}`,
   };
+}
+
+function baselineAdmissionScriptMatches(cwd, baseSha, scriptFile) {
+  try {
+    const repoRoot = fs.realpathSync(execFileSync('git', ['rev-parse', '--show-toplevel'], {
+      cwd, encoding: 'utf8',
+    }).trim());
+    const scriptPath = path.resolve(cwd, scriptFile);
+    const relative = path.relative(repoRoot, scriptPath);
+    if (relative === '..' || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative)) return false;
+    const stat = fs.lstatSync(scriptPath);
+    if (!stat.isFile() || stat.isSymbolicLink()) return false;
+    const realRelative = path.relative(repoRoot, fs.realpathSync(scriptPath));
+    if (realRelative === '..' || realRelative.startsWith(`..${path.sep}`) || path.isAbsolute(realRelative)) return false;
+    const baseline = execFileSync('git', ['show', `${baseSha}:${relative.split(path.sep).join('/')}`], {
+      cwd, encoding: 'buffer', stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    return fs.readFileSync(scriptPath).equals(baseline);
+  } catch {
+    return false;
+  }
 }
 
 export function executeBaselineSafeguardsProbe({
@@ -339,10 +380,28 @@ export function executeBaselineSafeguardsProbe({
     };
   }
 
-  const probeRun = spawnSync(oracleConfig.command[0], oracleConfig.command.slice(1), {
+  const probeCommand = oracleConfig.admissionCommand ?? oracleConfig.command;
+  if (oracleConfig.admissionCommand &&
+      !baselineAdmissionScriptMatches(cwd, oracleBase, probeCommand[1])) {
+    return {
+      admitted: false,
+      status: 'denied',
+      reason: 'release safeguards admission denied: admission script must match the sealed baseline and be a regular repository-owned file',
+      missing: ['baseline admission script identity'],
+    };
+  }
+  const targetEnvironment = expectedEnvironment ||
+    (endpoint === 'staging' ? 'staging' : endpoint === 'deploy' ? 'production' : '');
+  const probeRun = spawnSync(probeCommand[0], probeCommand.slice(1), {
     cwd,
     encoding: 'utf8',
     timeout: timeoutMs,
+    env: {
+      ...process.env,
+      WORK_RUN_EXPECTED_HEAD: curHead,
+      WORK_RUN_EXPECTED_ENVIRONMENT: targetEnvironment,
+      WORK_RUN_EXPECTED_SURFACE: expectedSurface || '',
+    },
   });
 
   if (probeRun.status !== 0 || probeRun.signal) {
@@ -450,41 +509,19 @@ function cmdInit(cwd, args) {
   }
   let releaseSafeguards = null;
   if (['staging', 'deploy'].includes(args.endpoint)) {
-    try {
-      const probeRun = spawnSync(oracleConfig.command[0], oracleConfig.command.slice(1), {
-        cwd,
-        encoding: 'utf8',
-        timeout: 30_000,
-      });
-      if (probeRun.status === 0 && !probeRun.signal) {
-        const payload = JSON.parse(probeRun.stdout);
-        const obs = payload.releaseSafeguards || payload.deliveryProof?.releaseSafeguards;
-        if (obs) {
-          const adm = evaluateReleaseAdmission({
-            cwd,
-            evidence: obs,
-            endpoint: args.endpoint,
-            rollbackPolicy: oracleConfig.rollbackPolicy,
-            subjectHead: baseSha,
-            action: 'init-admission',
-          });
-          releaseSafeguards = {
-            status: adm.status,
-            reason: adm.reason,
-            evaluatedAt: now,
-          };
-        }
-      }
-    } catch {
-      // probe did not run or output safeguards
-    }
-    if (!releaseSafeguards) {
-      releaseSafeguards = {
-        status: 'unverified',
-        reason: 'safeguards evidence required from project oracle before dependent release execution or closeout',
-        evaluatedAt: now,
-      };
-    }
+    const admission = executeBaselineSafeguardsProbe({
+      cwd,
+      baseSha,
+      subjectHead: baseSha,
+      endpoint: args.endpoint,
+      expectedSurface: args.surface ? String(args.surface).trim() : null,
+      action: 'init-admission',
+    });
+    releaseSafeguards = {
+      status: admission.status,
+      reason: admission.reason,
+      evaluatedAt: now,
+    };
   }
   const ledger = {
     version: 1,
