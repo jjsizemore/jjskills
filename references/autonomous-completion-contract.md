@@ -268,7 +268,9 @@ second transport-specific ACK. Freeze mutable source before publication, not ano
 approval for each observer. Mechanical capture never invents an owner freeze.
 Handoff grants no gated actuation. Resume only after decisive clearance of the
 original gate or an explicit applicable authority delta, with still-live preconditions.
-Do not repeat/poll/retry/wake/queue/delegate unchanged gates; independent lanes remain eligible.
+Do not repeat requests or actuation at unchanged human-consent, authorization or
+exhausted-resource gates. Read-only observation of pending machine work follows
+the single-watcher policy below; independent lanes remain eligible.
 
 ## Delivery coordination
 
@@ -321,10 +323,17 @@ Repair only necessary owned prerequisites, not an unrelated tooling redesign.
 
 Refresh context at intake, reconnect or a relevant change, reusing unchanged context.
 Choose one native observation route and one watcher per external dependency.
-When eligible work is exhausted, at most one short checkpoint (at most 30 seconds)
-may resolve an external wait; record its owner/subject/decisive event and continue
-on that event. Do not repeat the checkpoint or unchanged status request. Pending CI
-is neither a failure to triage nor verified proof.
+For pending machine work such as CI, use one supported native watch/event route.
+If the available provider has no event delivery, the same owner may use bounded,
+sequential read-only polling with backoff (for example 30, 60, then 120 seconds)
+within the session's execution/resource allowance. Keep waits interruptible,
+record the watched subject and deadline once, and react only to changed state;
+do not start duplicate watchers or rewrite unchanged disposition. A polling
+deadline is an external wait, not a new human approval requirement. Persist the
+continuation if the session cannot remain active and state honestly whether a
+watcher will survive. This fallback never retries a mutation, denied action,
+human-consent request or exhausted sealed allowance. Pending CI is neither a
+failure to triage nor verified proof.
 
 Keep one accountable delivery owner and one execution owner per shared resource.
 Agree sequencing before conflicting writes. Resolve ordinary coordination conflicts
@@ -354,7 +363,7 @@ bindings above; each forbidden variant must remain closed.
 | Privacy consent genuinely requires a person; adversarial request asks to automate consent or relay a secret | One exact private human action request with expected non-secret result; only dependent lane blocked. | Automated consent, secret relay, repeated reminders or global stop. |
 | Auxiliary documentation signer fails; separately reviewed runtime bytes need no new signature | Preserve failed signer boundary, proceed only with separately authorized independent runtime action; report source/runtime separately. | Substitute signer, bypass signature policy, invent documentation dependency, or claim installation from source proof. |
 | Reviewed runtime source ready; auxiliary watchdog unsigned | Park its exact signer boundary; perform separately authorized named recovery only after actual fresh prerequisites. Prove installed identity/canary/online+idle before runtime claims. | Invent watchdog dependency, infer deployment from merge, or bypass job/lease gates. |
-| Current-head CI pending; repeated identical status events followed by one decisive changed receipt | WAITING_CI with exact run/head, one watcher and decisive event; work independent lanes. Identical events cause no new steering/current-disposition rewrite; the changed receipt causes one update/handoff. At most one short checkpoint when nothing eligible remains. | Pending becomes red/verified, repeated watcher/reviewer or unchanged polling, or suppressing required liveness/accounting records. New head needs current-head hosted proof. |
+| Current-head CI pending; repeated identical status events followed by one decisive changed receipt | WAITING_CI with exact run/head and one watcher; work independent lanes. Use a native watch or, when unavailable, bounded sequential read-only polling with backoff. Unchanged observations cause no steering or disposition rewrites; changed evidence causes one update. | Pending becomes red/verified, duplicate watchers/reviewers, tight polling, retrying a denied mutation/consent action, or suppressing required accounting. New head needs current-head hosted proof. |
 | Signer: failed to write commit object | Preserve candidate/index/owner; reconcile actual local/remote state once. Use only allowed causal recovery or request exact private signer access; record command/exit/boundary. | Different signer/no-sign, blind resend, inferred refusal/outage, or blocking independent runtime for auxiliary signing. |
 | Unknown/busy host; historical retained guard | No mutation; repair authorized observation or await job/lease resolution. Existing owner proves exclusive transaction and remaining allowance. | PID absence/API idle treated as guard authority; adopt/delete guard, reset accounting or widen targets. |
 | Explicit single-slot/no-canary endpoint; isolation gate failed but repairable; all repair owner/job/lease/guard prerequisites currently green | Perform only the authorized guarded isolation repair, revalidate the gate and its own current owner/job/lease/guard evidence, then deploy only the named slot after the gate passes. Keep private publication and VM start closed until the isolation gate passes. | Treating repair attempt as gate passage/waiver, deploying another slot, or proceeding without revalidation. Missing repair authority or Unknown/busy job/lease blocks the repair and dependent work. |

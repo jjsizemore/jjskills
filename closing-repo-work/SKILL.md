@@ -130,10 +130,11 @@ recovery/rollback scope or `Not applicable — reason`.
 - Attach UI/UX screenshots with `npx gitshot <image> | gh pr comment <n> --body-file -`.
 - Write an ADR under `docs/architecture/adr/` only for an architectural decision
   with evaluated alternatives, trade-offs, and rationale.
-- For ad-hoc work, search Linear via MCP for an existing matching issue first.
-  If none exists or issue limits prevent creation, record
-  `not-applicable-linear-free-issue-limit` in the coordination ledger; never
-  fabricate issue IDs or URLs.
+- Use the tracker already attached to the assignment. Search Linear only when
+  the user or repository workflow uses it for this task; do not introduce a
+  tracker, ledger or issue-creation prerequisite for ordinary ad-hoc work.
+  If no applicable tracker exists, note that in the existing handoff. Missing
+  optional tracker access is not an approval gate; never fabricate IDs or URLs.
 - For release-sensitive work, record the release tag and SHA, downstream
   workflow conclusion, and matching runtime/version, or `Not applicable — <reason>`.
 - After deployment, verify `/health` returns 200 with the expected service/version

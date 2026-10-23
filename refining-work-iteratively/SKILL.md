@@ -1,6 +1,6 @@
 ---
 name: refining-work-iteratively
-description: 'Use when improving an artifact, plan, spec, PR, feature, or fix through repeated antagonistic review-and-receive loops until the selected review scope finds no new issues.'
+description: 'Use when explicitly refining an artifact, plan, spec, PR, feature, or fix through bounded evidence-based review and repair; stop when validated actionable findings are resolved.'
 ---
 
 # Refining Work Iteratively
@@ -11,8 +11,9 @@ reviewing the latest version again.
 
 This is a loop controller. It does not replace domain review skills. It selects
 the most relevant review skill, runs it in an antagonistic mode, routes the
-result through the relevant receiving skill, and repeats until the latest work
-has no new findings in the selected review scope.
+result through the relevant receiving skill, and rechecks affected fixes until
+validated actionable findings in the selected scope are resolved. A clean first
+review is sufficient; do not schedule another pass merely to find something new.
 
 ## Required Sub-Skills
 
@@ -56,18 +57,20 @@ decision.
 
 ## Antagonistic Review Pass
 
-Run the selected review skill as a hostile acceptance gate. Tell the reviewer to
-look for reasons the work should not be accepted yet.
+Run the selected review skill against acceptance criteria and concrete failure
+modes. Ask for evidenced defects, allow “no actionable findings,” and do not
+reward finding something on every pass.
 
 The review prompt must include:
 
 - The latest artifact, diff, plan, spec, PR, or output being reviewed.
 - The intended outcome and explicit non-goals.
 - Validation already run and any known limitations.
-- Prior findings that were fixed, rejected with evidence, or deferred with user
-  approval.
-- The instruction to find new issues, not restate already resolved or rejected
-  items unless the prior resolution is technically wrong.
+- Prior findings that were fixed, rejected with evidence, or deferred with
+  rationale; optional/advisory deferral does not require user approval.
+- The instruction to verify affected fixes and identify material regressions,
+  without restating resolved/rejected findings unless new evidence shows the
+  prior resolution is wrong.
 
 Ask the reviewer to classify every finding as:
 
@@ -80,8 +83,11 @@ Ask the reviewer to classify every finding as:
 - **No issue**: no new issue found within the selected review scope.
 
 Every non-`No issue` finding in the selected review scope must include concrete
-evidence, why it matters, and a specific remediation path. Reject vague feedback
-and rerun the review prompt with tighter evidence requirements.
+evidence, why it matters, and a specific remediation path. Investigate missing
+facts directly. Reject unsupported feedback with rationale; rerun review only
+when its coverage was insufficient for a specific material risk. A reviewer
+question is not a user approval gate unless it identifies a genuinely missing
+product decision, authority or access that available evidence cannot resolve.
 
 ## Review Scope
 
@@ -122,12 +128,14 @@ rejected clearly; an accurate finding should be fixed and validated.
 
 Repeat the loop on the latest work only:
 
-1. Review the current version antagonistically.
+1. Review the current version against acceptance criteria and concrete risks.
 2. Receive and triage every new finding.
 3. Improve accepted issues.
 4. Validate the improvements.
 5. Summarize what changed and what was rejected or deferred.
-6. Run the review again against the updated version.
+6. Re-review affected fixes/integration only when the work changed materially
+   or evidence identifies a coverage gap. With no actionable findings and no
+   changed subject, stop; optional notes do not trigger another round.
 
 Subsequent review passes cover actual fixes/delta and affected integration,
 retaining unaffected settled proof, and rejecting repeated resolved findings.
@@ -136,8 +144,9 @@ retaining unaffected settled proof, and rejecting repeated resolved findings.
 
 Stop only when all are true:
 
-- The selected review skill has reviewed the latest version and found no new
-  findings within the selected review scope.
+- The selected review skill has reviewed the latest applicable subject and no
+  validated actionable findings remain in the selected scope. Existing review
+  remains valid under the contract's evidence reuse rules.
 - Accepted findings from earlier passes are fixed.
 - Rejected findings have evidence strong enough that a future reviewer can
   understand the decision.
