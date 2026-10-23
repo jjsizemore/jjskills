@@ -29,6 +29,13 @@ Explicit later user authority amends only its stated scope/restriction/endpoint.
 Record the superseded boundary and exact delta in the existing current disposition;
 preserve unrelated owners, signer/job/lease gates and remaining sealed allowances.
 Use supported native rebinding when required; never hand-edit immutable accounting.
+Derived registration/index restoration and removal of an exactly attributed stale
+fixture lock are bounded recovery, not immutable-accounting edits, when assignment
+already authorizes recovery. Preserve preimages, prove current owners/custody from
+unchanged authoritative records, restore only confirmed live registrations, leave
+unknown historical membership inactive, and revalidate native gates. This grants no
+ledger, budget, scope, endpoint, lease or ownership changes.
+
 New defaults, reports, elapsed time and a bare “continue” are not amendments.
 Planning-only authority permits no execution. Higher-priority security/native policy
 and genuine human-presence requirements always bind.

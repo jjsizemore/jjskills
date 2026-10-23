@@ -43,9 +43,9 @@ and review convergence bounds. Do not reimplement or drift from the canonical ru
      conclusion, report a pending blocker. Pending is not clean.
 3. Subsequent review covers actual fixes/delta and affected integration under the canonical
    contract, retaining unaffected settled proof, and rejecting repeated resolved findings.
-4. When no live blockers remain and review is required for the change class, run
-   `requesting-code-review` for antagonistic latest-head review. Advance the loop within
-   canonical convergence limits.
+4. When no live blockers remain and review is required for the change class, reuse
+   sufficient bound independent review or run `requesting-code-review` for uncovered
+   or invalidated source/integration context. Advance within canonical convergence limits.
 
 ## Stop Condition
 
@@ -96,7 +96,10 @@ feedback, follow `receiving-code-review` and reply in-thread.
 ## Red Flags
 
 - Stopping after one feedback batch without re-fetching live state.
-- Treating old clean reviews as valid after a new push.
+- Discarding a bound clean source review solely because of a new push, or reusing it
+  after relevant executed-source, dependency, fixture, base or integration changes.
+  Record commit-only equivalence; required hosted checks and policy-required approvals
+  must cover the current head/base.
 - Calling clean while checks are pending or mergeability is unknown.
 - Requesting review before resolving known conflicts or failed checks.
 - Counting the same reviewer twice as independent coverage.
