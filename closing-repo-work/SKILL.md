@@ -119,8 +119,10 @@ recovery/rollback scope or `Not applicable — reason`.
 
 ## Delivery conventions
 
-- A PR contains `## Development Provenance` with `Creator worktree:` equal to
-  `git rev-parse --show-toplevel` on the creator's machine; include no secrets.
+- Use the provider's PR author, branch and commit identities as public provenance.
+  Keep local worktree paths in local records. Repair a conflicting repository
+  template or validator through its existing review/check flow for that metadata
+  operation; do not retransmit metadata rejected by native privacy review.
 - Include `Why / Rationale` and `Change Explanation` in the PR body. Write
   2–4 sentences directly explaining what changed, why, and the key behavior or
   trade-off to retain; do not route this through a teaching skill.
