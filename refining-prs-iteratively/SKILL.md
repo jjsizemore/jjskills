@@ -67,8 +67,9 @@ Stop only when all are true on the current PR head SHA:
 
 ## Definitions
 
-- **Independent reviewer/provider:** see [portable completion contract](../references/autonomous-completion-contract.md);
-  fresh-context independent review satisfies the requirement without universally demanding a different model.
+- **Independent reviewer/provider:** one fresh-context capable reviewer independent of the implementer is sufficient under the [portable completion contract](../references/autonomous-completion-contract.md).
+  OpenAI-only review is allowed; no different-model, cross-provider, or vendor-count gate applies.
+  Actual protected repository reviews, required GitHub approvals, checks, and security gates remain binding.
 - **Actionable feedback:** requests or implies code, test, docs, behavior,
   release, security, or architecture change, or needs technical rejection.
 - **Provenance:** agent, model, PR number, comment/review ID when available,

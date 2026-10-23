@@ -19,8 +19,8 @@ Use this skill to generate and submit a rich, context-aware pull request for the
    - **Typical pattern**: A branch adds new domain skills (SKILL.md files + validation logic) **and** also adds repo-mirror compat symlinks (`.claude/skills/<name>` → `../../.agents/skills/<name>`, same for `.codex/skills/` and `.github/skills/`). The symlink registration is a focused infrastructure change that deserves its own PR — it has a narrow scope, distinct review concerns, and can be reviewed independently from the skill content.
    - **Why**: Bundling symlinks into a content PR obscures the infra change, makes it harder to revert just the sync links if something breaks, and prevents the PR description from explaining the symlink strategy clearly.
    - **How**: Before opening the main PR, branch off from the base, `git checkout --` only the symlink files (`git diff <base>...HEAD --diff-filter=A --name-only -- .claude/skills .codex/skills .github/skills`), apply them, write a focused title like `chore(skills): register repo mirror symlinks for new skills`, and `gh pr create` with that narrow scope. Then rebase the main PR to exclude those files.
-4. **Review with User**: Present the drafted title and description to the user for any final tweaks or confirmation.
-4. **Execute**: Once approved, use the terminal to run `gh pr create --title "<title>" --body "<body>"` (or use the web prompt `gh pr create --web` if the user prefers editing in the browser).
+4. **Submit Requested PR**: When the user requests PR creation, submit the prepared title and description with `gh pr create --title "<title>" --body-file <body-file>` without a separate draft-approval checkpoint. Honor an explicit request to review the draft first or create a draft PR.
+5. **Preserve Repository Gates**: PR creation does not waive required GitHub approvals, checks, branch protection, security rules, or release/deployment gates.
 ## Handoff: Share the created PR link with the user and verify any follow-up checks.
 
 ## References
