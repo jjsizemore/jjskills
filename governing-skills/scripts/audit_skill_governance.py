@@ -387,17 +387,7 @@ def audit_agent_root(root: Path, only: set[str], canonical_root: Path, findings:
             if not target.exists():
                 findings.append(Finding("error", "broken-symlink", str(entry), f"Symlink target does not exist: {target}"))
                 continue
-            if ".agents/skills" not in str(target):
-                findings.append(
-                    Finding(
-                        "warning",
-                        "agent-symlink-target-not-agents",
-                        str(entry),
-                        f"Agent-specific symlink points outside .agents/skills: {target}",
-                        "Point compatibility symlinks at the canonical .agents skill source unless a client-managed source is required.",
-                    ),
-                )
-            elif not path_is_within(target, canonical_root):
+            if not path_is_within(target, canonical_root):
                 findings.append(
                     Finding(
                         "error",

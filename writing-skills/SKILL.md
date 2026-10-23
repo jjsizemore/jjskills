@@ -1,87 +1,47 @@
 ---
 name: writing-skills
-description: 'Use when working in the SyncVia repo to create, edit, test, validate, register, symlink, or publish repo-local Agent Skills with behavioral pressure tests and deterministic contracts.'
+description: 'Use when creating, editing, testing, or publishing Agent Skills at user or repository scope; use stale-guidance diagnosis first when repairing a proven contradiction.'
+metadata:
+  governing-skills-placement: user
+  governing-skills-reason: Portable skill authoring; repository overrides add local commands and registration.
 ---
 
-# Writing Skills (SyncVia)
+# Writing Skills
 
-Use the user-global `writing-skills` workflow for portable authoring rules. This
-override adds SyncVia placement, metadata, mirror, and validation contracts.
+Author one canonical skill and expose it through same-scope discovery links.
+The [portable completion contract](../references/autonomous-completion-contract.md)
+owns authority, evidence reuse, review and delivery.
 
-## Iron Law
+## Workflow
 
-Behavioral skill changes require a failing pressure scenario before editing.
-Mechanical placement, metadata, and symlink changes require a failing
-deterministic contract. Keep scenario definitions and concise RED/GREEN
-evidence; raw transcripts may stay temporary.
+1. Resolve the assigned scope and applicable repository override. User-scope
+   work edits the version-controlled source behind `~/.agents/skills`;
+   repository work follows that repository's canonical skill root. Use
+   [governing-skills](../governing-skills/SKILL.md) for placement, mirrors,
+   rename or deletion. Preserve unrelated edits and real mirror conflicts.
+2. For stale instructions, consume the diagnosis from
+   [updating-stale-agent-guidance](../updating-stale-agent-guidance/SKILL.md).
+   If that controller called this skill, continue its established repair here;
+   do not restart diagnosis or route back to the controller.
+3. Before a behavioral edit, capture a failing pressure scenario. Mechanical
+   placement, metadata and link repairs need a failing deterministic contract.
+   Reuse matching existing evidence. Define the relevant unhappy path; the
+   [pressure scenarios](references/pressure-scenarios.md) give a minimal case.
+4. Write the smallest complete workflow: activation boundary, discoverable
+   inputs, ordered actions, decisive evidence, actual stop conditions and
+   output. Link existing leaf procedures instead of copying their rules.
+   Keep `SKILL.md` focused and under 500 lines; disclose deep references,
+   scripts and examples only where needed.
+5. Run the regression and affected checks. Validate frontmatter name against
+   the directory, resolve changed links, and read the skill through the actual
+   provider discovery path. Run only generators and validators present at the
+   assigned scope; repository package commands are not user-scope defaults.
+6. Publish and adopt through the requested endpoint using
+   [closing-repo-work](../closing-repo-work/SKILL.md). Record the exact source,
+   proof, preserved conflicts and remaining limitations in the existing record.
 
-Pressure-runner manifests must pin regular source files. Reject a symlink in
-the manifest root or in any source-path component through the final file, then
-also retain realpath containment and copied-byte hash verification.
-
-## Repo-local Skill CRUD Adapter
-
-<!-- skill-governance: owner=writing-skills; role=controller; rule=repo-skill-crud -->
-
-The controller MUST select exactly one CRUD leaf and must not duplicate a leaf's
-placement, mirror, stale-guidance, or context-migration procedure.
-
-<!-- /skill-governance -->
-
-| Requested change                                                  | Leaf capability                  |
-| ----------------------------------------------------------------- | -------------------------------- |
-| Create, update, rename, consolidate, delete, metadata, or mirrors | `$governing-skills`              |
-| Proven stale Skill, prompt, instruction, or routing guidance      | `$updating-stale-agent-guidance` |
-| Canonical `.agents` source or agent-context migration             | `$migrating-agent-context`       |
-
-## SyncVia Authoring Workflow
-
-1. Inventory canonical source, references, metadata, index, and configured
-   mirrors. Keep user-global `~/.agents` read-only in this repository story.
-2. Add a failing deterministic contract or pressure scenario before changing
-   behavioral guidance. Use the narrowest selected leaf for the repair.
-3. Regenerate metadata, then run the selected leaf's validation. A real mirror
-   conflict or unproven stale claim stops the operation rather than inviting a
-   fallback.
-4. Record RED/GREEN evidence and report only the changed canonical paths.
-
-## Shared Validation
-
-```bash
-pnpm skills:metadata
-pnpm skills:sync-symlinks -- --scope repo --directory-links --skill "<skill-name>"
-pnpm skills:check-symlinks -- --scope repo --directory-links --skill "<skill-name>"
-pnpm skills:validate
-```
-
-## Quality Contract
-
-A high-quality skill must state:
-
-- precise activation boundary and near-miss exclusions
-- required inputs and evidence the agent should discover itself
-- ordered workflow with decision points
-- concrete output/proof bundle and stop condition
-- edge, unhappy, permission, timeout, concurrency, and recovery behavior where
-  relevant
-- reusable leaf skills before new duplicated procedures
-- explicit applicability decisions instead of silent omissions
-- validation commands and honest blocker reporting
-
-Move deep examples into `references/`, fragile reusable logic into `scripts/`,
-and templates/assets into their matching directories. Keep `SKILL.md` under 500
-lines and focused on default execution.
-
-## Registration
-
-Repo skill frontmatter `name` must match its lowercase kebab-case directory.
-Descriptions must mention the SyncVia repo/repository/checkout activation
-boundary. Update `.agents/skills/README.md`, `skills-lock.json`, and
-`agents/openai.yaml` through existing generators.
-
-## Pressure Scenarios
-
-Read `references/pressure-scenarios.md` before changing this skill's behavior.
-The checked-in CRUD manifest declares `openai/gpt-5.6-terra` and
-`moonshotai/kimi-k2.7` coverage. Deterministic harnesses validate scenario
-plumbing only; model-quality evidence requires an explicitly approved client.
+Pressure-runner manifests must pin regular source files. Reject symlinks in
+any source-path component, including the root and final file; retain realpath
+containment and copied-byte hash verification. A deterministic harness proves
+plumbing, not model behavior. Claim model-quality coverage only for actual
+completed runs with identified subjects and clients.

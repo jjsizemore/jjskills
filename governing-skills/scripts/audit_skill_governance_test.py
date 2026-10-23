@@ -30,6 +30,34 @@ class AuditAgentRootTests(unittest.TestCase):
 
             self.assertEqual(findings, [])
 
+    def test_per_skill_mirrors_follow_resolved_canonical_scope(self) -> None:
+        for foreign in (False, True):
+            with self.subTest(foreign=foreign), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                source = root / "versioned-skills"
+                skill = source / "example-skill"
+                skill.mkdir(parents=True)
+                (skill / "SKILL.md").write_text(
+                    "---\nname: example-skill\ndescription: Use when testing mirrors.\n---\n"
+                )
+                canonical = root / ".agents" / "skills"
+                canonical.parent.mkdir()
+                canonical.symlink_to(source, target_is_directory=True)
+                mirror = root / ".codex" / "skills"
+                mirror.mkdir(parents=True)
+                target = skill
+                if foreign:
+                    target = root / "other-repo" / "example-skill"
+                    target.mkdir(parents=True)
+                    (target / "SKILL.md").write_text((skill / "SKILL.md").read_text())
+                (mirror / "example-skill").symlink_to(target, target_is_directory=True)
+                findings: list[audit.Finding] = []
+                audit.audit_agent_root(mirror, {"example-skill"}, canonical, findings)
+                self.assertEqual(
+                    [finding.code for finding in findings],
+                    ["agent-symlink-wrong-scope"] if foreign else [],
+                )
+
     def test_rejects_directory_symlink_to_other_scope(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory)
