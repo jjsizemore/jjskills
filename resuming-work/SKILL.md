@@ -12,7 +12,9 @@ metadata:
 # Resuming Work — front door
 
 **User API:** invoke **resuming-work**. Prefer repo-local override when present.
-Assume **no prior chat memory**. Disk + git only.
+Recover durable state from disk and Git; retain explicit user instructions and
+authorization already present in the current session. A cold start must recover
+those constraints from the handoff instead of inventing new approval checkpoints.
 
 ## When to use
 
@@ -36,9 +38,18 @@ Assume **no prior chat memory**. Disk + git only.
    Reconcile recoverable blockers from authoritative native/durable state; preserve
    existing IDs, approvals, limits, and genuine gates. A per-lane/boundary budget
    exhaustion parks only that lane; pick independent authorized stories with their
-   own remaining budgets. No decisive clearance means no dependent retry/poll/wake/delegation.
-5. **One story only:** `implementing-story` for pick result
-6. Rewrite handoff before exit
+   own remaining budgets. Without decisive clearance, do not retry gated
+   actuation or repeat requests to a person. Observe pending machine work through
+   the portable contract's single-watcher policy.
+5. Match the execution mode already in use. With `WORK_RUN_OUTER_LOOP=1`, an
+   active outer-loop controller, or an explicit one-story assignment, implement
+   at most one picked story and return to that controller. In an ordinary
+   interactive session, continue picking and implementing eligible stories until
+   the requested endpoint is verified or the canonical whole-run stop condition
+   applies. Do not ask for another “continue” after each story.
+6. Update the existing handoff at meaningful progress/blocker transitions and
+   before exit; complete the existing run through its closeout verifier when all
+   stories pass. Do not initialize a replacement run.
 
 ## Do not
 

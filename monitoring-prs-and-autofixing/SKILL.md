@@ -27,8 +27,10 @@ Use when a pull request needs follow-through on hosted checks, review comments, 
   once at intake or a decisive event. Classify pending separately from failure.
 - Repair only actionable failures: diagnose with `debugging-systematically`,
   then use `remediating-root-causes`; preserve boundary and regression evidence.
-- Re-observe affected hosted results after a changed head/base, review/check
-  event or repaired conflict—not after every unrelated action.
+- Re-observe affected hosted results through one native watch/event route. If
+  the provider exposes only read tools, use the portable contract's bounded
+  sequential polling fallback to detect changes; do not require an event the
+  provider cannot deliver or open another watcher after an unchanged response.
 
 ## Stop Condition
 
@@ -57,12 +59,12 @@ Use when a pull request needs follow-through on hosted checks, review comments, 
 | Observed state | Action |
 | --- | --- |
 | Actionable failed check, valid requested change or conflict | Preserve boundary; diagnose, repair, validate and push/respond. Observe the changed head's required results through the one watcher. |
-| Required CI/review still pending | Record WAITING_CI or the exact external review wait, run/head, watcher/owner and decisive event. Reuse unchanged source review; no new triage, duplicate watcher or repeated status request. |
+| Required CI/review still pending | Record WAITING_CI or the exact external review wait, run/head, watcher/owner and decisive event. Reuse unchanged source review. Use native watching or bounded read-only polling when no event delivery exists; no new triage, duplicate watcher, or repeated request to a person. |
 | Current head green, actionable threads resolved, mergeable, required review valid | Return the source-ready handoff; proceed only to the recorded authorized endpoint. |
 
 A new head/base invalidates the affected hosted binding, not automatically all
-unchanged local/source proof. Resume on a decisive event rather than unconditional
-polling; the contract bounds any final short checkpoint.
+unchanged local/source proof. Continue on changed evidence. Never claim a
+background watcher remains active after this session unless it actually does.
 
 ## Step 1: Check PR State
 
