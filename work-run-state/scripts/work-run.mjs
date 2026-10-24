@@ -528,6 +528,7 @@ function cmdInit(cwd, args) {
     runId,
     project: args.project,
     branchName: args.branch,
+    worktreePath: fs.realpathSync(execFileSync('git', ['rev-parse', '--show-toplevel'], { cwd, encoding: 'utf8' }).trim()),
     description: args.description,
     sourceSpec: args['source-spec'],
     surface: args.surface ? String(args.surface).trim() : null,
@@ -832,12 +833,27 @@ function cmdAdmission(cwd, args) {
   }
   const curHead = currentHead(cwd);
   let baseSha = null;
-  const runId = resolveRunId(cwd, args);
+  let runId = resolveRunId(cwd, args);
   if (runId) {
-    try {
-      const { data } = readLedger(cwd, runId);
+    const { data } = readLedger(cwd, runId);
+    const hasWorktreePath = Object.hasOwn(data, 'worktreePath');
+    if (hasWorktreePath && (typeof data.worktreePath !== 'string' || !path.isAbsolute(data.worktreePath) ||
+        path.resolve(data.worktreePath) !== data.worktreePath)) {
+      die('invalid admission worktree binding in selected run');
+    }
+    if (!args['run-id'] && !hasWorktreePath && (typeof data.branchName !== 'string' || !data.branchName)) {
+      die('cannot bind ACTIVE admission to a branch; pass --run-id explicitly');
+    }
+    const branch = execFileSync('git', ['branch', '--show-current'], { cwd, encoding: 'utf8' }).trim();
+    const root = fs.realpathSync(execFileSync('git', ['rev-parse', '--show-toplevel'], { cwd, encoding: 'utf8' }).trim());
+    // ACTIVE is shared across worktrees; keep legacy branch binding when no path was recorded.
+    const ownsCaller = hasWorktreePath ? data.worktreePath === root : data.branchName === branch;
+    if (args['run-id'] || ownsCaller) {
+      if (!data.baseSha) die('selected admission run is missing its sealed baseline');
       baseSha = data.baseSha;
-    } catch {}
+    } else {
+      runId = null;
+    }
   }
   if (!baseSha) {
     baseSha = curHead;

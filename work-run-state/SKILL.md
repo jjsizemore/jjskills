@@ -109,6 +109,10 @@ their closeout-command fallback. This separates a test suite from the bounded
 safety probe; it does not supply or waive staging, detection, or exercised
 rollback evidence, and caller command overrides remain rejected. The dedicated script
 must be a regular, non-symlink repository file whose bytes match the sealed baseline.
+Admission uses an implicit shared `ACTIVE` only in its recorded worktree (the recorded
+branch for legacy runs); other work uses its own HEAD and leaves that run untouched.
+Pass `--run-id` explicitly
+to use a selected run's sealed baseline, including from a detached checkout.
 Admission (including run initialization) supplies controller-owned
 `WORK_RUN_EXPECTED_HEAD`, `WORK_RUN_EXPECTED_ENVIRONMENT`, and
 `WORK_RUN_EXPECTED_SURFACE`, replacing ambient values; observed evidence must still
