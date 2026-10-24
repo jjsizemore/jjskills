@@ -134,13 +134,19 @@ lifecycle evidence.
 
 ### Release safeguard prerequisites
 
-All current and future repositories and new onboarding paths inherit prerequisite
-safeguards via canonical global contract and existing execution and closeout entrypoints,
-including repository overrides. This is a real applicability/admission check, not a promise
-that unexamined repositories are operationally ready.
+Apply admission to the action's actual effect and resource: customer/application release
+publication or promotion (including staging), changed runner-image rollout, and reduction
+of gates protecting those actions. Endpoint/environment labels, repository location and
+file extensions do not establish applicability. All repositories and execution paths
+inherit this boundary; guidance alone does not establish operational readiness.
 
-Before reducing release/human gates or executing a change justified by reversibility/limited
-rollout, require evidence of:
+Named CI controller maintenance using reviewed source and an unchanged qualified image,
+with no customer build/deploy/schema effect, follows the selected target-native maintenance
+procedure. Preserve its security/consent, target identity, active-job/lease/resource limits,
+required review/tests, canary, regression detection and rollback gates. An unrelated ACTIVE
+source-publication run or a probe/receipt for another surface is not its prerequisite.
+
+Before applicable release or reduced-gate actuation, require evidence of:
 1. **Bounded staging/canary/internal validation** separated from production, with concrete
    observation proof (probe URL, test run ID, or observation command), bounded blast radius,
    and explicit promotion criteria.
@@ -157,31 +163,28 @@ receipts do not prove readiness. Evidence binds exact normalized repo, surface, 
 relevant release/change identity, and timestamp freshness window. Missing, unknown, or incomplete
 proof cannot pass.
 
-Scoped `not_applicable` requires an explicit justification and is permitted only for non-release
-work (such as local-only source tooling or documentation). Release endpoints (`staging`, `deploy`)
-and production/staging environments cannot claim `not_applicable`. File extension alone does not
-establish low risk: authority guidance, CI, installers, auto-update, and migrations are high-impact
-surfaces that cannot bypass release safeguards via file-extension justification.
+Scoped `not_applicable` requires an explicit action/resource/effect justification for
+non-release work; it cannot authorize release or reduced-gate actuation. Authority guidance,
+CI, installers, auto-update and migrations retain applicable high-impact checks and review;
+file extensions cannot bypass safeguards for the effects they actually change.
 
-If safeguards are absent, autonomously implement and verify needed applicable prerequisites first
-when assignment authority and access permit; otherwise retain stronger review/release gates and block
-only dependent reduced-gate/release actions with exact missing proof. Documentation-only and
-local-source work need not invent a staging server or unrelated production work. Guidance-only
-changes cannot be claimed to have provisioned every repository's deployment infrastructure.
-The admission check runs on the actual execution/release path, not only optional prose.
-Before executing deployment, promotion, or reduced-gate release actions (across all execution
-workflows, including multi-story runs, single-story execution, and non-ledger operations),
+If safeguards are absent, autonomously implement and verify applicable prerequisites when
+assignment authority and access permit; otherwise retain stronger gates and block only
+dependent release/reduced-gate actions. Prerequisite source work remains eligible; do not
+invent unrelated staging, production or host work.
+
+Immediately before applicable actuation, across ledger and non-ledger execution paths,
 execute the canonical admission check with `--require-admitted`:
 
 ```bash
 node ~/.agents/skills/work-run-state/scripts/work-run.mjs admission --endpoint <endpoint> --surface <surface> [--environment <env>] --require-admitted
 ```
 
-The check executes the baseline project probe, verifies current subject, target surface, and environment
-bindings, and exits 0 only when all three safeguards pass with `status: "admitted"`. Scoped `not_applicable`
-is permitted only for non-release local/source work and cannot authorize release or reduced-gate actuation.
-If admission fails, is denied, or is not executed, dependent release/reduced-gate actuation is strictly `PROHIBITED`.
-These rows do not create unrelated deployment, UX, host, or release work.
+The baseline project probe must cover the actual subject, target surface and environment;
+only exit 0 with `status: "admitted"` proves all three safeguards. An unrelated ACTIVE run
+or wrong-surface probe cannot supply that proof. Failed, denied, missing or mismatched
+admission strictly prohibits dependent release/reduced-gate actuation; do not alter native
+ledger state or relabel the action to pass. Other applicable native procedures remain binding.
 
 ### Evidence bindings and invalidators
 
@@ -368,4 +371,5 @@ bindings above; each forbidden variant must remain closed.
 | Release/staging change missing any safeguard (staging, detection, or rollback) | Deny release safeguards admission and block dependent reduced-gate/release action with exact missing proof; retain stronger gates. | Proceeding on reduced release path without bounded staging, actionable detection, or exercised fast rollback. |
 | Release change with wrong repo, stale timestamp, or bare git revert rollback | Deny admission with exact binding/rollback mismatch; require immutable artifact target and fresh bound receipt. | Accepting wrong-repo proof, stale receipts, or bare git revert as rollback readiness. |
 | Local-source documentation change claiming not_applicable | Validate non-release scope and allow not_applicable with explicit justification; no invented staging server. | Inventing staging/production infrastructure for non-release local source work. |
-| Installer or authority guidance claiming not_applicable via Markdown/script extension | Deny admission: high-impact surfaces cannot bypass release safeguards via file-extension justification. | Treating high-impact authority or installer changes as low risk merely because of Markdown or script file extensions. |
+| Installer or authority guidance claiming not_applicable via Markdown/script extension | Determine actual effects; require high-impact checks/review and admission for applicable release effects. Non-release scope needs an explicit action/resource/effect justification. | File-extension bypass, or requiring an unrelated production probe for source-only guidance work. |
+| Reviewed CI controller maintenance; unchanged qualified image; foreign source-publication ACTIVE; idle named target | Use the selected target-native maintenance procedure with fresh identity/job/lease/resource checks and required canary/detection/rollback. | Running another surface's image-release probe, changing ACTIVE to pass, or acting with Unknown identity, an active job/lease, changed image or missing native proof. |

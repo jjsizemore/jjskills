@@ -42,8 +42,8 @@ freshness. Hosted results and required approvals remain current-head/base-bound.
    and exact command output bound to the executed candidate inputs.
 3. **Pre-push** — inspect staged paths, focused commits, clean intended diff,
    and passing applicable local gates before publishing. If the push itself
-   directly triggers deployment/promotion or actuates reduced release gates,
-   require verified release safeguards admission under the portable contract
+   actuates an applicable release effect under the portable contract, require
+   its verified release safeguards admission
    before publishing; pushing prerequisite implementation, tests, or fixes
    to establish safeguards remains permitted under existing review/check gates.
    Local-only or documentation work requires justified scoped not_applicable;
@@ -56,9 +56,8 @@ freshness. Hosted results and required approvals remain current-head/base-bound.
    review satisfies review requirements for behavior/high-impact work; advisory,
    style, and pre-existing unrelated findings are nonblocking under the canonical
    contract. Requested merge, green-CI, or a healthy unversioned endpoint is not proof.
-7. **Post-change** — when merge or deployment is in scope, require verified
-   release safeguards admission immediately before actual promotion, deployment,
-   or reduced-gate actuation; bind actual merge SHA to artifact/release SHA,
+7. **Post-change** — apply the portable contract's action/resource/effect admission
+   boundary immediately before applicable actuation; bind actual merge SHA to artifact/release SHA,
    deployment result, runtime/version equality, authenticated smoke/UAT, tracking
    closure, and cleanup evidence.
 8. **Pre-yield frontier check** — before yielding or a terminal report, account

@@ -70,8 +70,8 @@ Detect outer-loop via env `WORK_RUN_OUTER_LOOP=1` or user saying “one story on
    (or explicit `not_applicable` reason), source basis, branch/worktree identity,
    and exact ordered story IDs. Recover metadata from actual native/durable state;
    never invent an ID. Hold only for genuinely missing material scope or authority.
-   Release endpoints (`staging`, `deploy`) require verified release safeguards admission
-   under the canonical contract; scoped not_applicable requires justified non-release work.
+   Apply the canonical contract's action/resource/effect admission boundary; endpoint
+   labels alone do not gate non-release work.
 2. Form stories from an existing plan appendix or sufficient preflight scope;
    use one story when sufficient. A whole-plan artifact is not required.
 3. `work-run-state` init seals the budget. Do not raise the maximum later.
@@ -79,9 +79,8 @@ Detect outer-loop via env `WORK_RUN_OUTER_LOOP=1` or user saying “one story on
 ### 3. Loop
 
 While incomplete stories and iteration &lt; sealed max:
-1. `pick` next story. Release-dependent stories require verified release safeguards
-   admission and target surface before child dispatch; prerequisite and local-source
-   stories remain runnable.
+1. `pick` next story. Require canonical admission before applicable release actuation;
+   prerequisite and non-release stories remain runnable under their own native gates.
 2. `implementing-story` (mid tier implement; low tier explore).
 3. On failure → apply the canonical recovery rules within remaining sealed attempts;
    park only genuinely gated/dependent stories and continue independent authorized stories.
