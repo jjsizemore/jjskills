@@ -225,6 +225,7 @@ describe('work-run init', () => {
     assert.equal(ledger.iteration, 0);
     assert.equal(ledger.status, 'active');
     assert.equal(ledger.endpoint, 'local-only');
+    assert.equal(ledger.worktreePath, fs.realpathSync(repo));
 
     assert.ok(fs.existsSync(path.join(runsRoot(repo), 'demo-run/progress.md')));
     assert.ok(fs.existsSync(path.join(runsRoot(repo), 'demo-run/handoff.md')));
@@ -944,6 +945,70 @@ process.stdout.write(JSON.stringify({ releaseSafeguards: payload }));
     const result = executeBaselineSafeguardsProbe({ cwd: repo, baseSha, endpoint: 'staging' });
     assert.equal(result.admitted, false);
     assert.match(result.reason, /baseline.*admission.*script|admission.*script.*baseline/i);
+  });
+
+  for (const selection of ['owned ACTIVE', 'foreign ACTIVE', 'explicit foreign run', 'owned worktree', 'foreign worktree']) {
+    it(`binds admission to the caller without rewriting ${selection}`, () => {
+      commitProbe(validSafeguards(repo), ROLLBACK_POLICY,
+        { admissionCommand: [process.execPath, 'admission-probe.mjs'] });
+      const baseSha = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).stdout.trim();
+      const branch = spawnSync('git', ['branch', '--show-current'], { cwd: repo, encoding: 'utf8' }).stdout.trim();
+      fs.appendFileSync(path.join(repo, 'admission-probe.mjs'), '\n// independently reviewed new baseline\n');
+      spawnSync('git', ['add', 'admission-probe.mjs'], { cwd: repo });
+      assert.equal(spawnSync('git', ['commit', '--no-gpg-sign', '-q', '-m', 'new baseline'], { cwd: repo }).status, 0);
+      const ledgerPath = path.join(runsRoot(repo), 'publication', 'ledger.json');
+      fs.mkdirSync(path.dirname(ledgerPath), { recursive: true });
+      const ledger = JSON.stringify({ baseSha,
+        branchName: ['owned ACTIVE', 'foreign worktree'].includes(selection) ? branch : 'other-source-branch',
+        ...(selection.endsWith('worktree') ? {
+          worktreePath: selection === 'owned worktree' ? fs.realpathSync(repo) : path.join(repo, 'other-worktree'),
+        } : {}),
+      });
+      fs.writeFileSync(ledgerPath, ledger);
+      fs.writeFileSync(path.join(runsRoot(repo), 'ACTIVE'), 'publication\n');
+      const result = run(['admission', '--endpoint', 'staging', '--surface', 'backend-api', '--require-admitted',
+        ...(selection === 'explicit foreign run' ? ['--run-id', 'publication'] : [])], repo);
+      if (selection.startsWith('foreign')) {
+        assert.equal(result.status, 0, result.stdout + result.stderr);
+        assert.equal(JSON.parse(result.stdout).status, 'admitted');
+      } else {
+        assert.notEqual(result.status, 0, 'a selected run must retain its sealed baseline');
+        assert.match(result.stdout + result.stderr, /admission script must match the sealed baseline/i);
+      }
+      assert.equal(fs.readFileSync(ledgerPath, 'utf8'), ledger, 'admission must preserve the unrelated ledger');
+      assert.equal(fs.readFileSync(path.join(runsRoot(repo), 'ACTIVE'), 'utf8'), 'publication\n');
+    });
+  }
+
+  it('rejects ambiguous ACTIVE and missing explicit ledgers instead of rebasing admission silently', () => {
+    commitProbe(validSafeguards(repo));
+    const ledgerPath = path.join(runsRoot(repo), 'ambiguous', 'ledger.json');
+    fs.mkdirSync(path.dirname(ledgerPath), { recursive: true });
+    fs.writeFileSync(ledgerPath, JSON.stringify({ baseSha: 'missing-branch' }));
+    fs.writeFileSync(path.join(runsRoot(repo), 'ACTIVE'), 'ambiguous\n');
+    const ambiguous = run(['admission', '--endpoint', 'staging'], repo);
+    assert.notEqual(ambiguous.status, 0);
+    assert.match(ambiguous.stdout + ambiguous.stderr, /cannot bind ACTIVE admission to a branch/i);
+    const missing = run(['admission', '--endpoint', 'staging', '--run-id', 'missing'], repo);
+    assert.notEqual(missing.status, 0);
+    assert.match(missing.stdout + missing.stderr, /ledger not found/i);
+  });
+
+  it('rejects malformed ACTIVE worktree bindings instead of selecting candidate HEAD', () => {
+    commitProbe(validSafeguards(repo));
+    const baseSha = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).stdout.trim();
+    const branchName = spawnSync('git', ['branch', '--show-current'], { cwd: repo, encoding: 'utf8' }).stdout.trim();
+    const ledgerPath = path.join(runsRoot(repo), 'malformed', 'ledger.json');
+    fs.mkdirSync(path.dirname(ledgerPath), { recursive: true });
+    fs.writeFileSync(path.join(runsRoot(repo), 'ACTIVE'), 'malformed\n');
+    for (const worktreePath of [true, false, {}, [], null, '', 'relative/path', `${repo}/../other`]) {
+      const ledger = JSON.stringify({ baseSha, branchName, worktreePath });
+      fs.writeFileSync(ledgerPath, ledger);
+      const result = run(['admission', '--endpoint', 'staging'], repo);
+      assert.notEqual(result.status, 0, `malformed path ${JSON.stringify(worktreePath)} must fail closed`);
+      assert.match(result.stdout + result.stderr, /invalid admission worktree binding/i);
+      assert.equal(fs.readFileSync(ledgerPath, 'utf8'), ledger);
+    }
   });
 
   it('passes controller bindings to the admission probe over caller environment', () => {
