@@ -32,7 +32,7 @@ SKIPPED=()        # things we couldn't do (e.g. gh missing)
 # output isn't a terminal, so piped logs stay readable.
 _clear() {
   [[ -t 1 ]] || return 0
-  if command -v tput >/dev/null 2>&1; then tput clear; else printf '\033[2J\033[3J\033[H'; fi
+  command -v tput >/dev/null 2>&1 && tput clear 2>/dev/null || true
 }
 
 # banner "Title" — opening frame: what this wizard does.
