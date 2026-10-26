@@ -38,10 +38,15 @@ freshness. Hosted results and required approvals remain current-head/base-bound.
 1. **Pre-change** — confirm scope, task class, authority, acceptance criteria,
    any immutable identity or handoff required by the repository adapter, and
    release safeguards admission prerequisites for release-sensitive or reduced-gate work.
-2. **Pre-commit** — require focused intended paths, regression/contract proof,
-   and exact command output bound to the executed candidate inputs.
+2. **Pre-commit** — require focused intended paths and regression/contract proof
+   bound to the executed candidate inputs, or the recorded CI test deferral below.
 3. **Pre-push** — inspect staged paths, focused commits, clean intended diff,
-   and passing applicable local gates before publishing. If the push itself
+   and passing applicable gates before publishing. When the user requests
+   CI-only tests or local resources are constrained, tests may remain pending
+   through commit/push when publication is needed to obtain that proof. Use the
+   repository-supported deferral route, retain signing, secrets, ownership and
+   other non-test safeguards, and require current-head CI proof before merge or
+   verified completion. Deferred tests are pending, not passed. If the push itself
    actuates an applicable release effect under the portable contract, require
    its verified release safeguards admission
    before publishing; pushing prerequisite implementation, tests, or fixes
