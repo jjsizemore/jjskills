@@ -31,8 +31,9 @@ Use the repository directory name as `<repository-name>` and replace `/` with
    git worktree add "$WORKTREE" -b "$BRANCH" <explicit-base>
    ```
 
-4. Run the repository's environment-sync/bootstrap step and baseline validation
-   before implementation.
+4. Follow the [portable autonomous completion contract](../references/autonomous-completion-contract.md)
+   for setup and validation; run environment sync or baseline checks only when
+   the task's scope and required proof call for them.
 5. Store the absolute worktree path in any coordination ledger and use
    `git -C "$WORKTREE"` for Git operations.
 
