@@ -8,13 +8,16 @@ description: >-
 
 # Reviewing Implementation Plans
 
-Antagonistic acceptance gate for **plan artifacts** (not code). Used by
+Risk-focused review for **plan artifacts** (not code). Used by
 **`planning-work`** and **`refining-work-iteratively`**.
+
+The [portable completion contract](../references/autonomous-completion-contract.md)
+owns review scope, capability, evidence reuse and convergence.
 
 ## When to use
 
 - After a plan draft is written (`writing-plans`)
-- Each consensus-loop pass on the **latest** plan version
+- Material plan changes or an identified review-coverage gap
 - User asks “is this plan ready to execute?”
 
 ## Review checklist (Blocking / Advisory / Question)
@@ -47,10 +50,13 @@ For each finding, cite section/heading evidence and a concrete fix.
 CLEAN | NEEDS_REVISION
 ```
 
-`CLEAN` only when there are **no** new Blocking, Advisory, or Question items in
-the active scope on **this** version.
+Use the contract's selected review scope for the verdict. A triaged optional
+advisory does not prevent `CLEAN` under default scope; explicitly requested
+polish scope remains binding. Bind the verdict to the reviewed subject and
+relevant context.
 
 ## Stop / handoff
 
 Return findings to `refining-work-iteratively` / `planning-work`. Do not implement
-code. Do not mark consensus yourself — the controller re-runs review after fixes.
+code. Return the evidence binding so the controller can retain sufficient proof
+and refresh only affected coverage.

@@ -34,17 +34,14 @@ Dispatch to one of the peer CLI-agent skills. Each wraps a different coding agen
 
 ## Choosing
 
-- For **antagonistic review**, independence comes from a different model, not
-  just a different CLI. Pick a provider/model distinct from the one that
-  produced the work. opencode is the natural choice when the orchestrator's
-  model is available on opencode's same provider — switch to a different
-  provider via `-m` (e.g. `openai/gpt-5.5-pro` to review `opencode-go/glm-5.2`
-  work).
+- Select review capability and independence under the
+  [portable completion contract](../references/autonomous-completion-contract.md).
+  A different CLI, model or provider is a tool choice, not an extra review gate.
 - Prefer the provider with the most remaining usage budget when multiple are
   available. Do not block on a depleted provider when another CLI can run.
 - Run external agents non-interactively, capture output to a file, and record
   provenance (agent, model, session/invocation ID, head SHA, findings).
-- A review pass only counts for the exact head it inspected; re-dispatch after
-  any push.
-- When no second independent reviewer source exists and the user does not accept
-  that limitation, report a blocker — do not call clean.
+- Retain sufficient source review under the contract's evidence bindings;
+  required hosted checks and approvals still cover the actual PR head.
+- If required review capability is unavailable, block only its dependent action
+  and report the exact missing coverage.
