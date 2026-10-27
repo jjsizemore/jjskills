@@ -21,21 +21,22 @@ metadata:
 3. Design/spec when missing (repo brainstorming/spec skills if present).
 4. **`writing-plans`** → durable plan + **Execution stories**.
 5. **`refining-work-iteratively`** with **`reviewing-implementation-plans`**
-   (and remediation plan review when applicable) until no Blocking / Advisory /
-   Question findings on the **latest** plan version. Prefer two providers when
-   available.
-6. Print `PLAN_CONSENSUS_REACHED path=… stories=N` and hand off to
-   **`executing-work`**.
+   (and remediation plan review when applicable), using the
+   [portable completion contract](../references/autonomous-completion-contract.md)
+   for review scope, capability, evidence reuse and convergence.
+6. Report the plan path, execution stories and review disposition; hand off to
+   **`executing-work`** when execution is authorized.
 
 ## Consensus
 
-Latest plan has no open actionable review findings after fix + re-review cycles.
-Not a single self-check.
+Sufficient independent review supports the current plan under the contract's
+evidence bindings. Retain matching proof; a status phrase is not execution
+authority or a separate approval gate.
 
 ## Do not
 
 - Implement product code in this skill
-- Skip re-review after plan edits
+- Reuse review after a material change invalidates its coverage
 - Expose work-run CLI as the user-facing API
 
 Prefer the repository override when the repo defines

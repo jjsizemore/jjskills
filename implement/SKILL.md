@@ -14,6 +14,9 @@ route. Keep non-test safeguards enabled and report deferred tests as pending,
 not passed. Bind the CI run to the published head and require its applicable
 results before merge or verified completion.
 
-Once done, use /code-review to review the work.
+Use the [portable completion contract](../references/autonomous-completion-contract.md)
+to select the applicable review and retain sufficient existing evidence. Review
+covers the repository's standards and the assigned issue/spec; use the relevant
+domain reviewer without requiring tracker setup for an already supplied spec.
 
 Commit your work to the current branch.

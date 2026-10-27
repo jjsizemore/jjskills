@@ -68,15 +68,16 @@ Key flags (confirmed via `opencode run --help`):
 | `--print-logs --log-level DEBUG` | Debug invocation failures. |
 | `--pure` | Run without external plugins (isolate behavior). |
 
-## Antagonistic Cross-Model Review
+## Independent Review
 
-This is the primary reason to reach for opencode over a single-provider CLI.
-The reviewer's independence comes from a **different model**, so choose
-deliberately:
+OpenCode can supply a capable fresh-context reviewer. The
+[portable completion contract](../references/autonomous-completion-contract.md)
+owns review independence and evidence reuse; a different model or provider is
+optional unless a protected policy or concrete coverage need requires it.
 
 ```bash
 # Orchestrator produced work with opencode-go/glm-5.2.
-# Dispatch an independent reviewer on a different provider:
+# A different provider is available when its capability is useful:
 opencode run --dir "$REPO" -m openai/gpt-5.5-pro --agent plan \
   --format json \
   "You are a hostile merge gate. Review HEAD vs its base for correctness bugs, \
@@ -88,18 +89,16 @@ Base SHA: $BASE_SHA  Head SHA: $HEAD_SHA." \
 
 Selection rules:
 
-- Match a **different provider** from the work's author when possible
-  (`openai/*` vs `opencode-go/*`), not just a different model on the same
-  provider.
 - Prefer the provider with the most remaining usage budget when multiple are
-  available (see `opencode stats`).
+  equally capable (see `opencode stats`).
 - For read-only review, use `--agent plan` (file edits and bash default to
   `ask`) or a custom read-only agent. See the permissions section below.
 - Pass base/head SHAs, changed surfaces, validation already run, and known
   rejected/deferred feedback in the prompt so the reviewer does not restate
   resolved items.
-- A review pass only counts for the exact head it inspected. After any push,
-  re-run on the new head.
+- Bind source review and retained proof under the contract; refresh affected
+  coverage after material changes. Required hosted results remain current-head
+  bound.
 
 ## Permissions In Non-Interactive Mode
 

@@ -34,7 +34,6 @@ review is sufficient; do not schedule another pass merely to find something new.
 
 Apply the [portable autonomous completion contract](../references/autonomous-completion-contract.md)
 for review capability, finding triage, proof tiers, evidence invalidators, and review convergence bounds.
-Fresh-context independent review satisfies the requirement without universally demanding a different model.
 
 ## Initial Framing
 
@@ -91,21 +90,9 @@ product decision, authority or access that available evidence cannot resolve.
 
 ## Review Scope
 
-Use one of these scopes before starting the loop:
-
-- **Default actionable scope**: stop when there are no new Blocking or Question
-  items. Advisory findings are nonblocking; agents validate/triage findings,
-  technically resolve false positives, and do not manufacture user approvals or
-  demand tracked tickets for every optional improvement. Nice-to-have findings
-  may be recorded, accepted if cheap, deferred, or explicitly left as polish debt.
-- **Polish-inclusive scope**: stop only when there are no new Blocking,
-  Advisory, Question, or Nice-to-have items. Use this when the user asks for
-  extra refinement, premium polish, exhaustive cleanup, or explicitly says to
-  include nice-to-haves.
-
-If the user does not specify, use default actionable scope. If the artifact is
-high-risk or user-facing and the cost of iteration is low, recommend whether to
-upgrade to polish-inclusive scope instead of silently expanding the loop.
+Use the contract's default actionable scope unless the user explicitly requests
+polish-inclusive or exhaustive work. Record that selection in the existing
+review evidence; do not expand the loop merely because another pass is cheap.
 
 ## Receive And Improve
 
@@ -155,12 +142,8 @@ Stop only when all are true:
   without manufacturing user approvals or demanding tracked tickets.
 - Validation appropriate to the changed surface has run, or the exact blocker is
   documented.
-- A maximum of three review/fix rounds is permitted for an unchanged strategy,
-  after which the owner autonomously reconsiders/simplifies or changes strategy
-  with causal evidence within remaining existing resource limits. No blind
-  infinite loop, reset-by-renaming, automatic approval at cap, automatic human
-  “continue” checkpoint, or invented independent new budget. Validated must-fix
-  risks remain closed.
+- The contract's convergence and recovery rules are satisfied; a review-round
+  bound never waives a validated must-fix risk.
 
 For pull requests, prefer `refining-prs-iteratively` when live PR state,
 mergeability, hosted checks, unresolved threads, or target-branch freshness are
@@ -183,8 +166,8 @@ the stop condition was met on the latest version.
 
 ## Red Flags
 
-- Running a review once, making changes, and skipping the follow-up review.
-- Treating old clean feedback as valid after the artifact changed.
+- Skipping affected review after a material change or proven coverage gap.
+- Reusing clean feedback after its source or integration binding was invalidated.
 - Accepting review comments without verifying the underlying claim.
 - Asking the user broad preference questions before inspecting available
   evidence.
