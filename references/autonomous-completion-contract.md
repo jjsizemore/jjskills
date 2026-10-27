@@ -325,7 +325,9 @@ signing; infer neither refusal nor outage.
 Repair only necessary owned prerequisites, not an unrelated tooling redesign.
 
 Refresh context at intake, reconnect or a relevant change, reusing unchanged context.
-Choose one native observation route and one watcher per external dependency.
+Keep one native observation route and one watcher per external dependency.
+A bounded diagnostic may use several small scoped reads; controller batching
+does not add a request limit. Explicit user/native request limits remain binding.
 For pending machine work such as CI, use one supported native watch/event route.
 If the available provider has no event delivery, the same owner may use bounded,
 sequential read-only polling with backoff (for example 30, 60, then 120 seconds)
