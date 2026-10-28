@@ -54,7 +54,10 @@ freshness. Hosted results and required approvals remain current-head/base-bound.
    Local-only or documentation work requires justified scoped not_applicable;
    high-impact surfaces (installers, authority guidance, auto-update, migrations,
    CI) cannot bypass safeguards via file-extension claims.
-4. **Commit & push** — commit with semantic message including `Agent:` and `Model:` trailers. Push to the remote branch. If the user authorized local-only work, record the exception in the work-run ledger; otherwise push is mandatory and BLOCKS terminal state.
+4. **Commit & push** — for a publication endpoint, commit with semantic message
+   including `Agent:` and `Model:` trailers and push to the remote branch.
+   Preserve an explicit local-only endpoint in the existing task handoff or run
+   record when one exists; do not create a ledger just to record that boundary.
 5. **PR & screenshots** — for product/UI delivery, bind the feature-trunk PR's current head and attach Gitshot proof for affected UI/UX. A merged PR is evidenced by its recorded post-push/current-head review, not by requiring it to remain open.
 6. **Review/hosted** — bind the carrier SHA, PR URL, latest reviewed head,
    required checks, review threads, and mergeability. One capable independent
@@ -130,7 +133,8 @@ The recorded endpoint's delivery criteria are:
 
 - `VERIFIED`: the applicable proof tier passed with an independent oracle **AND** all of:
   - Product code changes are **committed** with semantic message and `Agent:`/`Model:` trailers.
-  - Changes are **pushed** to the remote branch, or a `local-only` exception is recorded in the work-run ledger with user authorization.
+  - Changes are **pushed** when the recorded endpoint requires publication.
+    Explicit local-only work keeps its authorized endpoint without a new ledger.
   - For product/UI changes (feat/fix/refactor/perf touching frontend, desktop, or packages/ui), an **open PR** existed targeting `dev` (or the repo's feature trunk) and its body reflected the current head at push time.
   - **Gitshot screenshots** were attached to the PR for every UI/UX diff. Upload and comment via `npx gitshot <image> | gh pr comment <n> --body-file -`.
   - Docs-only, skill-only, or CI-only changes do not require a PR or screenshots for `VERIFIED`.
