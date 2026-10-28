@@ -1,6 +1,6 @@
 ---
 name: verifying-before-completion
-description: 'Use after creating changes and before final responses, commits, pushes, PRs, or success claims to run role-based UAT and evidence-backed verification.'
+description: 'Use when collecting risk-scaled boundary and role evidence before completion claims or an applicable delivery action.'
 metadata:
   governing-skills-placement: user
   governing-skills-reason: Portable cross-repository workflow; repository-local overrides may add local mechanics.
@@ -8,9 +8,9 @@ metadata:
 
 # Verifying Before Completion
 
-Use after creating, editing, deleting, generating, staging, or committing an
-artifact, and before final responses, success claims, commits, pushes, PRs,
-releases, or handoffs.
+Collect the affected boundary and role evidence needed by the current task or
+delivery owner. Reuse valid evidence; an unchanged administrative milestone does
+not require another verification pass.
 
 If the current repository has a repo-local `verifying-before-completion` skill,
 use that narrower override for repository-specific commands and standards.
@@ -27,10 +27,10 @@ decision.
   repairs to `remediating-root-causes`.
 - If a PR is created or updated, resolve red checks and merge conflicts through
   the repository's monitoring/remediation workflow before completion.
-- For changes reducing release gates or executing releases, require verified
-  release safeguards admission under the portable contract before completion.
-  Local-only or documentation work requires justified scoped not_applicable;
-  high-impact surfaces cannot bypass safeguards via file-extension claims.
+- Apply the portable contract's action/resource/effect boundary before release
+  or reduced-gate actuation. Source work establishing prerequisites remains
+  eligible within its authority; non-release scope needs an explicit applicability
+  reason. High-impact surfaces retain their affected checks and review.
 - Apply the portable contract for review: mechanical work needs deterministic
   checks; behavior work needs one capable independent review. Advisory findings
   are nonblocking; review convergence is bound to three rounds for an unchanged
@@ -73,15 +73,15 @@ Select every affected role:
 - **Maintainer/reviewer** — readability, architecture boundaries, contracts,
   generated artifacts, and repository hygiene.
 
-## Completion bar
+## Leaf handoff
 
-Claim completion only when ALL of the following are satisfied:
+Return the affected boundaries, exact source/input bindings, commands/results,
+applicable role outcomes, remaining proof and its owner. A pending check under an
+existing watcher is a dependency, not a failed verification or a reason to start
+another watcher.
 
-- The diff matches scope, regression protection exists or its absence is explicit, every affected role passed or is explicitly blocked, required validation remains valid under the portable contract's evidence bindings, and remaining risks are named plainly.
-- Product code changes are **committed** with semantic message and `Agent:`/`Model:` trailers.
-- Changes are **pushed** to the remote branch (or a `local-only` exception is recorded in the work-run ledger with user authorization).
-- For product/UI changes, current post-push PR evidence must bind the authorized endpoint; after merge the closed PR and recorded current-head review satisfy this boundary. Attach Gitshot screenshots for affected UI/UX surfaces.
-- Docs-only, skill-only, and CI-only changes do not require a PR or screenshots for `VERIFIED`.
-
-If any item is unmet, withhold `VERIFIED` and continue reachable authorized work.
-Use `BLOCKED`/`PAUSED` only under the canonical contract's scoped terminal conditions.
+The existing task/delivery owner applies the recorded endpoint and
+[closing-repo-work](../closing-repo-work/SKILL.md) when delivery is in scope.
+This leaf does not restart commit/push/PR/deployment, create a run or ledger,
+request another approval, or declare whole-run completion. For explicit local-only
+work, return the requested local proof without introducing publication steps.

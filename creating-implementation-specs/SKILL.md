@@ -13,7 +13,10 @@ Use when creating an implementation-ready remediation specification for a bug, i
 ## Guidance
 
 - Confirm the trigger matches the current task before applying this workflow.
-- **REQUIRED SUB-SKILL:** Use `grill-me` to interview the user about omitted details before creating the spec.
+- Reuse supplied diagnosis, decisions and approvals. Ask only for unresolved
+  material scope, access, authority or product decisions; a complete brief goes
+  directly to the spec. Preserve useful dialogue when the user requests an
+  interactive interview.
 - Preserve relevant evidence, commands, paths, and validation results in the final handoff.
 - Keep project-specific lifecycle and archive mechanics in the repository-local override.
 
@@ -33,7 +36,10 @@ Use when creating an implementation-ready remediation specification for a bug, i
 - Permit `Not applicable — reason` only for UX, operator notification, rollout, or rollback after proving no relevant surface exists.
 ## Stop Condition
 
-- Stop when causal evidence, owner, regression protection, or recovery criteria are missing; reject a patch-and-unit-test-only brief.
+- Resolve missing causal evidence, owner, regression protection or recovery
+  criteria from available sources. Mark the exact unresolved boundary and block
+  only dependent implementation; continue independent authorized specification
+  work. Reject a patch-and-unit-test-only brief without inventing a root cause.
 
 ## Deliverable
 
