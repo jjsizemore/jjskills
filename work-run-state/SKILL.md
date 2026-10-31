@@ -118,6 +118,39 @@ Admission (including run initialization) supplies controller-owned
 `WORK_RUN_EXPECTED_SURFACE`, replacing ambient values; observed evidence must still
 pass the independent binding and safeguard checks.
 
+When a staging admission consumer itself needs repair, preserve the application
+subject and final oracle. After its source-only repair PR has merged to the same
+GitHub repository's `staging` branch with current required checks and review policy
+satisfied, fetch that exact merge and run from the original subject checkout:
+
+```bash
+node ~/.agents/skills/work-run-state/scripts/work-run.mjs adopt-admission \
+  --source-pr https://github.com/OWNER/REPO/pull/NUMBER \
+  --endpoint staging --environment staging --surface backend
+```
+
+Use `--run-id` only for an existing selected run; adoption preserves its owner,
+surface, endpoint, baseline and accounting. No run is created for stateless
+admission. The immutable receipt lives under the existing run-state root's
+`admission-adoptions/`. It binds the original worktree, subject, sealed config and
+target to the provider-qualified source commit and full dependency tree. Repeating
+the same adoption is idempotent; a conflicting receipt is refused and preserved.
+No caller command, source path, report or subject override is accepted.
+
+Subsequent ordinary admission requalifies that source and executes the sealed
+admission argv in a fresh isolated tooling snapshot, with original subject Git HEAD
+and origin. The snapshot's tooling tree is explicitly distinct from the application
+tree; it is never deployed. Source files are raw Git blobs, unaffected by archive
+substitution, and inherited Git overrides cannot redirect the snapshot's index or
+worktree. Tracked symlinks are unavailable there, so imports cannot escape through
+them. The original checkout and terminal `--closeout` command remain
+unchanged. Invalid receipts, changed config, missing objects, failed provider checks
+or execution errors deny without falling back. Adoption supplies no safeguards:
+the project probe and independent evaluator must still pass. Production adoption
+is unsupported. To roll back, use `revoke-admission` with the same target and run
+bindings. It preserves the receipt as revoked evidence, restores baseline admission
+and refuses later readoption of that withdrawn source. Never hand-edit receipts.
+
 The trusted baseline `closeout-command.json` declares
 `rollbackPolicy: { owner, procedure, recoveryTarget: "120s" }`, using the repo's
 actual procedure-owned RTO, not a universal limit. Oracle observations include
