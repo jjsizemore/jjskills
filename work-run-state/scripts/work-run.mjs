@@ -14,6 +14,7 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { CLOSEOUT_VERIFIER_TIMEOUT_MS } from './closeout-timeouts.mjs';
 import { evaluateReleaseAdmission } from './release-admission.mjs';
+import { adoptAdmissionSource, revokeAdmissionSource, admissionRuntime } from './admission-adoption.mjs';
 
 const FLOOR = 10;
 const HARD_CEILING = 30;
@@ -256,6 +257,7 @@ export function isStoryEligible(story, ledger, cwd = process.cwd()) {
       endpoint: ledger.endpoint,
       expectedSurface,
       action: 'release-pick',
+      runId: ledger.runId,
       timeoutMs: 10_000,
     });
     if (!adm.admitted || adm.status === 'not_applicable') return false;
@@ -365,6 +367,7 @@ export function executeBaselineSafeguardsProbe({
   expectedSurface,
   action = 'release-admission',
   timeoutMs = 30_000,
+  runId = null,
 }) {
   const curHead = subjectHead || currentHead(cwd);
   const oracleBase = baseSha || curHead;
@@ -381,8 +384,20 @@ export function executeBaselineSafeguardsProbe({
   }
 
   const probeCommand = oracleConfig.admissionCommand ?? oracleConfig.command;
+  const targetEnvironment = expectedEnvironment ||
+    (endpoint === 'staging' ? 'staging' : endpoint === 'deploy' ? 'production' : '');
+  let runtime = null;
+  try {
+    runtime = admissionRuntime({ cwd, stateRoot: runsRoot(cwd), baseSha: oracleBase, subjectHead: curHead,
+      endpoint, expectedEnvironment: targetEnvironment, expectedSurface, runId, configSha: oracleConfig.configSha });
+    if (runtime && !oracleConfig.admissionCommand) throw new Error('adoption requires a dedicated admission command');
+  } catch (error) {
+    runtime?.cleanup();
+    return { admitted: false, status: 'denied', reason: error.message, missing: ['qualified admission adoption'] };
+  }
   if (oracleConfig.admissionCommand &&
-      !baselineAdmissionScriptMatches(cwd, oracleBase, probeCommand[1])) {
+      !baselineAdmissionScriptMatches(runtime?.cwd || cwd, runtime?.source.sourceSha || oracleBase, probeCommand[1])) {
+    runtime?.cleanup();
     return {
       admitted: false,
       status: 'denied',
@@ -390,25 +405,29 @@ export function executeBaselineSafeguardsProbe({
       missing: ['baseline admission script identity'],
     };
   }
-  const targetEnvironment = expectedEnvironment ||
-    (endpoint === 'staging' ? 'staging' : endpoint === 'deploy' ? 'production' : '');
   const probeRun = spawnSync(probeCommand[0], probeCommand.slice(1), {
-    cwd,
+    cwd: runtime?.cwd || cwd,
     encoding: 'utf8',
     timeout: timeoutMs,
     env: {
-      ...process.env,
+      ...(runtime?.env || process.env),
       WORK_RUN_EXPECTED_HEAD: curHead,
       WORK_RUN_EXPECTED_ENVIRONMENT: targetEnvironment,
       WORK_RUN_EXPECTED_SURFACE: expectedSurface || '',
     },
   });
 
+  runtime?.cleanup();
   if (probeRun.status !== 0 || probeRun.signal) {
+    const infrastructure = probeRun.error?.code || probeRun.signal;
     return {
       admitted: false,
       status: 'denied',
-      reason: `release safeguards admission denied: project probe execution failed with exit code ${probeRun.status}`,
+      reason: infrastructure
+        ? `release safeguards admission denied: project probe infrastructure failure (${infrastructure})`
+        : `release safeguards admission denied: project probe execution failed with exit code ${probeRun.status}`,
+      ...(runtime ? { admissionSource: runtime.source } : {}),
+      probeFailure: { exitCode: probeRun.status, signal: probeRun.signal, error: probeRun.error?.code || null },
       missing: ['passing project probe execution'],
     };
   }
@@ -430,7 +449,7 @@ export function executeBaselineSafeguardsProbe({
     observedPayload.deliveryProof?.releaseSafeguards ||
     observedPayload;
 
-  return evaluateReleaseAdmission({
+  const result = evaluateReleaseAdmission({
     cwd,
     evidence: observedSafeguards,
     endpoint,
@@ -440,6 +459,7 @@ export function executeBaselineSafeguardsProbe({
     subjectHead: curHead,
     action,
   });
+  return runtime ? { ...result, admissionSource: runtime.source } : result;
 }
 
 function cmdInit(cwd, args) {
@@ -645,6 +665,7 @@ function cmdBumpIteration(cwd, args) {
       endpoint: data.endpoint,
       expectedSurface,
       action: 'release-deployment',
+      runId,
       timeoutMs: 30_000,
     });
     if (!adm.admitted || adm.status === 'not_applicable') {
@@ -775,6 +796,53 @@ function cmdComplete(cwd, args) {
   const line = `WORK_RUN_COMPLETE run-id=${runId}`;
   process.stdout.write(JSON.stringify({ ok: true, completion: line }) + '\n');
 }
+function admissionContext(cwd, args) {
+  const subjectHead = currentHead(cwd);
+  let runId = resolveRunId(cwd, args);
+  if (!runId) return { subjectHead, baseSha: subjectHead, runId: null, ledger: null };
+  const { data } = readLedger(cwd, runId);
+  const hasWorktreePath = Object.hasOwn(data, 'worktreePath');
+  if (hasWorktreePath && (typeof data.worktreePath !== 'string' || !path.isAbsolute(data.worktreePath) ||
+      path.resolve(data.worktreePath) !== data.worktreePath)) {
+    die('invalid admission worktree binding in selected run');
+  }
+  if (!args['run-id'] && !hasWorktreePath && (typeof data.branchName !== 'string' || !data.branchName)) {
+    die('cannot bind ACTIVE admission to a branch; pass --run-id explicitly');
+  }
+  const branch = execFileSync('git', ['branch', '--show-current'], { cwd, encoding: 'utf8' }).trim();
+  const root = fs.realpathSync(execFileSync('git', ['rev-parse', '--show-toplevel'], { cwd, encoding: 'utf8' }).trim());
+  const ownsCaller = hasWorktreePath ? data.worktreePath === root : data.branchName === branch;
+  if (args['run-id'] || ownsCaller) {
+    if (!data.baseSha) die('selected admission run is missing its sealed baseline');
+    return { subjectHead, baseSha: data.baseSha, runId, ledger: data };
+  }
+  return { subjectHead, baseSha: subjectHead, runId: null, ledger: null };
+}
+
+function cmdAdoptAdmission(cwd, args, revoke = false) {
+  const allowed = new Set(['_', 'source-pr', 'run-id', 'endpoint', 'environment', 'surface']);
+  if (Object.keys(args).some((key) => !allowed.has(key)) || args._.length ||
+      (revoke ? args['source-pr'] : !args['source-pr'])) {
+    die('adopt-admission requires --source-pr and explicit target bindings; caller overrides are forbidden');
+  }
+  const context = admissionContext(cwd, args);
+  const config = parseOracleConfig(cwd, context.baseSha);
+  if (!config.admissionCommand) die('adoption requires a dedicated sealed admission command');
+  if (context.ledger && (context.ledger.endpoint !== args.endpoint ||
+      context.ledger.surface !== args.surface || context.ledger.status !== 'active' ||
+      (context.ledger.worktreePath && context.ledger.worktreePath !== fs.realpathSync(cwd)))) {
+    die('adoption must preserve the active run owner, surface and endpoint');
+  }
+  try {
+    const result = (revoke ? revokeAdmissionSource : adoptAdmissionSource)({ cwd, stateRoot: runsRoot(cwd), ...context,
+      endpoint: args.endpoint, expectedEnvironment: args.environment, expectedSurface: args.surface,
+      configSha: config.configSha, sourcePr: args['source-pr'] });
+    process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+  } catch (error) {
+    die(error.message);
+  }
+}
+
 function cmdAdmission(cwd, args) {
   if (args['probe-command']) {
     die('forbidden: caller probe command override is rejected; probe must resolve from baseline configuration');
@@ -831,33 +899,7 @@ function cmdAdmission(cwd, args) {
     process.stdout.write(JSON.stringify(naResult, null, 2) + '\n');
     return;
   }
-  const curHead = currentHead(cwd);
-  let baseSha = null;
-  let runId = resolveRunId(cwd, args);
-  if (runId) {
-    const { data } = readLedger(cwd, runId);
-    const hasWorktreePath = Object.hasOwn(data, 'worktreePath');
-    if (hasWorktreePath && (typeof data.worktreePath !== 'string' || !path.isAbsolute(data.worktreePath) ||
-        path.resolve(data.worktreePath) !== data.worktreePath)) {
-      die('invalid admission worktree binding in selected run');
-    }
-    if (!args['run-id'] && !hasWorktreePath && (typeof data.branchName !== 'string' || !data.branchName)) {
-      die('cannot bind ACTIVE admission to a branch; pass --run-id explicitly');
-    }
-    const branch = execFileSync('git', ['branch', '--show-current'], { cwd, encoding: 'utf8' }).trim();
-    const root = fs.realpathSync(execFileSync('git', ['rev-parse', '--show-toplevel'], { cwd, encoding: 'utf8' }).trim());
-    // ACTIVE is shared across worktrees; keep legacy branch binding when no path was recorded.
-    const ownsCaller = hasWorktreePath ? data.worktreePath === root : data.branchName === branch;
-    if (args['run-id'] || ownsCaller) {
-      if (!data.baseSha) die('selected admission run is missing its sealed baseline');
-      baseSha = data.baseSha;
-    } else {
-      runId = null;
-    }
-  }
-  if (!baseSha) {
-    baseSha = curHead;
-  }
+  const { baseSha, subjectHead: curHead, runId } = admissionContext(cwd, args);
 
   const result = executeBaselineSafeguardsProbe({
     cwd,
@@ -867,6 +909,7 @@ function cmdAdmission(cwd, args) {
     expectedEnvironment,
     expectedSurface,
     action: args.action || 'release-admission',
+    runId,
   });
 
   if (callerEvidence && result.admitted) {
@@ -929,6 +972,8 @@ Commands:
   status
   append --text TEXT
   admission --evidence PATH [--endpoint E] [--subject-head S] [--environment ENV] [--surface SURF]
+  adopt-admission --source-pr URL --endpoint staging --environment staging --surface S [--run-id ID]
+  revoke-admission --endpoint staging --environment staging --surface S [--run-id ID]
   complete --closeout-evidence PATH
 
 State: <git-common-dir>/agent-runs/ (or AGENT_RUNS_ROOT)
@@ -964,6 +1009,10 @@ State: <git-common-dir>/agent-runs/ (or AGENT_RUNS_ROOT)
     case 'admission':
     case 'check-admission':
       return cmdAdmission(cwd, args);
+    case 'adopt-admission':
+      return cmdAdoptAdmission(cwd, args);
+    case 'revoke-admission':
+      return cmdAdoptAdmission(cwd, args, true);
     default:
       die(`unknown command: ${cmd}`);
   }
