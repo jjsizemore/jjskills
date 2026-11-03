@@ -160,7 +160,7 @@ export function admissionRuntime(options) {
   for (const [key, value] of Object.entries(source)) {
     requireValue(receipt[key] === value, `receipt ${key} mismatch`);
   }
-  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'admission-runtime-'));
+  const directory = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'admission-runtime-')));
   fs.chmodSync(directory, 0o700);
   const cleanup = () => fs.rmSync(directory, { recursive: true, force: true });
   try {
