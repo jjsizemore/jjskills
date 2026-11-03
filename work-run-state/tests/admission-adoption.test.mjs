@@ -230,6 +230,12 @@ function fixture(variant = '') {
   }
   fs.writeFileSync(path.join(f.repo, 'probe.mjs'),
     "import { observation } from './helpers/evidence.mjs';\nobservation('source-helper', true);\n");
+  if (variant === 'symlinked-probe') {
+    const outside = path.join(f.root, 'outside-probe.mjs');
+    fs.copyFileSync(path.join(f.repo, 'probe.mjs'), outside);
+    fs.unlinkSync(path.join(f.repo, 'probe.mjs'));
+    fs.symlinkSync(outside, path.join(f.repo, 'probe.mjs'));
+  }
   fs.writeFileSync(path.join(f.repo, 'final.mjs'), PREAMBLE + observation.toString() + "\nobservation('source-final', true);\n");
   if (variant === 'config') {
     const p = path.join(f.repo, 'closeout-command.json');
@@ -303,6 +309,31 @@ describe('guarded admission-only source adoption', () => {
   let f;
   beforeEach(() => { f = fixture(); });
   afterEach(() => { if (f) fs.rmSync(f.root, { recursive: true, force: true }); });
+
+  for (const variant of ['', 'symlinked-probe']) {
+    it(`handles an aliased temporary root with ${variant || 'a valid probe'}`, () => {
+      if (variant) {
+        fs.rmSync(f.root, { recursive: true, force: true });
+        f = fixture(variant);
+      }
+      const alias = path.join(f.root, 'temporary-alias');
+      fs.symlinkSync(f.temporary, alias);
+      f.env.TMPDIR = alias;
+      assert.equal(f.adopt().status, 0);
+      const result = f.admission();
+      if (variant) {
+        denied(result);
+        assert.equal(f.events().some((event) => event.kind === 'source-helper'), false);
+      } else {
+        assert.equal(result.status, 0, result.stderr || result.stdout);
+        const event = f.events().find((item) => item.kind === 'source-helper');
+        assert.ok(event, 'the valid adopted probe must actually execute');
+        assert.ok(event.cwd.startsWith(f.temporary + path.sep), event.cwd);
+        assert.equal(event.head, f.subject);
+      }
+      assert.deepEqual(fs.readdirSync(f.temporary), [], 'private runtime is cleaned up');
+    });
+  }
 
   it('admits an aggregate source tree above 64 MiB with exact binary and empty blob bytes', () => {
     fs.rmSync(f.root, { recursive: true, force: true });
