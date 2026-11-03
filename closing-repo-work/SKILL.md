@@ -40,8 +40,13 @@ freshness. Hosted results and required approvals remain current-head/base-bound.
    release safeguards admission prerequisites for release-sensitive or reduced-gate work.
 2. **Pre-commit** — require focused intended paths and regression/contract proof
    bound to the executed candidate inputs, or the recorded CI test deferral below.
-3. **Pre-push** — inspect staged paths, focused commits, clean intended diff,
-   and passing applicable gates before publishing. When the user requests
+3. **Pre-push** — resolve and bind the intended PR target/ref and comparison SHA
+   through [repo PR rules](references/repo-pr-rules.md#base-branch-and-title)
+   before base-sensitive checks or the first push, including branches without an
+   upstream. Use the repository-supported comparison input for changed tests and
+   push hooks; keep required tests and signing. Inspect staged paths, focused
+   commits, clean intended diff, and passing applicable gates before publishing.
+   When the user requests
    CI-only tests or local resources are constrained, tests may remain pending
    through commit/push when publication is needed to obtain that proof. Use the
    repository-supported deferral route, retain signing, secrets, ownership and
@@ -58,7 +63,7 @@ freshness. Hosted results and required approvals remain current-head/base-bound.
    including `Agent:` and `Model:` trailers and push to the remote branch.
    Preserve an explicit local-only endpoint in the existing task handoff or run
    record when one exists; do not create a ledger just to record that boundary.
-5. **PR & screenshots** — for product/UI delivery, bind the feature-trunk PR's current head and attach Gitshot proof for affected UI/UX. A merged PR is evidenced by its recorded post-push/current-head review, not by requiring it to remain open.
+5. **PR & screenshots** — for product/UI delivery, bind the PR's resolved target and current head and attach Gitshot proof for affected UI/UX. A merged PR is evidenced by its recorded post-push/current-head review, not by requiring it to remain open.
 6. **Review/hosted** — bind the carrier SHA, PR URL, latest reviewed head,
    required checks, review threads, and mergeability. One capable independent
    review satisfies review requirements for behavior/high-impact work; advisory,
@@ -135,7 +140,7 @@ The recorded endpoint's delivery criteria are:
   - Product code changes are **committed** with semantic message and `Agent:`/`Model:` trailers.
   - Changes are **pushed** when the recorded endpoint requires publication.
     Explicit local-only work keeps its authorized endpoint without a new ledger.
-  - For product/UI changes (feat/fix/refactor/perf touching frontend, desktop, or packages/ui), an **open PR** existed targeting `dev` (or the repo's feature trunk) and its body reflected the current head at push time.
+  - For product/UI changes (feat/fix/refactor/perf touching frontend, desktop, or packages/ui), an **open PR** existed targeting the resolved branch under repository policy and its body reflected the current head at push time.
   - **Gitshot screenshots** were attached to the PR for every UI/UX diff. Upload and comment via `npx gitshot <image> | gh pr comment <n> --body-file -`.
   - Docs-only, skill-only, or CI-only changes do not require a PR or screenshots for `VERIFIED`.
   - After merge, the PR is closed; terminal verification uses the recorded post-push PR evidence and does not require an open PR.

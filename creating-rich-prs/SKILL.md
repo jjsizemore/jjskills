@@ -9,7 +9,7 @@ Use this skill to generate and submit a rich, context-aware pull request for the
 
 ## Guidance
 
-1. **Analyze the Work**: Run `git log` and `git diff` against the base branch to understand the scope and intent of the changes.
+1. **Analyze the Work**: Resolve the intended target/ref and comparison SHA through the shared [repo PR rules](../closing-repo-work/references/repo-pr-rules.md#base-branch-and-title) before base-sensitive checks or first push. Run `git log` and `git diff` against that binding to understand the scope and intent of the changes.
 2. **Draft the Description**: Structure the PR body with MANDATORY clear sections:
    - **Overview**: A high-level summary of what the PR accomplishes.
    - **Why / Rationale (MANDATORY)**: Explicit explanation of **why** the change was made, the underlying problem being solved, and technical or business motivation. Never submit a PR without a "Why / Rationale" section.
@@ -18,8 +18,8 @@ Use this skill to generate and submit a rich, context-aware pull request for the
 3. **Split-Out PRs (related-but-distinct work)**: When a branch bundles multiple concerns (e.g., skill content + skill symlink registrations, or infra + docs), open a separate PR for the splittable slice rather than lumping it into a larger bundle.
    - **Typical pattern**: A branch adds new domain skills (SKILL.md files + validation logic) **and** also adds repo-mirror compat symlinks (`.claude/skills/<name>` → `../../.agents/skills/<name>`, same for `.codex/skills/` and `.github/skills/`). The symlink registration is a focused infrastructure change that deserves its own PR — it has a narrow scope, distinct review concerns, and can be reviewed independently from the skill content.
    - **Why**: Bundling symlinks into a content PR obscures the infra change, makes it harder to revert just the sync links if something breaks, and prevents the PR description from explaining the symlink strategy clearly.
-   - **How**: Before opening the main PR, branch off from the base, `git checkout --` only the symlink files (`git diff <base>...HEAD --diff-filter=A --name-only -- .claude/skills .codex/skills .github/skills`), apply them, write a focused title like `chore(skills): register repo mirror symlinks for new skills`, and `gh pr create` with that narrow scope. Then rebase the main PR to exclude those files.
-4. **Submit Requested PR**: When the user requests PR creation, submit the prepared title and description with `gh pr create --title "<title>" --body-file <body-file>` without a separate draft-approval checkpoint. Honor an explicit request to review the draft first or create a draft PR.
+   - **How**: Before opening the main PR, branch off from the resolved base, `git checkout --` only the symlink files (`git diff <resolved-base>...HEAD --diff-filter=A --name-only -- .claude/skills .codex/skills .github/skills`), apply them, write a focused title like `chore(skills): register repo mirror symlinks for new skills`, and `gh pr create --base "<resolved-base-branch>"` with that narrow scope. Then rebase the main PR to exclude those files.
+4. **Submit Requested PR**: When the user requests PR creation, submit the prepared title and description with `gh pr create --base "<resolved-base-branch>" --title "<title>" --body-file <body-file>` without a separate draft-approval checkpoint. Honor an explicit request to review the draft first or create a draft PR.
 5. **Preserve Repository Gates**: PR creation does not waive required GitHub approvals, checks, branch protection, security rules, or release/deployment gates.
 ## Handoff: Share the created PR link with the user and verify any follow-up checks.
 
