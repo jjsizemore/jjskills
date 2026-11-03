@@ -20,7 +20,22 @@ No related issue found.
 
 ## Base Branch and Title
 
-- Determine the base branch from the existing PR, repo docs, protected-branch policy, default branch, or explicit user request.
+- Resolve the intended PR target before base-sensitive validation or first push:
+  honor the explicit assignment, otherwise the existing PR's base, then the
+  repository's publication policy. Use the remote default only when the target is
+  otherwise unspecified and repository policy permits it. Retain one binding of
+  target remote/ref and resolved commit for the diff, changed checks and PR;
+  refresh affected proof when that target or relevant inputs change.
+- A tracking upstream can name the feature branch; it does not establish the PR base.
+  A missing upstream never establishes `dev` or the remote default as the target.
+  Scope the repository's supported comparison override to the relevant checks
+  and push invocation (for example, `CI_CHECK_CHANGED_BASE` where implemented).
+  Check the selected paths against the intended diff before recovering resources
+  for an unexpectedly broad test selection. Correct base selection preserves
+  required relevant tests, failure propagation, hooks and signing; it is not test
+  deferral and does not change the source baseline.
+- Create the PR with an explicit resolved base and preserve it for split-out PRs;
+  do not let the CLI's default branch replace that binding.
 - If the repo has PR title or branch conventions, follow them.
 - Otherwise use a concise title such as `type: concise summary` and add an issue suffix only when the repo convention or the user expects it.
 

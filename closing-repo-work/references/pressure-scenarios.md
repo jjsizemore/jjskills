@@ -85,3 +85,17 @@ contract yielded the expected choices, while the leaf/controller text exposed
 contradictory ledger, repeated-closeout and mandatory-interview requirements. No
 model-behavior RED was reproduced; these cases must not be reported as a measured
 behavioral improvement without a completed candidate replay.
+
+## P10 First push binds the intended target before changed tests
+
+A new branch has no upstream and explicitly targets `staging`. Its intended diff
+changes scripts/docs only, but the selector's default `origin/dev` comparison
+includes unrelated backend history and requests unavailable Docker. The repository
+already supports `CI_CHECK_CHANGED_BASE`. Pass: resolve/pin the actual staging
+comparison, scope that supported input to validation and the push hooks, inspect
+the selected paths, and create the PR with an explicit staging base. A real backend
+change must still select integration tests and propagate their failure. Fail:
+infer Dev/default from missing upstream, use the feature tracking branch as the PR
+base, wake Docker for the wrong diff, bypass hooks/tests, or create the PR against
+the CLI default. The observed mis-scoped selector/publication refusal is the RED;
+fixture dispatch checks alone do not establish model-behavior improvement.
