@@ -6,6 +6,8 @@ import { execFileSync } from 'node:child_process';
 import { normalizeRepoIdentity } from './release-admission.mjs';
 
 const SHA = /^[a-f0-9]{40}$/u;
+const MAX_GIT_BUFFER_BYTES = 64 * 1024 * 1024;
+const MAX_SOURCE_TREE_BYTES = 512 * 1024 * 1024;
 const digest = (value) => createHash('sha256').update(value).digest('hex');
 
 function gitEnvironment() {
@@ -20,7 +22,7 @@ function requireValue(value, message) {
 
 function git(cwd, args, options = {}) {
   return execFileSync('git', ['-c', 'core.hooksPath=/dev/null', ...args], {
-    cwd, encoding: 'utf8', timeout: 30_000, maxBuffer: 64 * 1024 * 1024,
+    cwd, encoding: 'utf8', timeout: 30_000, maxBuffer: MAX_GIT_BUFFER_BYTES,
     stdio: ['pipe', 'pipe', 'pipe'], env: gitEnvironment(), ...options,
   });
 }
@@ -162,34 +164,54 @@ export function admissionRuntime(options) {
   fs.chmodSync(directory, 0o700);
   const cleanup = () => fs.rmSync(directory, { recursive: true, force: true });
   try {
-    const entries = git(options.cwd, ['ls-tree', '-rz', '--full-tree', source.sourceSha]).split('\0').filter(Boolean)
+    const entries = git(options.cwd, ['ls-tree', '-rz', '--long', '--full-tree', source.sourceSha]).split('\0').filter(Boolean)
       .map((entry) => {
-        const match = /^(100644|100755|120000|160000) (blob|commit) ([a-f0-9]{40})\t(.+)$/us.exec(entry);
+        const match = /^(100644|100755|120000|160000) (blob|commit) ([a-f0-9]{40}) +([0-9]+|-)\t(.+)$/us.exec(entry);
         requireValue(match, 'unsupported tooling tree entry');
-        const [, mode, , oid, file] = match;
+        const [, mode, type, oid, sizeText, file] = match;
         requireValue(!path.isAbsolute(file) && file.split('/').every((part) =>
           part && part !== '.' && part !== '..' && part.toLowerCase() !== '.git'), 'unsafe tooling tree path');
-        return { mode, oid, file };
+        const size = Number(sizeText);
+        const outputBytes = size + Buffer.byteLength(`${oid} blob ${size}\n`) + 1;
+        if (mode === '100644' || mode === '100755') {
+          requireValue(type === 'blob' && Number.isSafeInteger(size) && size >= 0 &&
+            outputBytes <= MAX_GIT_BUFFER_BYTES, 'tooling source blob exceeds the 64 MiB batch limit');
+        }
+        return { mode, oid, file, size, outputBytes };
       }).filter((entry) => entry.mode === '100644' || entry.mode === '100755');
-    // Raw blobs avoid export-subst/export-ignore changing the reviewed dependency bytes.
-    const blobs = git(options.cwd, ['cat-file', '--batch'], {
-      input: Buffer.from(entries.map((entry) => entry.oid).join('\n') + '\n'), encoding: 'buffer',
-    });
-    let offset = 0;
-    for (const entry of entries) {
-      const end = blobs.indexOf(10, offset);
-      const header = blobs.subarray(offset, end).toString('utf8').split(' ');
-      const size = Number(header[2]);
-      requireValue(end >= offset && header[0] === entry.oid && header[1] === 'blob' &&
-        Number.isSafeInteger(size) && size >= 0 && end + size + 1 < blobs.length &&
-        blobs[end + size + 1] === 10, 'invalid tooling source blob');
-      const file = path.join(directory, entry.file);
-      fs.mkdirSync(path.dirname(file), { recursive: true, mode: 0o700 });
-      fs.writeFileSync(file, blobs.subarray(end + 1, end + size + 1),
-        { flag: 'wx', mode: entry.mode === '100755' ? 0o700 : 0o600 });
-      offset = end + size + 2;
+    requireValue(entries.reduce((total, entry) => total + entry.size, 0) <= MAX_SOURCE_TREE_BYTES,
+      'tooling source tree exceeds the 512 MiB limit');
+    // Raw blobs preserve reviewed bytes; each framed batch fits the existing Git buffer cap.
+    for (let start = 0; start < entries.length;) {
+      let end = start;
+      let outputBytes = 0;
+      while (end < entries.length && outputBytes + entries[end].outputBytes <= MAX_GIT_BUFFER_BYTES) {
+        outputBytes += entries[end].outputBytes;
+        end += 1;
+      }
+      const batch = entries.slice(start, end);
+      const blobs = git(options.cwd, ['cat-file', '--batch'], {
+        input: Buffer.from(batch.map((entry) => entry.oid).join('\n') + '\n'), encoding: 'buffer',
+      });
+      let offset = 0;
+      for (const entry of batch) {
+        const endOfHeader = blobs.indexOf(10, offset);
+        const size = entry.size;
+        requireValue(endOfHeader >= offset &&
+          blobs.subarray(offset, endOfHeader).toString('utf8') === `${entry.oid} blob ${size}` &&
+          endOfHeader + size + 1 < blobs.length && blobs[endOfHeader + size + 1] === 10,
+        'invalid tooling source blob');
+        const bytes = blobs.subarray(endOfHeader + 1, endOfHeader + size + 1);
+        requireValue(createHash('sha1').update(`blob ${size}\0`).update(bytes).digest('hex') === entry.oid,
+          'tooling source blob identity mismatch');
+        const file = path.join(directory, entry.file);
+        fs.mkdirSync(path.dirname(file), { recursive: true, mode: 0o700 });
+        fs.writeFileSync(file, bytes, { flag: 'wx', mode: entry.mode === '100755' ? 0o700 : 0o600 });
+        offset = endOfHeader + size + 2;
+      }
+      requireValue(offset === blobs.length, 'unexpected tooling source data');
+      start = end;
     }
-    requireValue(offset === blobs.length, 'unexpected tooling source data');
     git(directory, ['init', '--template=', '-q']);
     const objectDirectory = git(options.cwd, ['rev-parse', '--path-format=absolute', '--git-path', 'objects']).trim();
     fs.writeFileSync(path.join(directory, '.git', 'objects', 'info', 'alternates'), `${objectDirectory}\n`);

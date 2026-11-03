@@ -142,8 +142,10 @@ admission argv in a fresh isolated tooling snapshot, with original subject Git H
 and origin. The snapshot's tooling tree is explicitly distinct from the application
 tree; it is never deployed. Source files are raw Git blobs, unaffected by archive
 substitution, and inherited Git overrides cannot redirect the snapshot's index or
-worktree. Tracked symlinks are unavailable there, so imports cannot escape through
-them. The original checkout and terminal `--closeout` command remain
+worktree. Raw Git batches, including blob framing, are capped at 64 MiB; regular
+source-file data is capped at 512 MiB per tooling tree. Tracked symlinks are
+unavailable there, so imports cannot escape through them. The original checkout
+and terminal `--closeout` command remain
 unchanged. Invalid receipts, changed config, missing objects, failed provider checks
 or execution errors deny without falling back. Adoption supplies no safeguards:
 the project probe and independent evaluator must still pass. Production adoption

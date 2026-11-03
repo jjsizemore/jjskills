@@ -68,6 +68,65 @@ function fakeGh() {
   }
 }
 
+function faultGit(f, fault) {
+  f.env.ADMISSION_TEST_REAL_GIT = f.env.PATH.split(path.delimiter)
+    .map((directory) => path.join(directory, 'git')).find((file) => fs.existsSync(file));
+  f.env.ADMISSION_TEST_GIT_FAULT = fault;
+  f.env.ADMISSION_TEST_GIT_LOG = path.join(f.root, 'git.jsonl');
+  f.env.ADMISSION_TEST_GIT_BLOB = f.git('rev-parse', `${f.source}:final.mjs`);
+  function wrapper() {
+    const fs = require('node:fs');
+    const { spawnSync } = require('node:child_process');
+    const args = process.argv.slice(2);
+    let commandOffset = 0;
+    while (args[commandOffset] === '-c') commandOffset += 2;
+    const commandArgs = args.slice(commandOffset);
+    const result = spawnSync(process.env.ADMISSION_TEST_REAL_GIT, args, {
+      input: fs.readFileSync(0), maxBuffer: 64 * 1024 * 1024,
+    });
+    fs.appendFileSync(process.env.ADMISSION_TEST_GIT_LOG, JSON.stringify(commandArgs) + '\n');
+    const fault = process.env.ADMISSION_TEST_GIT_FAULT;
+    let output = result.stdout;
+    if (result.status === 0 && commandArgs[0] === 'ls-tree' && (commandArgs.includes('--long') || commandArgs.includes('-l'))) {
+      const entries = output.toString('utf8').split('\0').filter(Boolean);
+      const [metadata, file] = entries[0].split('\t');
+      const [mode, type, oid] = metadata.trim().split(/\s+/u);
+      if (fault === 'oversize blob') entries[0] = `${mode} ${type} ${oid} ${64 * 1024 * 1024}\t${file}`;
+      if (fault === 'oversize aggregate') {
+        for (let i = 0; i < 9; i++) entries.push(`${mode} ${type} ${oid} ${63 * 1024 * 1024}\tpayloads/${i}.bin`);
+      }
+      output = Buffer.from(entries.join('\0') + '\0');
+    }
+    if (result.status === 0 && commandArgs[0] === 'cat-file' && commandArgs.includes('--batch')) {
+      fs.appendFileSync(process.env.ADMISSION_TEST_GIT_LOG, JSON.stringify(['batch-bytes', output.length]) + '\n');
+      let offset = 0;
+      while (offset < output.length) {
+        const end = output.indexOf(10, offset);
+        const [oid, type, sizeText] = output.subarray(offset, end).toString('utf8').split(' ');
+        const size = Number(sizeText);
+        if (fault === 'wrong blob oid') {
+          output[offset] = output[offset] === 48 ? 49 : 48;
+          break;
+        }
+        if (fault === 'wrong blob size') {
+          output = Buffer.concat([output.subarray(0, offset), Buffer.from(`${oid} ${type} ${size + 1}\n`), output.subarray(end + 1)]);
+          break;
+        }
+        if (fault === 'changed blob payload' && oid === process.env.ADMISSION_TEST_GIT_BLOB) {
+          output[end + size] = 32;
+          break;
+        }
+        offset = end + size + 2;
+      }
+    }
+    fs.writeFileSync(1, output);
+    fs.writeFileSync(2, result.stderr);
+    process.exit(result.status ?? 1);
+  }
+  fs.writeFileSync(path.join(f.bin, 'git'), '#!' + process.execPath + '\n(' + wrapper.toString() + ')();\n', { mode: 0o755 });
+  return () => fs.readFileSync(f.env.ADMISSION_TEST_GIT_LOG, 'utf8').trim().split('\n').map(JSON.parse);
+}
+
 function fixture(variant = '') {
   const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'admission-adoption-')));
   const f = {
@@ -97,7 +156,7 @@ function fixture(variant = '') {
   };
   f.commit = (message) => {
     const files = ['probe.mjs', 'final.mjs', 'stories.json', 'closeout-command.json',
-      'helpers/evidence.mjs', 'application.txt', '.gitattributes'].filter((file) => fs.existsSync(path.join(f.repo, file)));
+      'helpers/evidence.mjs', 'application.txt', '.gitattributes', 'payloads'].filter((file) => fs.existsSync(path.join(f.repo, file)));
     f.git('add', '--', ...files);
     f.git('-c', 'core.hooksPath=' + os.devNull, '-c', 'commit.gpgsign=false', 'commit', '-qm', message);
     return f.git('rev-parse', 'HEAD');
@@ -143,6 +202,26 @@ function fixture(variant = '') {
     fs.symlinkSync(outside, path.join(f.repo, 'helpers', 'evidence.mjs'));
   } else if (variant !== 'missing-helper') {
     fs.writeFileSync(path.join(f.repo, 'helpers', 'evidence.mjs'), helper);
+  }
+  if (variant === 'aggregate') {
+    fs.mkdirSync(path.join(f.repo, 'payloads'));
+    const expected = [];
+    const bytes = Buffer.alloc(8 * 1024 * 1024);
+    for (let i = 0; i < bytes.length; i++) bytes[i] = i % 256;
+    for (let i = 0; i < 9; i++) {
+      bytes.writeUInt32LE(i, 0);
+      const file = `payloads/${i}.bin`;
+      fs.writeFileSync(path.join(f.repo, file), bytes);
+      expected.push([file, bytes.length, sha(bytes)]);
+    }
+    fs.writeFileSync(path.join(f.repo, 'payloads', 'empty.bin'), '');
+    expected.push(['payloads/empty.bin', 0, sha(Buffer.alloc(0))]);
+    fs.appendFileSync(path.join(f.repo, 'helpers', 'evidence.mjs'),
+      "import { createHash } from 'node:crypto';\n" +
+      `for (const [file, size, hash] of ${JSON.stringify(expected)}) {\n` +
+      "  const bytes = fs.readFileSync(new URL('../' + file, import.meta.url));\n" +
+      "  if (bytes.length !== size || createHash('sha256').update(bytes).digest('hex') !== hash) throw new Error('source binary bytes changed: ' + file);\n" +
+      '}\n');
   }
   if (variant === 'export-subst') {
     fs.writeFileSync(path.join(f.repo, '.gitattributes'), 'helpers/evidence.mjs export-subst\n');
@@ -224,6 +303,41 @@ describe('guarded admission-only source adoption', () => {
   let f;
   beforeEach(() => { f = fixture(); });
   afterEach(() => { if (f) fs.rmSync(f.root, { recursive: true, force: true }); });
+
+  it('admits an aggregate source tree above 64 MiB with exact binary and empty blob bytes', () => {
+    fs.rmSync(f.root, { recursive: true, force: true });
+    f = fixture('aggregate');
+    const before = snapshot(f);
+    assert.equal(f.adopt().status, 0);
+    const calls = faultGit(f, 'record batches');
+    const result = f.admission();
+    assert.equal(result.status, 0, result.stderr || result.stdout);
+    assert.equal(f.events().some((event) => event.kind === 'source-helper'), true);
+    const batches = calls().filter((args) => args[0] === 'batch-bytes').map((args) => args[1]);
+    assert.ok(batches.length >= 2, 'aggregate source tree must use more than one bounded read');
+    assert.ok(batches.every((size) => size <= 64 * 1024 * 1024), 'every framed batch must stay within 64 MiB');
+    admissionCacheOnly(before, snapshot(f), 'admitted');
+  });
+
+  for (const fault of ['oversize blob', 'oversize aggregate', 'wrong blob oid', 'wrong blob size', 'changed blob payload']) {
+    it(`denies ${fault} before executing source tooling`, () => {
+      assert.equal(f.adopt().status, 0);
+      const before = snapshot(f);
+      const calls = faultGit(f, fault);
+      const result = f.admission();
+      denied(result);
+      const reason = fault === 'oversize blob' ? /blob exceeds the 64 MiB batch limit/u
+        : fault === 'oversize aggregate' ? /tree exceeds the 512 MiB limit/u
+          : fault === 'changed blob payload' ? /blob identity mismatch/u : /invalid tooling source blob/u;
+      assert.match(result.stdout + result.stderr, reason);
+      assert.deepEqual(f.events(), []);
+      if (fault.startsWith('oversize')) {
+        assert.equal(calls().some((args) => args[0] === 'cat-file'), false, 'tree bounds must be checked before reading blobs');
+      }
+      assert.deepEqual(snapshot(f), before);
+      assert.deepEqual(fs.readdirSync(f.temporary), [], 'rejected runtime must be cleaned up');
+    });
+  }
 
   it('admits R through the reviewed whole source closure, preserving the sealed final oracle and ledger', () => {
     const initial = snapshot(f);
