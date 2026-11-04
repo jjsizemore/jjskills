@@ -109,6 +109,15 @@ their closeout-command fallback. This separates a test suite from the bounded
 safety probe; it does not supply or waive staging, detection, or exercised
 rollback evidence, and caller command overrides remain rejected. The dedicated script
 must be a regular, non-symlink repository file whose bytes match the sealed baseline.
+Every admission entrypoint uses the existing 10-minute project-oracle deadline,
+with one additional second for controller cleanup. This bounds the local probe,
+not a native wait, resource allowance or evidence freshness window; no caller
+CLI or environment deadline override is accepted. Timeout, output overflow and
+execution errors deny even after valid-looking JSON. The probe supervisor kills
+its owned POSIX process group on completion, timeout or controller cancellation;
+Windows retains direct-child termination. Failure output records the deadline
+and actual elapsed time. Reuse the immutable subject and artifacts after repair;
+expired observations require legitimate fresh evidence, never a timestamp edit.
 Admission uses an implicit shared `ACTIVE` only in its recorded worktree (the recorded
 branch for legacy runs); other work uses its own HEAD and leaves that run untouched.
 Pass `--run-id` explicitly

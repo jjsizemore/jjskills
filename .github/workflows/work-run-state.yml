@@ -1,0 +1,19 @@
+name: Work Run State
+on:
+  push:
+    branches: [main]
+    paths: ['work-run-state/**', '.github/workflows/work-run-state.yml']
+  pull_request:
+    paths: ['work-run-state/**', '.github/workflows/work-run-state.yml']
+permissions:
+  contents: read
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - run: node --test work-run-state/tests/*.test.mjs
