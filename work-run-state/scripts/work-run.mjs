@@ -12,7 +12,7 @@ import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { CLOSEOUT_VERIFIER_TIMEOUT_MS } from './closeout-timeouts.mjs';
+import { ADMISSION_PROBE_TIMEOUT_MS, CLOSEOUT_VERIFIER_TIMEOUT_MS } from './closeout-timeouts.mjs';
 import { evaluateReleaseAdmission } from './release-admission.mjs';
 import { adoptAdmissionSource, revokeAdmissionSource, admissionRuntime } from './admission-adoption.mjs';
 
@@ -258,7 +258,6 @@ export function isStoryEligible(story, ledger, cwd = process.cwd()) {
       expectedSurface,
       action: 'release-pick',
       runId: ledger.runId,
-      timeoutMs: 10_000,
     });
     if (!adm.admitted || adm.status === 'not_applicable') return false;
   }
@@ -366,10 +365,15 @@ export function executeBaselineSafeguardsProbe({
   expectedEnvironment,
   expectedSurface,
   action = 'release-admission',
-  timeoutMs = 30_000,
+  timeoutMs = ADMISSION_PROBE_TIMEOUT_MS,
   runId = null,
 }) {
   const curHead = subjectHead || currentHead(cwd);
+  if (!Number.isSafeInteger(timeoutMs) || timeoutMs <= 0 || timeoutMs > ADMISSION_PROBE_TIMEOUT_MS) {
+    return { admitted: false, status: 'denied',
+      reason: 'release safeguards admission denied: invalid bounded project probe deadline',
+      missing: ['bounded project probe deadline'] };
+  }
   const oracleBase = baseSha || curHead;
   let oracleConfig;
   try {
@@ -405,20 +409,30 @@ export function executeBaselineSafeguardsProbe({
       missing: ['baseline admission script identity'],
     };
   }
-  const probeRun = spawnSync(probeCommand[0], probeCommand.slice(1), {
-    cwd: runtime?.cwd || cwd,
-    encoding: 'utf8',
-    timeout: timeoutMs,
-    env: {
-      ...(runtime?.env || process.env),
-      WORK_RUN_EXPECTED_HEAD: curHead,
-      WORK_RUN_EXPECTED_ENVIRONMENT: targetEnvironment,
-      WORK_RUN_EXPECTED_SURFACE: expectedSurface || '',
-    },
-  });
-
-  runtime?.cleanup();
-  if (probeRun.status !== 0 || probeRun.signal) {
+  const started = performance.now();
+  let probeRun;
+  try {
+    const guardian = path.join(path.dirname(fileURLToPath(import.meta.url)), 'admission-probe.mjs');
+    const run = spawnSync(process.execPath,
+      [guardian, String(timeoutMs), String(process.pid), ...probeCommand], {
+        cwd: runtime?.cwd || cwd, encoding: 'utf8', timeout: timeoutMs + 1_000,
+        killSignal: 'SIGKILL', maxBuffer: 16 * 1024 * 1024,
+        env: {
+          ...(runtime?.env || process.env),
+          WORK_RUN_EXPECTED_HEAD: curHead,
+          WORK_RUN_EXPECTED_ENVIRONMENT: targetEnvironment,
+          WORK_RUN_EXPECTED_SURFACE: expectedSurface || '',
+        },
+      });
+    probeRun = run.error || run.signal || run.status !== 0
+      ? { ...run, error: { code: run.error?.code || run.signal || 'PROBE_RUNNER_FAILED' } }
+      : JSON.parse(run.stdout);
+  } catch (error) {
+    probeRun = { status: null, signal: null, error: { code: error.code || 'PROBE_RUNNER_FAILED' } };
+  } finally {
+    runtime?.cleanup();
+  }
+  if (probeRun.error || probeRun.status !== 0 || probeRun.signal) {
     const infrastructure = probeRun.error?.code || probeRun.signal;
     return {
       admitted: false,
@@ -427,7 +441,8 @@ export function executeBaselineSafeguardsProbe({
         ? `release safeguards admission denied: project probe infrastructure failure (${infrastructure})`
         : `release safeguards admission denied: project probe execution failed with exit code ${probeRun.status}`,
       ...(runtime ? { admissionSource: runtime.source } : {}),
-      probeFailure: { exitCode: probeRun.status, signal: probeRun.signal, error: probeRun.error?.code || null },
+      probeFailure: { exitCode: probeRun.status, signal: probeRun.signal, error: probeRun.error?.code || null,
+        timeoutMs, elapsedMs: Math.round(performance.now() - started) },
       missing: ['passing project probe execution'],
     };
   }
@@ -666,7 +681,6 @@ function cmdBumpIteration(cwd, args) {
       expectedSurface,
       action: 'release-deployment',
       runId,
-      timeoutMs: 30_000,
     });
     if (!adm.admitted || adm.status === 'not_applicable') {
       die(`release-dependent action rejected: ${adm.reason || 'release action cannot use not_applicable'}`);
