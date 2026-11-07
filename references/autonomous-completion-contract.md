@@ -324,6 +324,25 @@ boundary. Preserve protected assignments, profiles/safety settings and designate
 signing; infer neither refusal nor outage.
 Repair only necessary owned prerequisites, not an unrelated tooling redesign.
 
+When every eligible lane awaits human input, pause the exactly owned existing
+heartbeat through its supported native update, preserving its identity, target,
+schedule, prompt and other fields. Verify the update result. A prompt-only edit
+that leaves it active does not suspend wakes. Missing or conflicting ownership,
+unknown prior effects or a failed update must remain explicit; never claim a pause
+or create a replacement timer by inference.
+
+On a later automatic goal continuation with that same retained gate and no
+decisive change or independent eligible work, return the retained blocker without
+any tool calls unless a mandatory native lifecycle transition is now due. Perform
+only that required transition and stop. Otherwise, do not reread disposition,
+look up the goal, rediscover connections or recheck unchanged proof. Codex
+suppresses the next automatic continuation after a no-tool turn, leaving persisted
+goal status unchanged. Preserve native terminal-state thresholds and do not
+manufacture calls or turns to reach them, or pause a goal without explicit user
+direction. Bare resumption or elapsed time is no clearance.
+Resume the same owner and, when useful, the same heartbeat after decisive clearance.
+[Native goal continuation behavior](https://developers.openai.com/cookbook/examples/codex/using_goals_in_codex)
+
 Refresh context at intake, reconnect or a relevant change, reusing unchanged context.
 Keep one native observation route and one watcher per external dependency.
 A bounded diagnostic may use several small scoped reads; controller batching
