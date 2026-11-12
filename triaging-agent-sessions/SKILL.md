@@ -30,18 +30,17 @@ list plausible matches, mutate nothing.
 Use the installed session tool's help to verify what close, archive,
 remove, and sweep affect before recommending or running them.
 
-## Four verdicts
-
 1. **Work — is it done?** Read the original request, later steering, and
    latest handoff. Verify the requested stopping point against actual
    outputs, tests, PR and CI status, or deployment/UAT when required.
    Match evidence to the relevant commit or artifact. Check live agents,
-   child jobs, and watchers. A quiet pane or a "done" message alone
-   proves little. Verdict: **Done** | **Handed off** | **In progress** |
+   child jobs, and watchers. Cite only evidence you actually checked
+   (command plus result); never assert check, job, or git state you did not
+   observe. A quiet pane or a "done" message alone proves little. Verdict:
+   **Done** | **Handed off** | **In progress** |
    **Waiting** (external event + who owns follow-up) | **Blocked**
    (specific unblock) | **Superseded** (link to successor) | **Unknown**
    (missing evidence). Name remaining obligations and owners. An open PR
-   satisfies a request to open a PR.
 2. **Session — can it close?** Check ongoing work, follow-up the session
    owns, and context needed to resume. Verdict: **Keep** | **Archive** |
    **Close** | **Unknown**, per what the installed tool supports. If a
