@@ -41,6 +41,7 @@ remove, and sweep affect before recommending or running them.
    **Waiting** (external event + who owns follow-up) | **Blocked**
    (specific unblock) | **Superseded** (link to successor) | **Unknown**
    (missing evidence). Name remaining obligations and owners. An open PR
+   satisfies a request to open a PR.
 2. **Session — can it close?** Check ongoing work, follow-up the session
    owns, and context needed to resume. Verdict: **Keep** | **Archive** |
    **Close** | **Unknown**, per what the installed tool supports. If a
