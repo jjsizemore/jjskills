@@ -171,11 +171,27 @@ while (( ITER < SEALED_MAX )); do
     exit 1
   fi
 
-  # bump-iteration may fail if ledger already at max
-  node "$CLI" bump-iteration --run-id "$RUN_ID" --story "$STORY_ID" || {
-    echo "Budget exhausted at ledger counter" >&2
-    exit 1
-  }
+  # bump-iteration refuses admission-gated stories and exhausted budgets alike;
+  # on refusal, fall back to the gated pick so lower-priority eligible work still launches.
+  if ! node "$CLI" bump-iteration --run-id "$RUN_ID" --story "$STORY_ID" 2>/dev/null; then
+    PICK_JSON="$(node "$CLI" pick --run-id "$RUN_ID" 2>/dev/null)" || {
+      echo "Budget exhausted at ledger counter" >&2
+      exit 1
+    }
+    if echo "$PICK_JSON" | grep -q '"done":true'; then
+      echo "Stopping: status=$STATUS_NAME reason=no-reachable-story" >&2
+      exit 1
+    fi
+    STORY_ID="$(node -e 'const s=JSON.parse(process.argv[1]); console.log(s.id || "")' "$PICK_JSON")"
+    if [[ -z "$STORY_ID" ]]; then
+      echo "Stopping: status=$STATUS_NAME reason=no-reachable-story" >&2
+      exit 1
+    fi
+    node "$CLI" bump-iteration --run-id "$RUN_ID" --story "$STORY_ID" || {
+      echo "Budget exhausted at ledger counter" >&2
+      exit 1
+    }
+  fi
 
   export WORK_RUN_STORY_ID="$STORY_ID"
   EVIDENCE_DIR="${RUN_ROOT}/${RUN_ID}/evidence"

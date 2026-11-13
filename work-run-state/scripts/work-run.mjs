@@ -13,7 +13,7 @@ import { createHash } from 'node:crypto';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { ADMISSION_PROBE_TIMEOUT_MS, CLOSEOUT_VERIFIER_TIMEOUT_MS } from './closeout-timeouts.mjs';
-import { evaluateReleaseAdmission } from './release-admission.mjs';
+import { DEFAULT_MAX_SAFEGUARD_AGE_MS, evaluateReleaseAdmission } from './release-admission.mjs';
 import { adoptAdmissionSource, revokeAdmissionSource, admissionRuntime } from './admission-adoption.mjs';
 
 const FLOOR = 10;
@@ -174,7 +174,7 @@ function writeHandoff(dir, body) {
 }
 
 function defaultHandoff(ledger, runId) {
-  const next = pickNext(ledger);
+  const next = pickNextStructural(ledger);
   return [
     `# Handoff — ${runId}`,
     '',
@@ -237,19 +237,27 @@ export function isStoryReleaseDependent(story, ledger) {
   }
   return false;
 }
-export function isStoryEligible(story, ledger, cwd = process.cwd()) {
+export function isStoryStructurallyEligible(story, ledger) {
   if (story.passes || story.blockedReason) return false;
   const tags = story.tags || [];
   const serialAfterOk = tags.every((tag) => {
     if (!tag.startsWith('serial-after:')) return true;
     return ledger.userStories.some((candidate) => candidate.id === tag.slice(13) && candidate.passes);
   });
-  if (!serialAfterOk) return false;
+  return serialAfterOk;
+}
+export function isStoryEligible(story, ledger, cwd = process.cwd()) {
+  if (!isStoryStructurallyEligible(story, ledger)) return false;
 
   if (isStoryReleaseDependent(story, ledger)) {
     const curHead = currentHead(cwd);
     const expectedSurface = resolveTargetSurface(story, ledger);
     if (!expectedSurface) return false;
+    const cached = ledger.releaseSafeguards;
+    const cachedAge = cached?.evaluatedAt ? Date.now() - Date.parse(cached.evaluatedAt) : NaN;
+    if (cached?.status === 'admitted' && cached.evaluatedHead === curHead &&
+      cached.surface === expectedSurface && cached.endpoint === ledger.endpoint &&
+      Number.isFinite(cachedAge) && cachedAge >= 0 && cachedAge <= DEFAULT_MAX_SAFEGUARD_AGE_MS) return true;
     const adm = executeBaselineSafeguardsProbe({
       cwd,
       baseSha: ledger.baseSha,
@@ -264,6 +272,12 @@ export function isStoryEligible(story, ledger, cwd = process.cwd()) {
   return true;
 }
 
+function pickNextStructural(ledger) {
+  if (['completed', 'cancelled', 'paused'].includes(ledger.status)) return null;
+  const open = (ledger.userStories || []).filter((story) => isStoryStructurallyEligible(story, ledger));
+  open.sort((a, b) => a.priority - b.priority || a.id.localeCompare(b.id));
+  return open[0] || null;
+}
 function pickNext(ledger, cwd = process.cwd()) {
   if (['completed', 'cancelled', 'paused'].includes(ledger.status)) return null;
   const open = (ledger.userStories || []).filter((story) => isStoryEligible(story, ledger, cwd));
@@ -638,7 +652,7 @@ function cmdMarkBlocked(cwd, args) {
   const story = data.userStories.find((s) => s.id === storyId);
   if (!story) die(`unknown story: ${storyId}`);
   story.blockedReason = String(args.reason);
-  data.status = pickNext(data) ? 'active' : 'blocked';
+  data.status = pickNextStructural(data) ? 'active' : 'blocked';
   writeLedger(lp, data);
   appendProgress(cwd, runId, `## mark-blocked ${storyId}\n- ${args.reason}\n`);
   writeHandoff(runDir(cwd, runId), defaultHandoff(data, runId));
@@ -683,6 +697,15 @@ function cmdBumpIteration(cwd, args) {
       runId,
     });
     if (!adm.admitted || adm.status === 'not_applicable') {
+      data.releaseSafeguards = {
+        status: adm.status,
+        reason: adm.reason,
+        evaluatedAt: new Date().toISOString(),
+        evaluatedHead: curHead,
+        surface: expectedSurface,
+        endpoint: data.endpoint,
+      };
+      writeLedger(lp, data);
       die(`release-dependent action rejected: ${adm.reason || 'release action cannot use not_applicable'}`);
     }
     data.releaseSafeguards = {
@@ -691,6 +714,7 @@ function cmdBumpIteration(cwd, args) {
       evaluatedAt: new Date().toISOString(),
       evaluatedHead: curHead,
       surface: expectedSurface,
+      endpoint: data.endpoint,
     };
   }
 
@@ -727,7 +751,7 @@ function cmdStatus(cwd, args) {
     incomplete,
     blocked,
     allPass,
-    next: pickNext(data),
+    next: pickNextStructural(data),
   };
   if (allPass && data.closeoutStatus === 'VERIFIED') {
     out.completion = `WORK_RUN_COMPLETE run-id=${runId}`;
