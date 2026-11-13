@@ -123,6 +123,7 @@ for (const action of ['admission', 'init', 'pick', 'bump-iteration']) {
       const deadlines = fs.readFileSync(trace, 'utf8').trim().split('\n').map(JSON.parse);
       // init probes once: handoff/status no longer probe (pure reads); bump still probes at pick + actuation.
       assert.equal(deadlines.length, action === 'bump-iteration' ? 2 : 1);
+      for (const { timeout } of deadlines) assert.equal(timeout, CLOSEOUT_ORACLE_TIMEOUT_MS);
     } finally { f.close(); }
   });
 }

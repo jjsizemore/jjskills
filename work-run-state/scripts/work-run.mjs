@@ -13,7 +13,7 @@ import { createHash } from 'node:crypto';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { ADMISSION_PROBE_TIMEOUT_MS, CLOSEOUT_VERIFIER_TIMEOUT_MS } from './closeout-timeouts.mjs';
-import { evaluateReleaseAdmission } from './release-admission.mjs';
+import { DEFAULT_MAX_SAFEGUARD_AGE_MS, evaluateReleaseAdmission } from './release-admission.mjs';
 import { adoptAdmissionSource, revokeAdmissionSource, admissionRuntime } from './admission-adoption.mjs';
 
 const FLOOR = 10;
@@ -254,8 +254,10 @@ export function isStoryEligible(story, ledger, cwd = process.cwd()) {
     const expectedSurface = resolveTargetSurface(story, ledger);
     if (!expectedSurface) return false;
     const cached = ledger.releaseSafeguards;
+    const cachedAge = cached?.evaluatedAt ? Date.now() - Date.parse(cached.evaluatedAt) : NaN;
     if (cached?.status === 'admitted' && cached.evaluatedHead === curHead &&
-      cached.surface === expectedSurface && cached.endpoint === ledger.endpoint) return true;
+      cached.surface === expectedSurface && cached.endpoint === ledger.endpoint &&
+      Number.isFinite(cachedAge) && cachedAge >= 0 && cachedAge <= DEFAULT_MAX_SAFEGUARD_AGE_MS) return true;
     const adm = executeBaselineSafeguardsProbe({
       cwd,
       baseSha: ledger.baseSha,
@@ -695,6 +697,15 @@ function cmdBumpIteration(cwd, args) {
       runId,
     });
     if (!adm.admitted || adm.status === 'not_applicable') {
+      data.releaseSafeguards = {
+        status: adm.status,
+        reason: adm.reason,
+        evaluatedAt: new Date().toISOString(),
+        evaluatedHead: curHead,
+        surface: expectedSurface,
+        endpoint: data.endpoint,
+      };
+      writeLedger(lp, data);
       die(`release-dependent action rejected: ${adm.reason || 'release action cannot use not_applicable'}`);
     }
     data.releaseSafeguards = {
