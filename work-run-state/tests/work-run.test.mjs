@@ -101,7 +101,7 @@ function makeRepo(oracleFails = false) {
     path.join(dir, 'oracle.test.mjs'),
     oracleFails
       ? 'process.exit(1);\n'
-      : "import test from 'node:test';\ntest('oracle fixture', () => {});\n",
+      : "import test from 'node:test';\nimport { appendFileSync } from 'node:fs';\nif (process.env.WORK_RUN_TEST_ORACLE_COUNT) appendFileSync(process.env.WORK_RUN_TEST_ORACLE_COUNT, 'run\\n');\ntest('oracle fixture', () => {});\n",
   );
   fs.writeFileSync(
     path.join(dir, 'closeout-command.json'),
@@ -439,6 +439,23 @@ describe('work-run pick / mark-pass / seal', () => {
     const ledger = readJson(path.join(runsRoot(repo), 'pick-run/ledger.json'));
     assert.equal(ledger.closeoutOracle.status, 'pass');
     assert.equal(ledger.closeoutOracle.verifier, 'closeout-verify.mjs');
+  });
+  it('does not rerun a completed run oracle when addressed by run id', () => {
+    assert.equal(run(['mark-pass', '--story', 'US-001'], repo).status, 0);
+    assert.equal(run(['mark-pass', '--story', 'US-002'], repo).status, 0);
+    const evidence = closeoutEvidence(repo);
+    const counter = path.join(runsRoot(repo), 'oracle-count');
+    const env = { WORK_RUN_TEST_ORACLE_COUNT: counter };
+    const first = run(['complete', '--closeout-evidence', evidence], repo, env);
+    assert.equal(first.status, 0, first.stderr);
+    assert.equal(fs.readFileSync(counter, 'utf8'), 'run\n');
+    const ledgerPath = path.join(runsRoot(repo), 'pick-run/ledger.json');
+    const before = fs.readFileSync(ledgerPath, 'utf8');
+    const replay = run(['complete', '--run-id', 'pick-run', '--closeout-evidence', evidence], repo, env);
+    assert.notEqual(replay.status, 0, 'completed run must not execute closeout again');
+    assert.match(replay.stderr, /already completed/i);
+    assert.equal(fs.readFileSync(counter, 'utf8'), 'run\n');
+    assert.equal(fs.readFileSync(ledgerPath, 'utf8'), before);
   });
   it(
     'rejects a failing project oracle despite matching metadata',
