@@ -72,7 +72,7 @@ Fetch both review-level and inline feedback using the repository's supported pro
 
 ## Step 2: CI Failure Diagnosis
 
-Reproduce each failing check locally before pushing. Identify the exact failing boundary, check environment differences, diagnose the root cause, make the smallest repair, and rerun equivalent validation. A green rerun is not causal proof.
+Reproduce each failing check locally before pushing. When local resources are constrained or the repository supports remote proof, use the same affected-check and CI-deferral policy as `closing-repo-work`: defer with pending status honestly recorded, retain signing/secrets/ownership safeguards, and require current-head CI proof before merge. Identify the exact failing boundary, check environment differences, diagnose the root cause, make the smallest repair, and rerun equivalent validation. A green rerun is not causal proof.
 
 ## Step 3: Review Comment Triage
 
@@ -80,7 +80,7 @@ Use the repository's comment-triage workflow. Implement valid comments, explain 
 
 ## Step 4: Pushing Fixes
 
-Push only after local validation passes. Stage changed files explicitly, use the repository's semantic commit convention, and preserve the failure boundary and regression proof in the commit/PR evidence.
+Push only after local validation passes, or after recording honestly deferred tests under the `closing-repo-work` CI-deferral route. Stage changed files explicitly, use the repository's semantic commit convention, and preserve the failure boundary and regression proof in the commit/PR evidence.
 
 ## Step 5: Post Status Comment
 
