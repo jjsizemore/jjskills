@@ -769,6 +769,7 @@ function cmdComplete(cwd, args) {
   const runId = resolveRunId(cwd, args);
   if (!runId) die('no ACTIVE run');
   const { path: lp, data } = readLedger(cwd, runId);
+  if (data.status === 'completed') die('cannot complete: run already completed');
   if (!(data.userStories || []).every((s) => s.passes)) {
     die('cannot complete: incomplete stories remain');
   }

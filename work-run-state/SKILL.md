@@ -82,6 +82,8 @@ existing verifier path without migration or a default.
 CLI invokes the fixed `closeout-verify.mjs` controller, which rechecks ledger,
 base/head/diff bindings and runs the checked-in project oracle. `WORK_RUN_COMPLETE`
 is emitted only after that verifier passes.
+An already completed run rejects `complete --run-id` without rerunning its
+project oracle or overwriting the retained closeout receipt.
 
 The project oracle has a 10-minute deadline; its controller has 11 minutes,
 leaving one minute for evidence checks after a slow oracle.
