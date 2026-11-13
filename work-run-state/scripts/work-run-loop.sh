@@ -171,9 +171,14 @@ while (( ITER < SEALED_MAX )); do
     exit 1
   fi
 
-  # bump-iteration may fail if ledger already at max
+  # bump-iteration refuses admission-gated stories and exhausted budgets alike;
+  # on refusal, re-check launchability so a gated story stops cleanly (status runs zero probes).
   node "$CLI" bump-iteration --run-id "$RUN_ID" --story "$STORY_ID" || {
-    echo "Budget exhausted at ledger counter" >&2
+    if node "$CLI" pick --run-id "$RUN_ID" 2>/dev/null | grep -q '"done":true'; then
+      echo "Stopping: status=$STATUS_NAME reason=no-reachable-story" >&2
+    else
+      echo "Budget exhausted at ledger counter" >&2
+    fi
     exit 1
   }
 

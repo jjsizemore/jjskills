@@ -63,10 +63,10 @@ invoking through `~/.agents/skills` executes the same admission gates as the sou
 | Command | Purpose |
 | --- | --- |
 | `init` | Create run, seal budget, set ACTIVE |
-| `pick` | Highest-priority eligible story; blocked stories and unmet `serial-after:<id>` dependencies are excluded |
+| `pick` | Highest-priority eligible story; blocked stories and unmet `serial-after:<id>` dependencies are excluded. Release-dependent stories stay gated on fresh admission here and at `bump-iteration` |
 | `mark-pass` / `mark-blocked` | Update story |
 | `bump-iteration` | Increment counter; fail if at sealed max |
-| `status` | Counts + completion only after verified closeout |
+| `status` | Pure read: counts + structural next story, no admission probe. Completion only after verified closeout |
 | `append` | Append to progress.md |
 | `cancel` | Clear ACTIVE; keep history |
 | `complete` | All pass + bound evidence + controller verifier → clear ACTIVE |
