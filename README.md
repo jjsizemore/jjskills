@@ -98,6 +98,22 @@ Bypass only when intentional: `HK=0 git commit …` or `git commit --no-verify` 
 3. Stage **explicit paths** only — **never `git add -A`**.
 4. Commit on a branch; open a PR or merge as usual (hooks block secret-looking content).
 
+### Third-party skill updates
+
+`third-party-skills.json` records upstream source claims and skill paths from
+the repository and machine skill locks and the installed package manifests.
+It is an inventory, not proof a skill is installed, enabled, unmodified, or
+current. `skills-lock.json` is an older version-1 lock and does not cover every
+provider; OMP, Claude, and Codex maintain separate plugin registrations.
+
+Review these sources periodically and after provider upgrades. Compare the
+upstream skill and bundled assets with the installed version and local changes;
+preserve local customizations and disabled skills. Update the inventory when
+adding, removing, or changing a source. Restore missing skills and update
+providers using their supported mechanisms, with backups and checks before
+touching live configurations or active sessions. Verify discovery in the
+affected provider; installation alone does not refresh running sessions.
+
 ### Exclusions (see `.gitignore`)
 
 Tooling and install junk must stay untracked, including:
