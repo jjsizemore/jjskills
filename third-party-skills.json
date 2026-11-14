@@ -1,0 +1,995 @@
+{
+  "description": "Historical source claims and installed package manifests; an entry is not proof of current installation or version. Compare source and local content before updates.",
+  "sources": {
+    "DietrichGebert/ponytail": {
+      "ponytail": {
+        "paths": [
+          "skills/ponytail/SKILL.md"
+        ],
+        "evidence": [
+          "installed OMP package @dietrichgebert/ponytail 4.10.0"
+        ]
+      },
+      "ponytail-audit": {
+        "paths": [
+          "skills/ponytail-audit/SKILL.md"
+        ],
+        "evidence": [
+          "installed OMP package @dietrichgebert/ponytail 4.10.0"
+        ]
+      },
+      "ponytail-debt": {
+        "paths": [
+          "skills/ponytail-debt/SKILL.md"
+        ],
+        "evidence": [
+          "installed OMP package @dietrichgebert/ponytail 4.10.0"
+        ]
+      },
+      "ponytail-gain": {
+        "paths": [
+          "skills/ponytail-gain/SKILL.md"
+        ],
+        "evidence": [
+          "installed OMP package @dietrichgebert/ponytail 4.10.0"
+        ]
+      },
+      "ponytail-help": {
+        "paths": [
+          "skills/ponytail-help/SKILL.md"
+        ],
+        "evidence": [
+          "installed OMP package @dietrichgebert/ponytail 4.10.0"
+        ]
+      },
+      "ponytail-review": {
+        "paths": [
+          "skills/ponytail-review/SKILL.md"
+        ],
+        "evidence": [
+          "installed OMP package @dietrichgebert/ponytail 4.10.0"
+        ]
+      }
+    },
+    "JuliusBrussee/caveman": {
+      "cavecrew": {
+        "paths": [
+          "skills/cavecrew/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "caveman": {
+        "paths": [
+          "skills/caveman/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "caveman-commit": {
+        "paths": [
+          "skills/caveman-commit/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "caveman-compress": {
+        "paths": [
+          "skills/caveman-compress/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "caveman-discover": {
+        "paths": [
+          "skills/caveman-discover/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      },
+      "caveman-evidence-review": {
+        "paths": [
+          "skills/caveman-evidence-review/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      },
+      "caveman-explore": {
+        "paths": [
+          "skills/caveman-explore/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      },
+      "caveman-help": {
+        "paths": [
+          "skills/caveman-help/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "caveman-learn": {
+        "paths": [
+          "skills/caveman-learn/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      },
+      "caveman-manage": {
+        "paths": [
+          "skills/caveman-manage/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      },
+      "caveman-optimize": {
+        "paths": [
+          "skills/caveman-optimize/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      },
+      "caveman-review": {
+        "paths": [
+          "skills/caveman-review/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "caveman-setup": {
+        "paths": [
+          "skills/caveman-setup/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      },
+      "caveman-stats": {
+        "paths": [
+          "skills/caveman-stats/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "investigate-first": {
+        "paths": [
+          "skills/investigate-first/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      },
+      "lean-build": {
+        "paths": [
+          "skills/lean-build/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      },
+      "migration": {
+        "paths": [
+          "skills/migration/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      },
+      "safe-refactor": {
+        "paths": [
+          "skills/safe-refactor/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      },
+      "surgical-patch": {
+        "paths": [
+          "skills/surgical-patch/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      },
+      "verify-and-stop": {
+        "paths": [
+          "skills/verify-and-stop/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      }
+    },
+    "anthropics/skills": {
+      "frontend-design": {
+        "paths": [
+          "skills/frontend-design/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      }
+    },
+    "ayghri/i-have-adhd": {
+      "i-have-adhd": {
+        "paths": [
+          "skills/i-have-adhd/SKILL.md"
+        ],
+        "evidence": [
+          "installed OMP marketplace plugin 0.3.0"
+        ]
+      }
+    },
+    "cloudflare/skills": {
+      "agents-sdk": {
+        "paths": [
+          "skills/agents-sdk/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "basin": {
+        "paths": [
+          "skills/basin/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "cf-cli": {
+        "paths": [
+          "skills/cf-cli/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "cloudflare": {
+        "paths": [
+          "skills/cloudflare/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "cloudflare-email-service": {
+        "paths": [
+          "skills/cloudflare-email-service/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "cloudflare-one": {
+        "paths": [
+          "skills/cloudflare-one/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "cloudflare-one-migrations": {
+        "paths": [
+          "skills/cloudflare-one-migrations/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "durable-objects": {
+        "paths": [
+          "skills/durable-objects/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "gateway-workers": {
+        "paths": [
+          "skills/gateway-workers/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "k2": {
+        "paths": [
+          "skills/k2/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "nextjs-on-cloudflare": {
+        "paths": [
+          "skills/nextjs-on-cloudflare/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "sandbox-migrate-to-next": {
+        "paths": [
+          "skills/sandbox-migrate-to-next/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "sandbox-next": {
+        "paths": [
+          "skills/sandbox-next/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "sandbox-sdk": {
+        "paths": [
+          "skills/sandbox-sdk/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "sandbox-stable": {
+        "paths": [
+          "skills/sandbox-stable/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "turnstile-spin": {
+        "paths": [
+          "skills/turnstile-spin/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "web-perf": {
+        "paths": [
+          "skills/web-perf/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "workers-best-practices": {
+        "paths": [
+          "skills/workers-best-practices/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "workers-profiling": {
+        "paths": [
+          "skills/workers-profiling/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "wrangler": {
+        "paths": [
+          "skills/wrangler/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      }
+    },
+    "mattpocock/skills": {
+      "ask-matt": {
+        "paths": [
+          "skills/engineering/ask-matt/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "claude-handoff": {
+        "paths": [
+          "skills/in-progress/claude-handoff/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      },
+      "code-review": {
+        "paths": [
+          "skills/engineering/code-review/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "codebase-design": {
+        "paths": [
+          "skills/engineering/codebase-design/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "diagnosing-bugs": {
+        "paths": [
+          "skills/engineering/diagnosing-bugs/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "domain-modeling": {
+        "paths": [
+          "skills/engineering/domain-modeling/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "git-guardrails-claude-code": {
+        "paths": [
+          "skills/misc/git-guardrails-claude-code/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      },
+      "grill-me": {
+        "paths": [
+          "skills/productivity/grill-me/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "grill-with-docs": {
+        "paths": [
+          "skills/engineering/grill-with-docs/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "grilling": {
+        "paths": [
+          "skills/productivity/grilling/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "handoff": {
+        "paths": [
+          "skills/productivity/handoff/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "implement": {
+        "paths": [
+          "skills/engineering/implement/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "implement-spec": {
+        "paths": [
+          "skills/engineering/implement-spec/SKILL.md"
+        ],
+        "evidence": [
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "improve-codebase-architecture": {
+        "paths": [
+          "skills/engineering/improve-codebase-architecture/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "loop-me": {
+        "paths": [
+          "skills/in-progress/loop-me/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      },
+      "migrate-to-shoehorn": {
+        "paths": [
+          "skills/misc/migrate-to-shoehorn/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      },
+      "pr": {
+        "paths": [
+          "skills/engineering/pr/SKILL.md"
+        ],
+        "evidence": [
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "prototype": {
+        "paths": [
+          "skills/engineering/prototype/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "research": {
+        "paths": [
+          "skills/engineering/research/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "resolving-merge-conflicts": {
+        "paths": [
+          "skills/engineering/resolving-merge-conflicts/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "retro": {
+        "paths": [
+          "skills/engineering/retro/SKILL.md"
+        ],
+        "evidence": [
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "scaffold-exercises": {
+        "paths": [
+          "skills/misc/scaffold-exercises/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      },
+      "setup-matt-pocock-skills": {
+        "paths": [
+          "skills/engineering/setup-matt-pocock-skills/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "setup-pre-commit": {
+        "paths": [
+          "skills/misc/setup-pre-commit/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      },
+      "setup-ts-deep-modules": {
+        "paths": [
+          "skills/in-progress/setup-ts-deep-modules/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      },
+      "tdd": {
+        "paths": [
+          "skills/engineering/tdd/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "teach": {
+        "paths": [
+          "skills/productivity/teach/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "to-questionnaire": {
+        "paths": [
+          "skills/productivity/to-questionnaire/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "to-spec": {
+        "paths": [
+          "skills/engineering/to-spec/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "to-tickets": {
+        "paths": [
+          "skills/engineering/to-tickets/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "triage": {
+        "paths": [
+          "skills/engineering/triage/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "wait-what": {
+        "paths": [
+          "skills/productivity/wait-what/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "wayfinder": {
+        "paths": [
+          "skills/engineering/wayfinder/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "wizard": {
+        "paths": [
+          "skills/engineering/wizard/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "writing-beats": {
+        "paths": [
+          "skills/in-progress/writing-beats/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      },
+      "writing-for-agents": {
+        "paths": [
+          "skills/productivity/writing-for-agents/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json",
+          "machine .agents/.skill-lock.json",
+          "OMP marketplace manifest 1.3.2"
+        ]
+      },
+      "writing-fragments": {
+        "paths": [
+          "skills/in-progress/writing-fragments/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      },
+      "writing-shape": {
+        "paths": [
+          "skills/in-progress/writing-shape/SKILL.md"
+        ],
+        "evidence": [
+          "repository skills-lock.json"
+        ]
+      }
+    },
+    "obra/superpowers": {
+      "brainstorming": {
+        "paths": [
+          "skills/brainstorming/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "dispatching-parallel-agents": {
+        "paths": [
+          "skills/dispatching-parallel-agents/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "executing-plans": {
+        "paths": [
+          "skills/executing-plans/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "finishing-a-development-branch": {
+        "paths": [
+          "skills/finishing-a-development-branch/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "receiving-code-review": {
+        "paths": [
+          "skills/receiving-code-review/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "requesting-code-review": {
+        "paths": [
+          "skills/requesting-code-review/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "subagent-driven-development": {
+        "paths": [
+          "skills/subagent-driven-development/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "systematic-debugging": {
+        "paths": [
+          "skills/systematic-debugging/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "test-driven-development": {
+        "paths": [
+          "skills/test-driven-development/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "using-git-worktrees": {
+        "paths": [
+          "skills/using-git-worktrees/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "verification-before-completion": {
+        "paths": [
+          "skills/verification-before-completion/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "writing-plans": {
+        "paths": [
+          "skills/writing-plans/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "writing-skills": {
+        "paths": [
+          "skills/writing-skills/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      }
+    },
+    "remotion-dev/skills": {
+      "remotion-best-practices": {
+        "paths": [
+          "skills/remotion-best-practices/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "remotion-captions": {
+        "paths": [
+          "skills/remotion-captions/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "remotion-create": {
+        "paths": [
+          "skills/remotion-create/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "remotion-docs": {
+        "paths": [
+          "skills/remotion-docs/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "remotion-interactivity": {
+        "paths": [
+          "skills/remotion-interactivity/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "remotion-maps": {
+        "paths": [
+          "skills/remotion-maps/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "remotion-markup": {
+        "paths": [
+          "skills/remotion-markup/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "remotion-multimedia": {
+        "paths": [
+          "skills/remotion-multimedia/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "remotion-render": {
+        "paths": [
+          "skills/remotion-render/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "remotion-saas": {
+        "paths": [
+          "skills/remotion-saas/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "remotion-studio": {
+        "paths": [
+          "skills/remotion-studio/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      },
+      "remotion-upgrade": {
+        "paths": [
+          "skills/remotion-upgrade/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      }
+    },
+    "vercel-labs/agent-skills": {
+      "vercel-react-best-practices": {
+        "paths": [
+          "skills/react-best-practices/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      }
+    },
+    "vercel-labs/skills": {
+      "find-skills": {
+        "paths": [
+          "skills/find-skills/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      }
+    },
+    "vipulgupta2048/gitshot": {
+      "gitshot": {
+        "paths": [
+          "skills/gitshot/SKILL.md"
+        ],
+        "evidence": [
+          "machine .agents/.skill-lock.json"
+        ]
+      }
+    }
+  }
+}
