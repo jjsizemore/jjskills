@@ -10,7 +10,7 @@ Use this skill to audit Linear team or workspace capacity when a team is near or
 ## Activation Boundary & Exclusions
 
 - **Activate when**: The user requests a Linear capacity audit, clearing up capacity in Linear, evaluating open/backlog/in-progress issues for closure or cancellation, or bulk-triaging completed/stale Linear issues against repository commits and PRs.
-- **Do NOT activate for**: Single issue updates or standard PR closeout (use `linear` or `closing-repo-work`), GitHub-only issue triage with no Linear state (use `querying-github-repository-mcp`), or local work-run state cleanup (use `work-run-state`).
+- **Do NOT activate for**: Single issue updates or standard PR closeout (use the native tracker tools or `closing-repo-work`), GitHub-only issue triage with no Linear state (use `querying-github-repository-mcp`), or local work-run state cleanup (use `work-run-state`).
 
 ## Required Inputs & Self-Discovery
 
