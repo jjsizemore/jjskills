@@ -66,11 +66,12 @@ bytes passed the check. Pass: return the requested local proof and keep the
 explicit endpoint. Fail: create a ledger, commit/push, or ask for another approval.
 
 ## P8 Verification leaf returns to its existing owner
-Targeted RED/GREEN, smoke and one capable independent review bind the unchanged
-behavioral diff and relevant base. Current-head CI is pending under the delivery
+Targeted RED/GREEN and smoke bind the unchanged behavioral diff and relevant base;
+when a review trigger is present, one capable independent review also binds it
+(P8 exercises the triggered path). Current-head CI is pending under the delivery
 owner's watcher. Pass: return the source-bound role proof and pending CI dependency
 to that owner. Fail: restart closeout, launch another watcher/review, claim CI passed,
-or treat a leaf handoff as whole-run completion.
+require review without a trigger, or treat a leaf handoff as whole-run completion.
 
 ## P9 Complete remediation brief needs no interview
 An autonomous spec request supplies the isolated-fixture root cause, reproduction,

@@ -29,10 +29,13 @@ decision.
   the repository's monitoring/remediation workflow before completion.
 - Apply the portable contract's action/resource/effect boundary before release
   or reduced-gate actuation. Source work establishing prerequisites remains
-  eligible within its authority; non-release scope needs an explicit applicability
-  reason. High-impact surfaces retain their affected checks and review.
-- Apply the portable contract for review: mechanical work needs deterministic
-  checks; behavior work needs one capable independent review. Advisory findings
+  eligible within its authority; non-release scope needs an explicit action/resource/effect
+  justification, never a file-extension claim. Applicable release effects retain
+  admission; review applies only when the contract's review trigger is present.
+- Apply the portable contract for review: mechanical and source-only work needs
+  deterministic checks with no mandatory review; behavior work needs targeted
+  regression, affected checks, and changed-path smoke, plus one capable independent
+  review only when a review trigger is present. Advisory findings
   are nonblocking; review convergence is bound to three rounds for an unchanged
   strategy.
 
@@ -40,11 +43,14 @@ decision.
 
 1. **Inventory** — reuse the consolidated scope/dirty/owner preflight until a
    specific invalidator changes an affected fact.
-2. **Select risk proof** — mechanical: deterministic checks, no mandatory review;
-   behavior: targeted regression, affected checks, changed-path smoke and one
-   currently valid independent review; high-impact: add identified material-risk checks.
-   Authority/CI-lifecycle text is not mechanical just because it is Markdown.
-3. **Execute** — exercise the actual changed boundary and applicable roles.
+2. **Select risk proof** — mechanical/source-only with no operational effect:
+   deterministic checks, no mandatory review; behavior: targeted regression,
+   affected checks, changed-path smoke, plus one currently valid independent
+   review only when a review trigger is present; high-impact: add identified
+   material-risk checks. Effect decides risk, never file extension: Markdown
+   text with no operational effect is source-only.
+3. **Execute** — default to direct execution with the smallest check that detects
+   the actual risk; exercise the actual changed boundary and applicable roles.
    Do not add every repository suite or unrelated runtime/host UAT by default.
 4. **Challenge the result** — try to break the changed workflow; verify visible
    recovery/status feedback, actionable diagnostics, and aligned downstream

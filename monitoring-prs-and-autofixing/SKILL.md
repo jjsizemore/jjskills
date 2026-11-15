@@ -34,7 +34,7 @@ Use when a pull request needs follow-through on hosted checks, review comments, 
 
 ## Stop Condition
 
-- Finish only when the latest head is mergeable with all required checks green, actionable review threads resolved, and required independent review evidence recorded. Otherwise apply the canonical completion contract's available bounded internal diagnosis/recovery before reporting a genuine permission/external/required-human gate or exhausted dependency; park only affected work.
+- Finish only when the latest head is mergeable with all required checks green, actionable review threads resolved, and, when the canonical contract's review trigger applies, triggered independent review evidence recorded. Otherwise apply the canonical completion contract's available bounded internal diagnosis/recovery before reporting a genuine permission/external/required-human gate or exhausted dependency; park only affected work.
 
 ## Deliverable
 

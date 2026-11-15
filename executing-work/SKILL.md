@@ -90,10 +90,11 @@ While incomplete stories and iteration &lt; sealed max:
 ### 4. Closeout (board green only)
 
 1. `verifying-before-completion` for final role-based gates.
-2. Behavior/high-impact changes receive one fresh capable independent review
-   bound to the current delta/proof under the canonical completion contract;
-   advisory, style, and pre-existing unrelated findings are nonblocking.
-   Mechanical changes use deterministic checks without mandatory review.
+2. When the canonical completion contract's review trigger is present,
+   behavior/high-impact changes receive one fresh capable independent review
+   bound to the current delta/proof; without a trigger, applicable checks/smoke
+   suffice. Advisory, style, and pre-existing unrelated findings are nonblocking.
+   Mechanical and source-only changes use deterministic checks without mandatory review.
    Review convergence is bound to maximum three rounds for an unchanged strategy.
 3. `closing-repo-work` composes local, hosted, runtime, and UAT proof where
    applicable.
