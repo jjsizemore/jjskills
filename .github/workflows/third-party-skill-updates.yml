@@ -1,0 +1,78 @@
+name: Third-party skill updates
+
+on:
+  schedule:
+    - cron: '0 9 * * 1' # Mondays at 09:00 UTC.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: third-party-skill-updates
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      BRANCH: automation/third-party-skill-updates
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+      - name: Prepare update branch
+        run: |
+          echo "UPDATE_WORKTREE=$RUNNER_TEMP/skill-updates" >> "$GITHUB_ENV"
+          UPDATE_WORKTREE="$RUNNER_TEMP/skill-updates"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null; then
+            git fetch origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
+            git worktree add -b "$BRANCH" "$UPDATE_WORKTREE" "origin/$BRANCH"
+            git -C "$UPDATE_WORKTREE" merge --no-edit origin/main
+          else
+            git worktree add -b "$BRANCH" "$UPDATE_WORKTREE" HEAD
+          fi
+      - name: Update tracked skills
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/third-party-updates.mjs --root "$UPDATE_WORKTREE" --report "$RUNNER_TEMP/third-party-updates.report.json"
+      - name: Publish update branch and pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd "$UPDATE_WORKTREE"
+          # Stage only explicit, non-ignored paths; never stage the checkout wholesale.
+          git diff --name-only -z > "$RUNNER_TEMP/skill-changes"
+          git ls-files --others --exclude-standard -z >> "$RUNNER_TEMP/skill-changes"
+          while IFS= read -r -d '' path; do
+            git add -- "$path"
+          done < "$RUNNER_TEMP/skill-changes"
+          if ! git diff --cached --quiet; then
+            git commit -m 'chore(skills): update third-party skills'
+          fi
+          if git diff --quiet origin/main HEAD; then
+            echo 'No updates to propose.'
+            exit 0
+          fi
+          git push origin "$BRANCH"
+          if [ "$(gh pr list --head "$BRANCH" --base main --state open --json number --jq 'length')" -eq 0 ]; then
+            gh pr create --base main --head "$BRANCH" \
+              --title 'chore(skills): update third-party skills' \
+              --body 'Review the skill changes and the tracked third-party update report before merging. Conflicts, missing pins, disabled skills, and sources without clear redistribution rights are not overwritten.'
+          fi
+      - name: Upload update report
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: third-party-updates-report
+          path: ${{ runner.temp }}/third-party-updates.report.json
+          if-no-files-found: warn
