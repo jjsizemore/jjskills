@@ -22,3 +22,15 @@ Use this skill when planning or executing production rollouts, staged releases, 
   target-native procedure and its required guards.
 - Rollback procedures must specify known-good immutable artifact/config targets
   (not bare git revert, latest, or branch head) and explicit measured recovery time.
+
+## Release Admission Preflight
+
+For actions covered by the canonical release safeguard boundary, complete this preflight before actuation.
+1. Execute the canonical release safeguards admission command with `--require-admitted`:
+   ```bash
+   node ~/.agents/skills/work-run-state/scripts/work-run.mjs admission --endpoint <endpoint> --surface <surface> --environment <environment> --require-admitted
+   ```
+2. Only `status: "admitted"` (verifying all three safeguards) authorizes release actuation.
+   `not_applicable` cannot authorize release or reduced-gate actuation. If admission fails,
+   is denied, or exits non-zero, release actuation is strictly PROHIBITED. Retain stronger
+   gates and report the exact missing prerequisites.
