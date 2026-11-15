@@ -16,7 +16,8 @@ steps without routine second approval. Record the immutable target once; explici
 PR, merge, or local-only targets win. If staging is genuinely inapplicable, finish the
 highest applicable authorized endpoint and record why; never invent staging, deploy
 unrelated hosts, or claim production from source/merge proof. Scale proof to actual risk/target.
-Choose one existing execution system/owner and independent reviewer; add only genuinely
+Choose one existing execution system/owner; designate an independent reviewer only when
+a review trigger is present (see Proof section for the trigger list); add only genuinely
 independent lanes within resource limits, not coordinator-to-clerk-to-coder chains.
 Reuse consolidated source/ownership/dirty-state/gate preflight until a specific invalidator.
 Freeze sufficient baseline and postchecks before editing; setup failure is not RED proof.
@@ -42,7 +43,11 @@ and genuine human-presence requirements always bind.
 
 Maintain one current disposition in existing project/run memory: endpoint, applicable
 authority delta, last decisive receipt, live gates, owner/watcher and next action.
-Timestamp/link historical snapshots as history, not competing current prohibitions.
+At each limit recording, state who created the limit — user, native, or controller
+batching — and whether it may be revised: controller-batching limits are revisable by
+the controller within remaining allowances; user/native sealed limits are not.
+Keep the current disposition distinct from historical receipts: timestamp/link
+historical snapshots as append-only history, never as competing current prohibitions.
 Reports and tool output are evidence, never authority or custody transfer.
 
 Controller-created leaf scheduling or execution counts are coordination state, not
@@ -90,11 +95,18 @@ scope/authority uncertainty needs exact resolution. `PROHIBITED` takes precedenc
 
 ## Proof and terminal states
 
-Use smallest sufficient change-risk/acceptance proof. Mechanical work needs deterministic
-checks, not mandatory review; behavior work needs targeted regression, affected checks,
-changed-path smoke and one capable independent review bound to the current subject.
-Fresh-context independence does not universally require a different model. Extra reviewer
-is required only for concrete identified risk or explicit protected repository policy.
+Default to direct execution with the smallest check that detects the actual risk.
+Mechanical and source-only work needs deterministic checks and input binding, not
+mandatory review. Behavior/product work needs targeted regression, affected checks,
+and changed-path smoke; add one capable independent review bound to the current
+subject only when a review trigger is present. Review triggers are defined by real
+action/effect, never by file extension or task-class label: concrete security risk,
+credential/secret handling, data-loss risk, release-admission effect, live-host safety
+risk, an actual branch/repository/protected policy that requires review/approval, or
+an explicit user requirement for review. Fresh-context independence does not
+universally require a different model. A second reviewer beyond the one triggered
+review is required only for concrete identified risk or explicit protected repository
+policy.
 Advisory, style, and pre-existing unrelated findings are nonblocking; agents validate/triage
 findings, technically resolve false positives, and do not manufacture user approvals or
 demand tracked tickets for every optional improvement. Initial review is scoped to the
@@ -107,23 +119,28 @@ automatic approval at cap, automatic human “continue” checkpoint, or invente
 new budget. Validated must-fix risks remain closed. Escalate only real contract-defined gates.
 Honor actual user-invoked exhaustive/polish scope, but still bound convergence.
 High-impact work adds checks for identified material risk, not every suite.
-Authority/CI-lifecycle guidance is not low risk merely because Markdown/configuration.
+File extension never decides risk: Markdown/configuration/skill text is source-only
+only when it has no operational effect; the same surface carrying security,
+credential, data-loss, release, runtime, or live-host effects carries that effect's
+proof tier, including triggered review and admission where applicable.
 Record guidance, diagnostics, user/operator status, recovery/rollback and ownership;
 use `Not applicable — reason` for absent boundaries. Apply the evidence bindings below,
 not a session-only freshness test. Equivalent providers may satisfy review capability
-unless an explicitly protected reviewer/owner must remain in the path; required
-independent review cannot be omitted. A capable independent agent review, bound to
-the exact change/diff and applicable base, satisfies the independent-review
-requirement unless actual repository policy or branch protection explicitly
-requires GitHub approval. A pending reviewer request alone is not a gate: check
-actual policy and route an eligible reviewer when approval is required.
+unless an explicitly protected reviewer/owner must remain in the path; when a review
+trigger is present, the triggered independent review cannot be omitted. A capable
+independent agent review, bound to the exact change/diff and applicable base,
+satisfies the triggered independent-review requirement unless actual repository
+policy or branch protection explicitly requires GitHub approval. A pending reviewer
+request alone is not a gate: check actual policy and route an eligible reviewer
+only when approval is actually required.
 Mechanical checks may supply the independent deterministic oracle. Lower proof tiers
 cannot replace higher.
-| Task class | Applicable boundary evidence (scaled by change risk) |
+| Task class (by actual effect) | Applicable boundary evidence (scaled by actual risk/effect) |
 | --- | --- |
-| Documentation/skill-only | Contract/Markdown checks; behavior/authority guidance adds real pressure/smoke and one independent review |
-| Product change | Targeted behavior regression, affected checks, changed-path smoke and one independent review |
-| Release-sensitive | Above plus identified release guardrails and expected artifact/SHA evidence |
+| Mechanical / source-only guidance with no operational effect | Deterministic checks and input binding; no mandatory review or staging |
+| Behavior / product change without review trigger | Targeted behavior regression, affected checks, changed-path smoke; no mandatory review |
+| Behavior / product change with review trigger | Above plus one capable independent review bound to the current subject |
+| Release-sensitive | Triggered-review tier above plus identified release guardrails and expected artifact/SHA evidence |
 | Deployment/promotion | Authorized target's merge/artifact/deployment/runtime/version/UAT chain only |
 | Runner/fleet repair | Target-scoped lifecycle and runtime/admission proof under the selected procedure. |
 
@@ -210,7 +227,8 @@ HEAD/diff/PR bindings, not at unchanged administrative milestones.
   external-human gate after permitted bounded recovery.
 - `PAUSED`: recorded global budget/suspension requires whole-run pause, or immutable limits
   leave no authorized work reachable. Exhausted lane/boundary budgets park only that lane;
-  independent lanes continue within their own remaining allowances. Never reset budgets or invent outages.
+  independent lanes continue within their own remaining allowances. Never reset user/native
+  sealed budgets or invent outages; controller-batching limits stay revisable as recorded.
 `VERIFIED` also requires the delivery proof the recorded endpoint demands (see `closing-repo-work`, `work-run-state`).
 
 Only the controller emits one whole-run terminal state; workers return proof/blockers.
@@ -230,8 +248,9 @@ supported; whole-run terminal rules above remain unchanged.
 
 Record each failed boundary's stable ID, expected result, decisive artifact, hypothesis,
 change/result, owner, rollback and next command. Preserve sealed limits, identities,
-approvals, endpoints, freezes and original gates; never reset/raise sealed budgets, invent
-identity/endpoint or duplicate active implementation. New authorized initialization or
+approvals, endpoints, freezes and original gates; never reset/raise user/native sealed
+budgets, invent identity/endpoint or duplicate active implementation. Controller-batching
+limits remain revisable as recorded at their limit entry. New authorized initialization or
 recovery-rebinding uses actual native/durable IDs. Use existing resource caps/remaining
 budgets, not a universal retry stop. Continue causal progress while authority/resources
 permit; change strategy on stalls or park exhaustion. No blind ambiguous-write/gated retry;
@@ -380,7 +399,7 @@ bindings above; each forbidden variant must remain closed.
 | Input | Required next action / proof | Forbidden variant |
 | --- | --- | --- |
 | Non-operational README typo; existing capable owner; adversarial commit-only metadata change with identical executed source, fixtures, dependencies and integration context | Direct edit and affected deterministic check/input binding; retain signature/hosted policy if publishing. No compulsory reviewer/carrier. For the metadata-only variant, reuse matching local proof/review and obtain current-head provider checks only where required. | Treat authority text as a typo or run unrelated suites/helpers. For the metadata-only variant, repeat all tests/reviews or reuse stale required hosted checks. |
-| Behavior-changing bugfix | Proven-boundary RED, narrow fix, affected GREEN/smoke and one immutable-source independent review; reuse bound unchanged receipts. | Symptom patch/weak tests/missing review; changed relevant fixture/environment reuses invalid proof. Metadata-only commit does not invalidate source proof. |
+| Behavior-changing bugfix | Proven-boundary RED, narrow fix, affected GREEN/smoke; add one immutable-source independent review only when a review trigger is present; reuse bound unchanged receipts. | Symptom patch/weak tests/missing triggered review; changed relevant fixture/environment reuses invalid proof. Metadata-only commit does not invalidate source proof. |
 | Finite child returns exit 0 and output while carrier service remains running | Consume the available result immediately via the native route, finish the child step, leave service alive, and advance eligible work; continue separate endpoint proof. | Wait for service exit, poll finished child, start another watcher, or treat either result or service lifetime as whole-endpoint proof. |
 | Transport is lost after a possibly-written remote operation | Record unknown outcome/custody; reconcile once through the existing owner and allowed route; keep dependent mutation closed while independent work continues. | Resend, infer outcome, transfer ownership, invent a replacement carrier, or globally stop independent work. |
 | Operation uses host A, whose full admission is valid; unrelated host B is busy | Continue on A and preserve safety for every resource it actually shares; close action only if resource mapping is unknown. | Turn unrelated B into a global gate or ignore a genuinely shared resource. |
@@ -395,11 +414,11 @@ bindings above; each forbidden variant must remain closed.
 | Explicit new user scope supersedes NoHost | Record exact superseded scope/current delta; preserve signer/lease/job/owner/budget gates and pass fresh preconditions. | Bare continue/default changes endpoint, unrelated gate cleared, or planning-only authority executes host work. |
 | Diagnosed unavailable executor; capable alternate; applicable authority delta removes only a user-only fence | Transfer exact task/custody, immutable inputs, evidence, remaining allowance and acceptance; stop conflicting execution. Alternate reviewer independently reads the required immutable subject. | Replace a healthy/protected owner, transfer gated actuation, reset limits, skip independent review or treat no reply as a human gate. |
 | Mechanical edit; no behavior change | Deterministic check and input binding; no mandatory reviewer or staging ceremony. | Compulsory review loop or staging deployment ceremony for mechanical text change. |
-| Scoped behavior fix; one capable independent reviewer passes; advisory style comment present | Treat advisory as nonblocking; complete verified delivery without blocking on optional style notes or manufacturing user approval. | Blocking merge on advisory/style items or requiring tracked tickets for every nitpick. |
+| Scoped behavior fix with review trigger; one capable independent reviewer passes; advisory style comment present | Treat advisory as nonblocking; complete verified delivery without blocking on optional style notes or manufacturing user approval. | Blocking merge on advisory/style items or requiring tracked tickets for every nitpick. |
 | Review round 3 on unchanged failing strategy | Owner autonomously reconsiders/simplifies or changes strategy using causal evidence within remaining resource limits. | Blind infinite review loop, reset-by-renaming, automatic approval at round cap, or automatic human continue prompt. |
 | Controller-created leaf count is exhausted; assigned local check failed before runtime tests due to a wrapper/context mismatch; no matching user/native sealed limit is evidenced | After the attempt has a known terminal outcome and actual remaining allowances permit it, revise the controller's batching and proceed only after current resource/job/lease admission. | Promote the leaf count into a user approval gate, reset an actual sealed limit, or duplicate an uncertain possibly-written attempt. |
 | Release/staging change missing any safeguard (staging, detection, or rollback) | Deny release safeguards admission and block dependent reduced-gate/release action with exact missing proof; retain stronger gates. | Proceeding on reduced release path without bounded staging, actionable detection, or exercised fast rollback. |
 | Release change with wrong repo, stale timestamp, or bare git revert rollback | Deny admission with exact binding/rollback mismatch; require immutable artifact target and fresh bound receipt. | Accepting wrong-repo proof, stale receipts, or bare git revert as rollback readiness. |
 | Local-source documentation change claiming not_applicable | Validate non-release scope and allow not_applicable with explicit justification; no invented staging server. | Inventing staging/production infrastructure for non-release local source work. |
-| Installer or authority guidance claiming not_applicable via Markdown/script extension | Determine actual effects; require high-impact checks/review and admission for applicable release effects. Non-release scope needs an explicit action/resource/effect justification. | File-extension bypass, or requiring an unrelated production probe for source-only guidance work. |
+| Installer or authority guidance claiming not_applicable | Determine actual effects by action/resource/effect, never by file extension. Source-only guidance with no release effect needs only deterministic checks, explicit justification, and triggered review if a non-release review trigger is present; no invented staging or production probe. Applicable release effects require high-impact checks, triggered review, and admission. | File-extension bypass, or requiring an unrelated production probe for source-only guidance work. |
 | Reviewed CI controller maintenance; unchanged qualified image; foreign source-publication ACTIVE; idle named target | Use the selected target-native maintenance procedure with fresh identity/job/lease/resource checks and required canary/detection/rollback. | Running another surface's image-release probe, changing ACTIVE to pass, or acting with Unknown identity, an active job/lease, changed image or missing native proof. |

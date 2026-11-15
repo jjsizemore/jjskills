@@ -43,9 +43,10 @@ and review convergence bounds. Do not reimplement or drift from the canonical ru
      conclusion, report a pending blocker. Pending is not clean.
 3. Subsequent review covers actual fixes/delta and affected integration under the canonical
    contract, retaining unaffected settled proof, and rejecting repeated resolved findings.
-4. When no live blockers remain and review is required for the change class, reuse
-   sufficient bound independent review or run `requesting-code-review` for uncovered
-   or invalidated source/integration context. Advance within canonical convergence limits.
+4. When no live blockers remain and the canonical contract's review trigger applies,
+   reuse sufficient bound independent review or run `requesting-code-review` for uncovered
+   or invalidated source/integration context. Without a trigger, applicable checks/smoke
+   suffice. Advance within canonical convergence limits.
 
 ## Stop Condition
 
@@ -55,8 +56,9 @@ Stop only when all are true on the current PR head SHA:
 - No unresolved actionable threads or latest-head comments remain.
 - Required checks pass; none are pending.
 - Applicable boundary evidence under the canonical completion contract is satisfied:
-  mechanical work needs deterministic checks, not mandatory review; behavior work needs
-  one capable independent review without unresolved blocking issues.
+  mechanical/source-only work needs deterministic checks, not mandatory review;
+  behavior work needs targeted checks/smoke plus one capable independent review
+  only when a review trigger is present, without unresolved blocking issues.
 - Advisory, style, and pre-existing unrelated findings are nonblocking under the canonical
   contract; agents validate/triage findings without manufacturing user approvals.
 - Review convergence complies with the canonical contract: maximum three review/fix rounds
@@ -67,7 +69,7 @@ Stop only when all are true on the current PR head SHA:
 
 ## Definitions
 
-- **Independent reviewer/provider:** one fresh-context capable reviewer independent of the implementer is sufficient under the [portable completion contract](../references/autonomous-completion-contract.md).
+- **Independent reviewer/provider:** when the canonical contract's review trigger is present, one fresh-context capable reviewer independent of the implementer is sufficient under the [portable completion contract](../references/autonomous-completion-contract.md).
   OpenAI-only review is allowed; no different-model, cross-provider, or vendor-count gate applies.
   Actual protected repository reviews, required GitHub approvals, checks, and security gates remain binding.
 - **Actionable feedback:** requests or implies code, test, docs, behavior,

@@ -65,10 +65,11 @@ freshness. Hosted results and required approvals remain current-head/base-bound.
    record when one exists; do not create a ledger just to record that boundary.
 5. **PR & screenshots** — for product/UI delivery, bind the PR's resolved target and current head and attach Gitshot proof for affected UI/UX. A merged PR is evidenced by its recorded post-push/current-head review, not by requiring it to remain open.
 6. **Review/hosted** — bind the carrier SHA, PR URL, latest reviewed head,
-   required checks, review threads, and mergeability. One capable independent
-   review satisfies review requirements for behavior/high-impact work; advisory,
-   style, and pre-existing unrelated findings are nonblocking under the canonical
-   contract. Requested merge, green-CI, or a healthy unversioned endpoint is not proof.
+   required checks, review threads, and mergeability. When the canonical contract's
+   review trigger is present, one capable independent review satisfies the review
+   requirement; without a trigger, applicable checks/smoke suffice with no mandatory
+   review. Advisory, style, and pre-existing unrelated findings are nonblocking under
+   the canonical contract. Requested merge, green-CI, or a healthy unversioned endpoint is not proof.
 7. **Post-change** — apply the portable contract's action/resource/effect admission
    boundary immediately before applicable actuation; bind actual merge SHA to artifact/release SHA,
    deployment result, runtime/version equality, authenticated smoke/UAT, tracking
@@ -142,7 +143,7 @@ The recorded endpoint's delivery criteria are:
     Explicit local-only work keeps its authorized endpoint without a new ledger.
   - For product/UI changes (feat/fix/refactor/perf touching frontend, desktop, or packages/ui), an **open PR** existed targeting the resolved branch under repository policy and its body reflected the current head at push time.
   - **Gitshot screenshots** were attached to the PR for every UI/UX diff. Upload and comment via `npx gitshot <image> | gh pr comment <n> --body-file -`.
-  - Docs-only, skill-only, or CI-only changes do not require a PR or screenshots for `VERIFIED`.
+  - Source-only changes with no operational effect do not require a PR or screenshots for `VERIFIED`; effect, not file extension, decides.
   - After merge, the PR is closed; terminal verification uses the recorded post-push PR evidence and does not require an open PR.
   - If any applicable item above is unmet, withhold `VERIFIED` and continue
     reachable authorized work. Use `BLOCKED`/`PAUSED` only under the scoped
