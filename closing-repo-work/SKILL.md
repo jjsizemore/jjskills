@@ -38,8 +38,8 @@ freshness. Hosted results and required approvals remain current-head/base-bound.
 1. **Pre-change** — confirm scope, task class, authority, acceptance criteria,
    any immutable identity or handoff required by the repository adapter, and
    release safeguards admission prerequisites for release-sensitive or reduced-gate work.
-2. **Pre-commit** — require focused intended paths and regression/contract proof
-   bound to the executed candidate inputs, or the recorded CI test deferral below.
+2. **Pre-commit** — require focused intended paths, regression/contract proof,
+   and exact command output bound to the executed candidate inputs, or the recorded CI test deferral below.
 3. **Pre-push** — resolve and bind the intended PR target/ref and comparison SHA
    through [repo PR rules](references/repo-pr-rules.md#base-branch-and-title)
    before base-sensitive checks or the first push, including branches without an
@@ -74,9 +74,13 @@ freshness. Hosted results and required approvals remain current-head/base-bound.
    boundary immediately before applicable actuation; bind actual merge SHA to artifact/release SHA,
    deployment result, runtime/version equality, authenticated smoke/UAT, tracking
    closure, and cleanup evidence.
-8. **Terminal** — apply the portable contract's terminal criteria after all
-   applicable proof is present and an independent oracle confirms it. A `VERIFIED`
-   terminal state requires committed+pushed code plus applicable post-push
+8. **Pre-yield frontier check** — before ending the turn or a terminal report,
+   account for remaining authorized work under the portable contract's
+   [delivery coordination rules](../references/autonomous-completion-contract.md#delivery-coordination).
+   Progress updates remain allowed while work continues.
+9. **Terminal** — after the frontier check, apply the portable contract's terminal
+   criteria once applicable proof is complete and independently confirmed at the
+   required proof tier. A `VERIFIED` terminal state requires committed+pushed code plus applicable post-push
    evidence; after merge, the PR is closed and is not required to remain open.
 
 ## Leaf handoffs

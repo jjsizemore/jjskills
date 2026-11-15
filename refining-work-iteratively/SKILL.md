@@ -34,6 +34,7 @@ review is sufficient; do not schedule another pass merely to find something new.
 
 Apply the [portable autonomous completion contract](../references/autonomous-completion-contract.md)
 for review capability, finding triage, proof tiers, evidence invalidators, and review convergence bounds.
+Fresh-context independent review satisfies the requirement without universally demanding a different model.
 
 ## Initial Framing
 
