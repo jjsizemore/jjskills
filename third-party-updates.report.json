@@ -1,0 +1,2690 @@
+{
+  "baselineUpdated": true,
+  "check": false,
+  "limitations": [
+    "Upstream deletions and local-only files are reported and preserved; files are never deleted automatically.",
+    "Local and upstream changes to the same bytes are reported as conflicts; automatic textual merging is not attempted."
+  ],
+  "sources": {
+    "DietrichGebert/ponytail": {
+      "error": null,
+      "pinnedRevision": null,
+      "retry": false,
+      "skills": {
+        "ponytail": {
+          "detail": "no reviewed pin for DietrichGebert/ponytail; upstream is 96608e078b2d; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "96608e078b2d5ea607c5c3b8b5a54d1c1fba6846"
+        },
+        "ponytail-audit": {
+          "detail": "no reviewed pin for DietrichGebert/ponytail; upstream is 96608e078b2d; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "96608e078b2d5ea607c5c3b8b5a54d1c1fba6846"
+        },
+        "ponytail-debt": {
+          "detail": "no reviewed pin for DietrichGebert/ponytail; upstream is 96608e078b2d; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "96608e078b2d5ea607c5c3b8b5a54d1c1fba6846"
+        },
+        "ponytail-gain": {
+          "detail": "no reviewed pin for DietrichGebert/ponytail; upstream is 96608e078b2d; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "96608e078b2d5ea607c5c3b8b5a54d1c1fba6846"
+        },
+        "ponytail-help": {
+          "detail": "no reviewed pin for DietrichGebert/ponytail; upstream is 96608e078b2d; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "96608e078b2d5ea607c5c3b8b5a54d1c1fba6846"
+        },
+        "ponytail-review": {
+          "detail": "no reviewed pin for DietrichGebert/ponytail; upstream is 96608e078b2d; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "96608e078b2d5ea607c5c3b8b5a54d1c1fba6846"
+        }
+      },
+      "status": "needs-review",
+      "upstreamRevision": "96608e078b2d5ea607c5c3b8b5a54d1c1fba6846"
+    },
+    "JuliusBrussee/caveman": {
+      "error": null,
+      "pinnedRevision": null,
+      "retry": false,
+      "skills": {
+        "cavecrew": {
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+        },
+        "caveman": {
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+        },
+        "caveman-commit": {
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+        },
+        "caveman-compress": {
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+        },
+        "caveman-discover": {
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+        },
+        "caveman-evidence-review": {
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+        },
+        "caveman-explore": {
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+        },
+        "caveman-help": {
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+        },
+        "caveman-learn": {
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+        },
+        "caveman-manage": {
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+        },
+        "caveman-optimize": {
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+        },
+        "caveman-review": {
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+        },
+        "caveman-setup": {
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+        },
+        "caveman-stats": {
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+        },
+        "investigate-first": {
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+        },
+        "lean-build": {
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+        },
+        "migration": {
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+        },
+        "safe-refactor": {
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+        },
+        "surgical-patch": {
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+        },
+        "verify-and-stop": {
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+        }
+      },
+      "status": "needs-review",
+      "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+    },
+    "anthropics/skills": {
+      "error": null,
+      "pinnedRevision": "1780c5e5a552fd4d1c9d6a7b0cab26b0c2bef064",
+      "retry": false,
+      "skills": {
+        "frontend-design": {
+          "detail": "tracked as skills/frontend-design/SKILL.md but not present locally; not recreated — restore or remove via provider flow",
+          "status": "missing-locally"
+        }
+      },
+      "status": "needs-review",
+      "upstreamRevision": "1780c5e5a552fd4d1c9d6a7b0cab26b0c2bef064"
+    },
+    "ayghri/i-have-adhd": {
+      "error": null,
+      "pinnedRevision": "1ecea1993b7fce257ffbd686c070948b5e07eda6",
+      "retry": false,
+      "skills": {
+        "i-have-adhd": {
+          "detail": "3 tracked/upstream files checked",
+          "files": {
+            "i-have-adhd/SKILL.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "88955c019bbb1419ff4b49dbb1f80a867467de6233d7865af2e06a7d7b76c7d3",
+              "status": "up-to-date"
+            },
+            "i-have-adhd/agents/gemini.toml": {
+              "detail": "matches reviewed upstream base",
+              "sha": "5108a6123beb9df24846e0dd3f902c652d18522dfbc56e5762032ea383041c62",
+              "status": "up-to-date"
+            },
+            "i-have-adhd/agents/openai.yaml": {
+              "detail": "matches reviewed upstream base",
+              "sha": "2c51291283dcefdca43ca6b0c08172f225c7c26a9783ec444d6bdfa51ca96f8f",
+              "status": "up-to-date"
+            }
+          },
+          "sha": "88955c019bbb1419ff4b49dbb1f80a867467de6233d7865af2e06a7d7b76c7d3",
+          "status": "up-to-date",
+          "upstreamRevision": "1ecea1993b7fce257ffbd686c070948b5e07eda6"
+        }
+      },
+      "status": "baseline-initialized",
+      "upstreamRevision": "1ecea1993b7fce257ffbd686c070948b5e07eda6"
+    },
+    "cloudflare/skills": {
+      "error": null,
+      "pinnedRevision": "cbf893b954222276bf1af57e5f23379231e0efb9",
+      "retry": false,
+      "skills": {
+        "agents-sdk": {
+          "detail": "21 tracked/upstream files checked",
+          "files": {
+            "agents-sdk/SKILL.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "9bda4bd3adc5ab09e30c19ea6b9a0bf673f0a4b190bf7624fc1b0dc5f1fcf9c1",
+              "status": "up-to-date"
+            },
+            "agents-sdk/references/browse-the-web.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "c78beb4ce000b40284f7fc90988471d06ac4db3c553878f29cc3276bbbfecfeb",
+              "status": "up-to-date"
+            },
+            "agents-sdk/references/callable.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "42e1c0496022b0cacd3647510d2ca3afc87159d825f7072089ccbaf2307c641a",
+              "status": "up-to-date"
+            },
+            "agents-sdk/references/client-sdk.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "efda15f0562b05832cc7017da1d3398764c1d4f125ea03f68df149e074c107e6",
+              "status": "up-to-date"
+            },
+            "agents-sdk/references/codemode.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "bcc04b7787a7dc3ac6d2f35eb2889ac5ef88e7bece273a575e0cfe027b443f48",
+              "status": "up-to-date"
+            },
+            "agents-sdk/references/configuration.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "4da1deb6c0f6e143b9bea5e048fa5de3b418f6b723912ad5c2b3434195f9991c",
+              "status": "up-to-date"
+            },
+            "agents-sdk/references/durable-execution.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "782a3e886707b363e53bf9e93b2c62b24d95500aade0fd65f13029bd46dee604",
+              "status": "up-to-date"
+            },
+            "agents-sdk/references/email.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "71eadd3631a7763dec0ce0b3d06316d1a70663e4cd1e16f8f8f5527d785d149d",
+              "status": "up-to-date"
+            },
+            "agents-sdk/references/human-in-the-loop.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "275aec5f411c94134c7841bb9f31f1c5a07a759ec9dda14df8d3ed4b96acee1a",
+              "status": "up-to-date"
+            },
+            "agents-sdk/references/mcp.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "fdc0cb2e434da4750e892bfee9fd325a25d6bf113578892b0b4a3eaa4aded394",
+              "status": "up-to-date"
+            },
+            "agents-sdk/references/observability.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "34e33ba3343320254b80c729e3c87f9eb3efa0be554875b18571cbb7d3530695",
+              "status": "up-to-date"
+            },
+            "agents-sdk/references/queue-retries.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "966e7cbe309f46c7ed39f8a6e8fcd9beea0eeedc248a9005073a1266c188cf4d",
+              "status": "up-to-date"
+            },
+            "agents-sdk/references/routing.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "a6d82c736eac8815c87b1d2203eec23e2d252f3de10d5c574c9d6e2a69c729d3",
+              "status": "up-to-date"
+            },
+            "agents-sdk/references/server-driven-messages.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "fb12b6e818ee46a9a9ef8a78492d5d01d93ac6da01fa1da5e551bd44d91ce671",
+              "status": "up-to-date"
+            },
+            "agents-sdk/references/skill-feedback.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "4398b5597999dba7d0887bb62c30b8f917e78ab11600e2c8038dfe7a4d617392",
+              "status": "up-to-date"
+            },
+            "agents-sdk/references/state-scheduling.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "76fca096c36f01b8c5420391de71bd22838bf0914adda303d384fecb99c79684",
+              "status": "up-to-date"
+            },
+            "agents-sdk/references/streaming-chat.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "210ae4fafe0b4b553b98717c0df020a35d1ad2b9742e2083e406564200902174",
+              "status": "up-to-date"
+            },
+            "agents-sdk/references/think.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "9ad3c294f7feef292cdbe6ece0ac916054e4604af00e91fd02a4216fc4ad9df5",
+              "status": "up-to-date"
+            },
+            "agents-sdk/references/voice.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "ef23a2e20cdce96f606008f29d2d77145e04b0c73491505e5d971ec130bbe05f",
+              "status": "up-to-date"
+            },
+            "agents-sdk/references/webhooks-push.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "0ec967c03a5701d04505b1d1e47d056dcaf30c8326299a014b3e3e84ed4ed22f",
+              "status": "up-to-date"
+            },
+            "agents-sdk/references/workflows.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "0cdf5b5fd935f0986c8c1b61306e8294bfe9b710ca856428cfb45296ab181aec",
+              "status": "up-to-date"
+            }
+          },
+          "sha": "9bda4bd3adc5ab09e30c19ea6b9a0bf673f0a4b190bf7624fc1b0dc5f1fcf9c1",
+          "status": "up-to-date",
+          "upstreamRevision": "cbf893b954222276bf1af57e5f23379231e0efb9"
+        },
+        "basin": {
+          "detail": "17 tracked/upstream files checked",
+          "files": {
+            "basin/SKILL.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "8c1f7d30fbb3def0894db05903235a54793dcc93f68d6ada60d7e069eebd6a69",
+              "status": "up-to-date"
+            },
+            "basin/references/catalog/README.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "5eff5d0082048d5d3831bf848cb6a11370f986f80d89fcfab650c3b337dad9e9",
+              "status": "up-to-date"
+            },
+            "basin/references/catalog/api.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "c9dfe9f97b19fd7b40c2c268f021ea027ae4f68613da7efaf937588b4959cf4e",
+              "status": "up-to-date"
+            },
+            "basin/references/catalog/configuration.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "117447b96008230ed2e99669798aa1f15319ba8d4e753972f60859d4045edb09",
+              "status": "up-to-date"
+            },
+            "basin/references/catalog/gotchas.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "fc455dd7024931a5833c9b437ba1c5801d7f2d3fbf0e106d24b44eb10f652dd0",
+              "status": "up-to-date"
+            },
+            "basin/references/catalog/patterns.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "96a24418a349015917ae4433513573ec4cb748e6f5d6c16251519958482cd37b",
+              "status": "up-to-date"
+            },
+            "basin/references/pipelines/README.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "7ec1b773955bb15e0e499603bf5d770a1c4224a3dea73b5df1bd20e646dc3092",
+              "status": "up-to-date"
+            },
+            "basin/references/pipelines/api.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "1c62c78a3560ecc8b5a225292c081bb028a727a2709ba5e8ba304d5e2a6afde6",
+              "status": "up-to-date"
+            },
+            "basin/references/pipelines/configuration.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "78e763218d21a79d9b580fe1b8e4b8671619175943771ba386b1e0aeace4a44c",
+              "status": "up-to-date"
+            },
+            "basin/references/pipelines/gotchas.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "48e62c4b7a3650edb057c55b3fae6acd60a174bb513e2e97434966baee02eb5f",
+              "status": "up-to-date"
+            },
+            "basin/references/pipelines/patterns.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "19a664575424374c1f280b9a3d7226381596fca65b0a0776e1947e97cddbc0ff",
+              "status": "up-to-date"
+            },
+            "basin/references/skill-feedback.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "7cb56e8118e1edbe8a27d9e2aeaa80da5a3928b6b6b6cabe624733f9d619ffcc",
+              "status": "up-to-date"
+            },
+            "basin/references/sql/README.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "0354cf712258777e477a653d743071e33dcde5ae083332819c0740de2ef43772",
+              "status": "up-to-date"
+            },
+            "basin/references/sql/api.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "e65401806d08a686c318ff41053f96a218a87a1d09760cc6af111290696feac4",
+              "status": "up-to-date"
+            },
+            "basin/references/sql/configuration.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "9912d2169e711fd72ff952f15465b58f80cf6cb22390006e86c91ff2202d2aae",
+              "status": "up-to-date"
+            },
+            "basin/references/sql/gotchas.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "95f5732f84c1a3c76c5463bb52a793cd27350793050dd1946fff11dab63a64a9",
+              "status": "up-to-date"
+            },
+            "basin/references/sql/patterns.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "50fd06e4f915b0b8900a385e818cd2e8d1b109fbb8f906b725095cf64aaba820",
+              "status": "up-to-date"
+            }
+          },
+          "sha": "8c1f7d30fbb3def0894db05903235a54793dcc93f68d6ada60d7e069eebd6a69",
+          "status": "up-to-date",
+          "upstreamRevision": "cbf893b954222276bf1af57e5f23379231e0efb9"
+        },
+        "cf-cli": {
+          "detail": "2 tracked/upstream files checked",
+          "files": {
+            "cf-cli/SKILL.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "868b100095aefbaa83d8f08892044e2a6f2428760bdc12490517aab98c289bce",
+              "status": "up-to-date"
+            },
+            "cf-cli/references/skill-feedback.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "3039115019cdac4608ab3a3cd136e549e76a32f8967d55e2742989e585d00857",
+              "status": "up-to-date"
+            }
+          },
+          "sha": "868b100095aefbaa83d8f08892044e2a6f2428760bdc12490517aab98c289bce",
+          "status": "up-to-date",
+          "upstreamRevision": "cbf893b954222276bf1af57e5f23379231e0efb9"
+        },
+        "cloudflare": {
+          "detail": "321 tracked/upstream files checked",
+          "files": {
+            "cloudflare/SKILL.md": {
+              "detail": "SKILL.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/agents-sdk/README.md": {
+              "detail": "references/agents-sdk/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/agents-sdk/api.md": {
+              "detail": "references/agents-sdk/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/agents-sdk/configuration.md": {
+              "detail": "references/agents-sdk/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/agents-sdk/gotchas.md": {
+              "detail": "references/agents-sdk/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/agents-sdk/patterns.md": {
+              "detail": "references/agents-sdk/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/ai-gateway/README.md": {
+              "detail": "references/ai-gateway/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/ai-gateway/configuration.md": {
+              "detail": "references/ai-gateway/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/ai-gateway/dynamic-routing.md": {
+              "detail": "references/ai-gateway/dynamic-routing.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/ai-gateway/features.md": {
+              "detail": "references/ai-gateway/features.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/ai-gateway/sdk-integration.md": {
+              "detail": "references/ai-gateway/sdk-integration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/ai-gateway/troubleshooting.md": {
+              "detail": "references/ai-gateway/troubleshooting.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/ai-search/README.md": {
+              "detail": "references/ai-search/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/ai-search/api.md": {
+              "detail": "references/ai-search/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/ai-search/configuration.md": {
+              "detail": "references/ai-search/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/ai-search/gotchas.md": {
+              "detail": "references/ai-search/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/ai-search/patterns.md": {
+              "detail": "references/ai-search/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/analytics-engine/README.md": {
+              "detail": "references/analytics-engine/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/analytics-engine/api.md": {
+              "detail": "references/analytics-engine/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/analytics-engine/configuration.md": {
+              "detail": "references/analytics-engine/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/analytics-engine/gotchas.md": {
+              "detail": "references/analytics-engine/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/analytics-engine/patterns.md": {
+              "detail": "references/analytics-engine/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/api-shield/README.md": {
+              "detail": "references/api-shield/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/api-shield/api.md": {
+              "detail": "references/api-shield/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/api-shield/configuration.md": {
+              "detail": "references/api-shield/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/api-shield/gotchas.md": {
+              "detail": "references/api-shield/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/api-shield/patterns.md": {
+              "detail": "references/api-shield/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/api/README.md": {
+              "detail": "references/api/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/api/api.md": {
+              "detail": "references/api/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/api/configuration.md": {
+              "detail": "references/api/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/api/gotchas.md": {
+              "detail": "references/api/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/api/patterns.md": {
+              "detail": "references/api/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/argo-smart-routing/README.md": {
+              "detail": "references/argo-smart-routing/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/argo-smart-routing/api.md": {
+              "detail": "references/argo-smart-routing/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/argo-smart-routing/configuration.md": {
+              "detail": "references/argo-smart-routing/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/argo-smart-routing/gotchas.md": {
+              "detail": "references/argo-smart-routing/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/argo-smart-routing/patterns.md": {
+              "detail": "references/argo-smart-routing/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/artifacts/README.md": {
+              "detail": "references/artifacts/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/artifacts/api.md": {
+              "detail": "references/artifacts/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/artifacts/configuration.md": {
+              "detail": "references/artifacts/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/bindings/README.md": {
+              "detail": "references/bindings/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/bindings/api.md": {
+              "detail": "references/bindings/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/bindings/configuration.md": {
+              "detail": "references/bindings/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/bindings/gotchas.md": {
+              "detail": "references/bindings/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/bindings/patterns.md": {
+              "detail": "references/bindings/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/bot-management/README.md": {
+              "detail": "references/bot-management/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/bot-management/api.md": {
+              "detail": "references/bot-management/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/bot-management/configuration.md": {
+              "detail": "references/bot-management/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/bot-management/gotchas.md": {
+              "detail": "references/bot-management/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/bot-management/patterns.md": {
+              "detail": "references/bot-management/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/browser-rendering/README.md": {
+              "detail": "references/browser-rendering/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/browser-rendering/api.md": {
+              "detail": "references/browser-rendering/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/browser-rendering/configuration.md": {
+              "detail": "references/browser-rendering/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/browser-rendering/gotchas.md": {
+              "detail": "references/browser-rendering/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/browser-rendering/patterns.md": {
+              "detail": "references/browser-rendering/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/c3/README.md": {
+              "detail": "references/c3/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/c3/api.md": {
+              "detail": "references/c3/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/c3/configuration.md": {
+              "detail": "references/c3/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/c3/gotchas.md": {
+              "detail": "references/c3/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/c3/patterns.md": {
+              "detail": "references/c3/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/cache-reserve/README.md": {
+              "detail": "references/cache-reserve/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/cache-reserve/api.md": {
+              "detail": "references/cache-reserve/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/cache-reserve/configuration.md": {
+              "detail": "references/cache-reserve/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/cache-reserve/gotchas.md": {
+              "detail": "references/cache-reserve/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/cache-reserve/patterns.md": {
+              "detail": "references/cache-reserve/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/containers/README.md": {
+              "detail": "references/containers/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/containers/api.md": {
+              "detail": "references/containers/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/containers/configuration.md": {
+              "detail": "references/containers/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/containers/gotchas.md": {
+              "detail": "references/containers/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/containers/patterns.md": {
+              "detail": "references/containers/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/cron-triggers/README.md": {
+              "detail": "references/cron-triggers/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/cron-triggers/api.md": {
+              "detail": "references/cron-triggers/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/cron-triggers/configuration.md": {
+              "detail": "references/cron-triggers/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/cron-triggers/gotchas.md": {
+              "detail": "references/cron-triggers/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/cron-triggers/patterns.md": {
+              "detail": "references/cron-triggers/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/d1/README.md": {
+              "detail": "references/d1/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/d1/api.md": {
+              "detail": "references/d1/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/d1/configuration.md": {
+              "detail": "references/d1/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/d1/gotchas.md": {
+              "detail": "references/d1/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/d1/patterns.md": {
+              "detail": "references/d1/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/ddos/README.md": {
+              "detail": "references/ddos/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/ddos/api.md": {
+              "detail": "references/ddos/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/ddos/configuration.md": {
+              "detail": "references/ddos/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/ddos/gotchas.md": {
+              "detail": "references/ddos/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/ddos/patterns.md": {
+              "detail": "references/ddos/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/do-storage/README.md": {
+              "detail": "references/do-storage/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/do-storage/api.md": {
+              "detail": "references/do-storage/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/do-storage/configuration.md": {
+              "detail": "references/do-storage/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/do-storage/gotchas.md": {
+              "detail": "references/do-storage/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/do-storage/patterns.md": {
+              "detail": "references/do-storage/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/do-storage/testing.md": {
+              "detail": "references/do-storage/testing.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/durable-objects/README.md": {
+              "detail": "references/durable-objects/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/durable-objects/api.md": {
+              "detail": "references/durable-objects/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/durable-objects/configuration.md": {
+              "detail": "references/durable-objects/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/durable-objects/gotchas.md": {
+              "detail": "references/durable-objects/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/durable-objects/patterns.md": {
+              "detail": "references/durable-objects/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/email-routing/README.md": {
+              "detail": "references/email-routing/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/email-routing/api.md": {
+              "detail": "references/email-routing/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/email-routing/configuration.md": {
+              "detail": "references/email-routing/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/email-routing/gotchas.md": {
+              "detail": "references/email-routing/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/email-routing/patterns.md": {
+              "detail": "references/email-routing/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/email-workers/README.md": {
+              "detail": "references/email-workers/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/email-workers/api.md": {
+              "detail": "references/email-workers/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/email-workers/configuration.md": {
+              "detail": "references/email-workers/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/email-workers/gotchas.md": {
+              "detail": "references/email-workers/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/email-workers/patterns.md": {
+              "detail": "references/email-workers/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/flagship/README.md": {
+              "detail": "references/flagship/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/flagship/api.md": {
+              "detail": "references/flagship/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/flagship/configuration.md": {
+              "detail": "references/flagship/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/flagship/gotchas.md": {
+              "detail": "references/flagship/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/flagship/patterns.md": {
+              "detail": "references/flagship/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/graphql-api/README.md": {
+              "detail": "references/graphql-api/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/graphql-api/api.md": {
+              "detail": "references/graphql-api/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/graphql-api/configuration.md": {
+              "detail": "references/graphql-api/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/graphql-api/gotchas.md": {
+              "detail": "references/graphql-api/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/graphql-api/patterns.md": {
+              "detail": "references/graphql-api/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/hyperdrive/README.md": {
+              "detail": "references/hyperdrive/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/hyperdrive/api.md": {
+              "detail": "references/hyperdrive/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/hyperdrive/configuration.md": {
+              "detail": "references/hyperdrive/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/hyperdrive/gotchas.md": {
+              "detail": "references/hyperdrive/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/hyperdrive/patterns.md": {
+              "detail": "references/hyperdrive/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/images/README.md": {
+              "detail": "references/images/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/images/api.md": {
+              "detail": "references/images/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/images/configuration.md": {
+              "detail": "references/images/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/images/gotchas.md": {
+              "detail": "references/images/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/images/patterns.md": {
+              "detail": "references/images/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/kv/README.md": {
+              "detail": "references/kv/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/kv/api.md": {
+              "detail": "references/kv/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/kv/configuration.md": {
+              "detail": "references/kv/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/kv/gotchas.md": {
+              "detail": "references/kv/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/kv/patterns.md": {
+              "detail": "references/kv/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/miniflare/README.md": {
+              "detail": "references/miniflare/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/miniflare/api.md": {
+              "detail": "references/miniflare/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/miniflare/configuration.md": {
+              "detail": "references/miniflare/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/miniflare/gotchas.md": {
+              "detail": "references/miniflare/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/miniflare/patterns.md": {
+              "detail": "references/miniflare/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/network-interconnect/README.md": {
+              "detail": "references/network-interconnect/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/network-interconnect/api.md": {
+              "detail": "references/network-interconnect/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/network-interconnect/configuration.md": {
+              "detail": "references/network-interconnect/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/network-interconnect/gotchas.md": {
+              "detail": "references/network-interconnect/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/network-interconnect/patterns.md": {
+              "detail": "references/network-interconnect/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/observability/README.md": {
+              "detail": "references/observability/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/observability/api.md": {
+              "detail": "references/observability/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/observability/configuration.md": {
+              "detail": "references/observability/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/observability/gotchas.md": {
+              "detail": "references/observability/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/observability/patterns.md": {
+              "detail": "references/observability/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/pages-functions/README.md": {
+              "detail": "references/pages-functions/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/pages-functions/api.md": {
+              "detail": "references/pages-functions/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/pages-functions/configuration.md": {
+              "detail": "references/pages-functions/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/pages-functions/gotchas.md": {
+              "detail": "references/pages-functions/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/pages-functions/patterns.md": {
+              "detail": "references/pages-functions/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/pages/README.md": {
+              "detail": "references/pages/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/pages/api.md": {
+              "detail": "references/pages/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/pages/configuration.md": {
+              "detail": "references/pages/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/pages/gotchas.md": {
+              "detail": "references/pages/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/pages/patterns.md": {
+              "detail": "references/pages/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/pipelines/README.md": {
+              "detail": "references/pipelines/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/pipelines/api.md": {
+              "detail": "references/pipelines/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/pipelines/configuration.md": {
+              "detail": "references/pipelines/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/pipelines/gotchas.md": {
+              "detail": "references/pipelines/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/pipelines/patterns.md": {
+              "detail": "references/pipelines/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/pulumi/README.md": {
+              "detail": "references/pulumi/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/pulumi/api.md": {
+              "detail": "references/pulumi/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/pulumi/configuration.md": {
+              "detail": "references/pulumi/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/pulumi/gotchas.md": {
+              "detail": "references/pulumi/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/pulumi/patterns.md": {
+              "detail": "references/pulumi/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/queues/README.md": {
+              "detail": "references/queues/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/queues/api.md": {
+              "detail": "references/queues/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/queues/configuration.md": {
+              "detail": "references/queues/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/queues/gotchas.md": {
+              "detail": "references/queues/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/queues/patterns.md": {
+              "detail": "references/queues/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/r2-data-catalog/README.md": {
+              "detail": "references/r2-data-catalog/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/r2-data-catalog/api.md": {
+              "detail": "references/r2-data-catalog/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/r2-data-catalog/configuration.md": {
+              "detail": "references/r2-data-catalog/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/r2-data-catalog/gotchas.md": {
+              "detail": "references/r2-data-catalog/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/r2-data-catalog/patterns.md": {
+              "detail": "references/r2-data-catalog/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/r2-sql/README.md": {
+              "detail": "references/r2-sql/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/r2-sql/api.md": {
+              "detail": "references/r2-sql/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/r2-sql/configuration.md": {
+              "detail": "references/r2-sql/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/r2-sql/gotchas.md": {
+              "detail": "references/r2-sql/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/r2-sql/patterns.md": {
+              "detail": "references/r2-sql/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/r2/README.md": {
+              "detail": "references/r2/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/r2/api.md": {
+              "detail": "references/r2/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/r2/configuration.md": {
+              "detail": "references/r2/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/r2/gotchas.md": {
+              "detail": "references/r2/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/r2/patterns.md": {
+              "detail": "references/r2/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/realtime-sfu/README.md": {
+              "detail": "references/realtime-sfu/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/realtime-sfu/api.md": {
+              "detail": "references/realtime-sfu/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/realtime-sfu/configuration.md": {
+              "detail": "references/realtime-sfu/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/realtime-sfu/gotchas.md": {
+              "detail": "references/realtime-sfu/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/realtime-sfu/patterns.md": {
+              "detail": "references/realtime-sfu/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/realtimekit/README.md": {
+              "detail": "references/realtimekit/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/realtimekit/api.md": {
+              "detail": "references/realtimekit/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/realtimekit/configuration.md": {
+              "detail": "references/realtimekit/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/realtimekit/gotchas.md": {
+              "detail": "references/realtimekit/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/realtimekit/patterns.md": {
+              "detail": "references/realtimekit/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/sandbox/README.md": {
+              "detail": "references/sandbox/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/sandbox/api.md": {
+              "detail": "references/sandbox/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/sandbox/configuration.md": {
+              "detail": "references/sandbox/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/sandbox/gotchas.md": {
+              "detail": "references/sandbox/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/sandbox/patterns.md": {
+              "detail": "references/sandbox/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/secrets-store/README.md": {
+              "detail": "references/secrets-store/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/secrets-store/api.md": {
+              "detail": "references/secrets-store/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/secrets-store/configuration.md": {
+              "detail": "references/secrets-store/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/secrets-store/gotchas.md": {
+              "detail": "references/secrets-store/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/secrets-store/patterns.md": {
+              "detail": "references/secrets-store/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/skill-feedback.md": {
+              "detail": "references/skill-feedback.md is missing locally; it was not recreated",
+              "status": "local-deleted"
+            },
+            "cloudflare/references/smart-placement/README.md": {
+              "detail": "references/smart-placement/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/smart-placement/api.md": {
+              "detail": "references/smart-placement/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/smart-placement/configuration.md": {
+              "detail": "references/smart-placement/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/smart-placement/gotchas.md": {
+              "detail": "references/smart-placement/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/smart-placement/patterns.md": {
+              "detail": "references/smart-placement/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/snippets/README.md": {
+              "detail": "references/snippets/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/snippets/api.md": {
+              "detail": "references/snippets/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/snippets/configuration.md": {
+              "detail": "references/snippets/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/snippets/gotchas.md": {
+              "detail": "references/snippets/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/snippets/patterns.md": {
+              "detail": "references/snippets/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/spectrum/README.md": {
+              "detail": "references/spectrum/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/spectrum/api.md": {
+              "detail": "references/spectrum/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/spectrum/configuration.md": {
+              "detail": "references/spectrum/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/spectrum/gotchas.md": {
+              "detail": "references/spectrum/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/spectrum/patterns.md": {
+              "detail": "references/spectrum/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/static-assets/README.md": {
+              "detail": "references/static-assets/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/static-assets/api.md": {
+              "detail": "references/static-assets/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/static-assets/configuration.md": {
+              "detail": "references/static-assets/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/static-assets/gotchas.md": {
+              "detail": "references/static-assets/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/static-assets/patterns.md": {
+              "detail": "references/static-assets/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/stream/README.md": {
+              "detail": "references/stream/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/stream/api-live.md": {
+              "detail": "references/stream/api-live.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/stream/api.md": {
+              "detail": "references/stream/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/stream/configuration.md": {
+              "detail": "references/stream/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/stream/gotchas.md": {
+              "detail": "references/stream/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/stream/patterns.md": {
+              "detail": "references/stream/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/tail-workers/README.md": {
+              "detail": "references/tail-workers/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/tail-workers/api.md": {
+              "detail": "references/tail-workers/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/tail-workers/configuration.md": {
+              "detail": "references/tail-workers/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/tail-workers/gotchas.md": {
+              "detail": "references/tail-workers/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/tail-workers/patterns.md": {
+              "detail": "references/tail-workers/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/terraform/README.md": {
+              "detail": "references/terraform/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/terraform/api.md": {
+              "detail": "references/terraform/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/terraform/configuration.md": {
+              "detail": "references/terraform/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/terraform/gotchas.md": {
+              "detail": "references/terraform/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/terraform/patterns.md": {
+              "detail": "references/terraform/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/tunnel/README.md": {
+              "detail": "references/tunnel/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/tunnel/api.md": {
+              "detail": "references/tunnel/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/tunnel/configuration.md": {
+              "detail": "references/tunnel/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/tunnel/gotchas.md": {
+              "detail": "references/tunnel/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/tunnel/networking.md": {
+              "detail": "references/tunnel/networking.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/tunnel/patterns.md": {
+              "detail": "references/tunnel/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/turn/README.md": {
+              "detail": "references/turn/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/turn/api.md": {
+              "detail": "references/turn/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/turn/configuration.md": {
+              "detail": "references/turn/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/turn/gotchas.md": {
+              "detail": "references/turn/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/turn/patterns.md": {
+              "detail": "references/turn/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/turnstile/README.md": {
+              "detail": "references/turnstile/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/turnstile/api.md": {
+              "detail": "references/turnstile/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/turnstile/configuration.md": {
+              "detail": "references/turnstile/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/turnstile/gotchas.md": {
+              "detail": "references/turnstile/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/turnstile/patterns.md": {
+              "detail": "references/turnstile/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/vectorize/README.md": {
+              "detail": "references/vectorize/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/vectorize/api.md": {
+              "detail": "references/vectorize/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/vectorize/configuration.md": {
+              "detail": "references/vectorize/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/vectorize/gotchas.md": {
+              "detail": "references/vectorize/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/vectorize/patterns.md": {
+              "detail": "references/vectorize/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/waf/README.md": {
+              "detail": "references/waf/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/waf/api.md": {
+              "detail": "references/waf/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/waf/configuration.md": {
+              "detail": "references/waf/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/waf/gotchas.md": {
+              "detail": "references/waf/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/waf/patterns.md": {
+              "detail": "references/waf/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/web-analytics/README.md": {
+              "detail": "references/web-analytics/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/web-analytics/configuration.md": {
+              "detail": "references/web-analytics/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/web-analytics/gotchas.md": {
+              "detail": "references/web-analytics/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/web-analytics/integration.md": {
+              "detail": "references/web-analytics/integration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/web-analytics/patterns.md": {
+              "detail": "references/web-analytics/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workerd/README.md": {
+              "detail": "references/workerd/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workerd/api.md": {
+              "detail": "references/workerd/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workerd/configuration.md": {
+              "detail": "references/workerd/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workerd/gotchas.md": {
+              "detail": "references/workerd/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workerd/patterns.md": {
+              "detail": "references/workerd/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workers-ai/README.md": {
+              "detail": "references/workers-ai/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/workers-ai/api.md": {
+              "detail": "references/workers-ai/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/workers-ai/configuration.md": {
+              "detail": "references/workers-ai/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/workers-ai/gotchas.md": {
+              "detail": "references/workers-ai/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/workers-ai/patterns.md": {
+              "detail": "references/workers-ai/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/workers-for-platforms/README.md": {
+              "detail": "references/workers-for-platforms/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workers-for-platforms/api.md": {
+              "detail": "references/workers-for-platforms/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workers-for-platforms/configuration.md": {
+              "detail": "references/workers-for-platforms/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workers-for-platforms/gotchas.md": {
+              "detail": "references/workers-for-platforms/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workers-for-platforms/patterns.md": {
+              "detail": "references/workers-for-platforms/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workers-playground/README.md": {
+              "detail": "references/workers-playground/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workers-playground/api.md": {
+              "detail": "references/workers-playground/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workers-playground/configuration.md": {
+              "detail": "references/workers-playground/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workers-playground/gotchas.md": {
+              "detail": "references/workers-playground/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workers-playground/patterns.md": {
+              "detail": "references/workers-playground/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workers-vpc/README.md": {
+              "detail": "references/workers-vpc/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workers-vpc/api.md": {
+              "detail": "references/workers-vpc/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workers-vpc/configuration.md": {
+              "detail": "references/workers-vpc/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workers-vpc/gotchas.md": {
+              "detail": "references/workers-vpc/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workers-vpc/patterns.md": {
+              "detail": "references/workers-vpc/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workers/README.md": {
+              "detail": "references/workers/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workers/api.md": {
+              "detail": "references/workers/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workers/configuration.md": {
+              "detail": "references/workers/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workers/frameworks.md": {
+              "detail": "references/workers/frameworks.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workers/gotchas.md": {
+              "detail": "references/workers/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workers/patterns.md": {
+              "detail": "references/workers/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/workflows/README.md": {
+              "detail": "references/workflows/README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/workflows/api.md": {
+              "detail": "references/workflows/api.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/workflows/configuration.md": {
+              "detail": "references/workflows/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/workflows/gotchas.md": {
+              "detail": "references/workflows/gotchas.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/workflows/patterns.md": {
+              "detail": "references/workflows/patterns.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "cloudflare/references/wrangler/README.md": {
+              "detail": "references/wrangler/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/wrangler/api.md": {
+              "detail": "references/wrangler/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/wrangler/configuration.md": {
+              "detail": "references/wrangler/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/wrangler/gotchas.md": {
+              "detail": "references/wrangler/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/wrangler/patterns.md": {
+              "detail": "references/wrangler/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/zaraz/IMPLEMENTATION_SUMMARY.md": {
+              "detail": "references/zaraz/IMPLEMENTATION_SUMMARY.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/zaraz/README.md": {
+              "detail": "references/zaraz/README.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/zaraz/api.md": {
+              "detail": "references/zaraz/api.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/zaraz/configuration.md": {
+              "detail": "references/zaraz/configuration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/zaraz/gotchas.md": {
+              "detail": "references/zaraz/gotchas.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "cloudflare/references/zaraz/patterns.md": {
+              "detail": "references/zaraz/patterns.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            }
+          },
+          "status": "needs-review",
+          "upstreamRevision": "cbf893b954222276bf1af57e5f23379231e0efb9"
+        },
+        "cloudflare-email-service": {
+          "detail": "7 tracked/upstream files checked",
+          "files": {
+            "cloudflare-email-service/SKILL.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "3f0448eb0f9f98e1762cb5e9bedb60531587ba003d8809b3e082f6dd82cb5912",
+              "status": "up-to-date"
+            },
+            "cloudflare-email-service/references/cli-and-mcp.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "a7b4115514ca685fd664afaa54fe27240e87ce268b854beaf9aa26a16d41e65f",
+              "status": "up-to-date"
+            },
+            "cloudflare-email-service/references/deliverability.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "16fac60424f90fdeeb2081eb844e79b0f3f535202778b0a5b0b1c06691eb233a",
+              "status": "up-to-date"
+            },
+            "cloudflare-email-service/references/rest-api.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "b3c512d0e76a30dd51c6f131488c438cd3975aa0f14f42bad00ef2d442721083",
+              "status": "up-to-date"
+            },
+            "cloudflare-email-service/references/routing.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "22e42f3b60a4c256e79c865c2c8fb0512e656e95b2b9ee206d5e7f18d9de92ec",
+              "status": "up-to-date"
+            },
+            "cloudflare-email-service/references/sending.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "313e75e8ec59eb428b443d284ee6e74631e8c2e0b585ee64f2e4a1c7612e4207",
+              "status": "up-to-date"
+            },
+            "cloudflare-email-service/references/skill-feedback.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "52c094d21cf15b8749c46fcaf57385fb3e7055ea51a75f6ffc6ba7ab3f3e3bf3",
+              "status": "up-to-date"
+            }
+          },
+          "sha": "3f0448eb0f9f98e1762cb5e9bedb60531587ba003d8809b3e082f6dd82cb5912",
+          "status": "up-to-date",
+          "upstreamRevision": "cbf893b954222276bf1af57e5f23379231e0efb9"
+        },
+        "cloudflare-one": {
+          "detail": "2 tracked/upstream files checked",
+          "files": {
+            "cloudflare-one/SKILL.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "5e9b81bfe4ebd1737346123679eaca0004b9d3ab9a0239729103b442e0f89614",
+              "status": "up-to-date"
+            },
+            "cloudflare-one/references/skill-feedback.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "fdac0814387314f64d3ba835f0923aef86935d2818325d40aaaa0c1e07768774",
+              "status": "up-to-date"
+            }
+          },
+          "sha": "5e9b81bfe4ebd1737346123679eaca0004b9d3ab9a0239729103b442e0f89614",
+          "status": "up-to-date",
+          "upstreamRevision": "cbf893b954222276bf1af57e5f23379231e0efb9"
+        },
+        "cloudflare-one-migrations": {
+          "detail": "2 tracked/upstream files checked",
+          "files": {
+            "cloudflare-one-migrations/SKILL.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "3ecfe6dba6056996af6ba0b7b7f7d180640bea1fd7a5b3187623494ce1297868",
+              "status": "up-to-date"
+            },
+            "cloudflare-one-migrations/references/skill-feedback.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "cb427d9fefe47c5f6b676980939901b0ff2f7c080168568242e4edcdd19334c9",
+              "status": "up-to-date"
+            }
+          },
+          "sha": "3ecfe6dba6056996af6ba0b7b7f7d180640bea1fd7a5b3187623494ce1297868",
+          "status": "up-to-date",
+          "upstreamRevision": "cbf893b954222276bf1af57e5f23379231e0efb9"
+        },
+        "durable-objects": {
+          "detail": "5 tracked/upstream files checked",
+          "files": {
+            "durable-objects/SKILL.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "ef690603d7d998a25ba9748c79f399bb75d943fe1955ba258167116c101ef98c",
+              "status": "up-to-date"
+            },
+            "durable-objects/references/rules.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "8ec51f1270d6014763139236c3fb9f3a21a3bed4054c99b101f392eb5cb363bf",
+              "status": "up-to-date"
+            },
+            "durable-objects/references/skill-feedback.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "f46d58cf1c577d576e544a674cd61f5665f4fa9d1e4bffa40e0dcdecf223ba9f",
+              "status": "up-to-date"
+            },
+            "durable-objects/references/testing.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "1a99e6a2e1bd7f2fa34573b07ad036e3c2ddcf97df6a42926d737eb2d87b3168",
+              "status": "up-to-date"
+            },
+            "durable-objects/references/workers.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "96577e193083aac62a5450a0d75eb6bbfd26477c156114fde2d6718236c75202",
+              "status": "up-to-date"
+            }
+          },
+          "sha": "ef690603d7d998a25ba9748c79f399bb75d943fe1955ba258167116c101ef98c",
+          "status": "up-to-date",
+          "upstreamRevision": "cbf893b954222276bf1af57e5f23379231e0efb9"
+        },
+        "gateway-workers": {
+          "detail": "2 tracked/upstream files checked",
+          "files": {
+            "gateway-workers/SKILL.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "63f3d183f531ceba625b33761b993264c29c3fc00dbd982e2180767d1e9fb768",
+              "status": "up-to-date"
+            },
+            "gateway-workers/references/skill-feedback.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "00dc8edd072df6ad6bab6c0f78bc91e72a8a5d5136bdbeeebb669255b20e23d7",
+              "status": "up-to-date"
+            }
+          },
+          "sha": "63f3d183f531ceba625b33761b993264c29c3fc00dbd982e2180767d1e9fb768",
+          "status": "up-to-date",
+          "upstreamRevision": "cbf893b954222276bf1af57e5f23379231e0efb9"
+        },
+        "k2": {
+          "detail": "2 tracked/upstream files checked",
+          "files": {
+            "k2/SKILL.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "b1e621615e7c73bd9c5966f79b965380b4f73418cbe1ed98bb9d953853168d66",
+              "status": "up-to-date"
+            },
+            "k2/references/skill-feedback.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "a15f88d0d9bdc1f1e748102f78e4e7bbe35fc77a5bae91a7d20d5130a6ff4051",
+              "status": "up-to-date"
+            }
+          },
+          "sha": "b1e621615e7c73bd9c5966f79b965380b4f73418cbe1ed98bb9d953853168d66",
+          "status": "up-to-date",
+          "upstreamRevision": "cbf893b954222276bf1af57e5f23379231e0efb9"
+        },
+        "nextjs-on-cloudflare": {
+          "detail": "2 tracked/upstream files checked",
+          "files": {
+            "nextjs-on-cloudflare/SKILL.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "2e7d42b5a42a871a9ac3f1f638ac4d44e612650544058480164bd4994251a7dd",
+              "status": "up-to-date"
+            },
+            "nextjs-on-cloudflare/references/skill-feedback.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "010bdfccb40c6a8c18708a617bc657976a69c2ab66bbe68b23abf65cd249065c",
+              "status": "up-to-date"
+            }
+          },
+          "sha": "2e7d42b5a42a871a9ac3f1f638ac4d44e612650544058480164bd4994251a7dd",
+          "status": "up-to-date",
+          "upstreamRevision": "cbf893b954222276bf1af57e5f23379231e0efb9"
+        },
+        "sandbox-migrate-to-next": {
+          "detail": "2 tracked/upstream files checked",
+          "files": {
+            "sandbox-migrate-to-next/SKILL.md": {
+              "detail": "SKILL.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "sandbox-migrate-to-next/references/skill-feedback.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "65f81b0a00f9414010eb1d57c2da17e34e8f485f8ae12b25facc37ca5f065042",
+              "status": "up-to-date"
+            }
+          },
+          "status": "locally-modified",
+          "upstreamRevision": "cbf893b954222276bf1af57e5f23379231e0efb9"
+        },
+        "sandbox-next": {
+          "detail": "4 tracked/upstream files checked",
+          "files": {
+            "sandbox-next/SKILL.md": {
+              "detail": "SKILL.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "sandbox-next/references/api-quick-ref.md": {
+              "detail": "references/api-quick-ref.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "sandbox-next/references/examples.md": {
+              "detail": "references/examples.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "sandbox-next/references/skill-feedback.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "9c69010915f718e00ab9cb65d7ee61af69aaf507ad886446928f582276363ac9",
+              "status": "up-to-date"
+            }
+          },
+          "status": "locally-modified",
+          "upstreamRevision": "cbf893b954222276bf1af57e5f23379231e0efb9"
+        },
+        "sandbox-sdk": {
+          "detail": "no upstream skill matches skills/sandbox-sdk/SKILL.md in cloudflare/skills@cbf893b95422; skill may have moved or been removed; local files preserved",
+          "status": "upstream-path-not-found",
+          "upstreamRevision": "cbf893b954222276bf1af57e5f23379231e0efb9"
+        },
+        "sandbox-stable": {
+          "detail": "2 tracked/upstream files checked",
+          "files": {
+            "sandbox-stable/SKILL.md": {
+              "detail": "SKILL.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "sandbox-stable/references/skill-feedback.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "4714fe1e2695aff4182fa6eac6b2f0c1e1a7f3b248a08e32a68b64d7cc33f296",
+              "status": "up-to-date"
+            }
+          },
+          "status": "locally-modified",
+          "upstreamRevision": "cbf893b954222276bf1af57e5f23379231e0efb9"
+        },
+        "turnstile-spin": {
+          "detail": "16 tracked/upstream files checked",
+          "files": {
+            "turnstile-spin/README.md": {
+              "detail": "README.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "turnstile-spin/SKILL.md": {
+              "detail": "SKILL.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "turnstile-spin/references/astro.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "6e2faeba9bf9ad24c062c6a723dc37c74644e5843dd7a06164999240e83d7a96",
+              "status": "up-to-date"
+            },
+            "turnstile-spin/references/hugo.md": {
+              "detail": "references/hugo.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "turnstile-spin/references/nextjs-app.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "a8e10a569937efd076c3f32f37b48a8083c8c52918c9aa309b770d35d5a03273",
+              "status": "up-to-date"
+            },
+            "turnstile-spin/references/nextjs-pages.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "f6fa729155fa682f6c77b157cbb75492caf172f7451bcc889bc417441a3f02a5",
+              "status": "up-to-date"
+            },
+            "turnstile-spin/references/skill-feedback.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "2b5c1b3d1fdc6ec489c2eb9e54951ffaabf6a5db05efaa2bd69f342a44b0afb1",
+              "status": "up-to-date"
+            },
+            "turnstile-spin/references/sveltekit.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "da8dbe10014a0a94d25c51e80010ffd4fb5f0719caa7226c42b9dacb3ae8933a",
+              "status": "up-to-date"
+            },
+            "turnstile-spin/references/vanilla-html.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "bb01ca94b0e942c0e329c2fcaf50d0c5ff846f1ae166aa6d654d4c962d48fa9d",
+              "status": "up-to-date"
+            },
+            "turnstile-spin/scripts/auth-probe.sh": {
+              "detail": "scripts/auth-probe.sh differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "turnstile-spin/scripts/persist-skill.sh": {
+              "detail": "scripts/persist-skill.sh differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "turnstile-spin/scripts/validate.sh": {
+              "detail": "matches reviewed upstream base",
+              "sha": "45af59068104650ac8b247cf2059d985fa17960d9c2f3d867287fc296771de81",
+              "status": "up-to-date"
+            },
+            "turnstile-spin/scripts/widget-create.sh": {
+              "detail": "matches reviewed upstream base",
+              "sha": "ebc3ef13ef99f4f6f93400ce66ffc3848c1913aac0cb0876470c6378cf1d9fed",
+              "status": "up-to-date"
+            },
+            "turnstile-spin/tests/test_boundaries.py": {
+              "detail": "tests/test_boundaries.py has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "turnstile-spin/tests/test_persist_skill.py": {
+              "detail": "tests/test_persist_skill.py differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "turnstile-spin/tests/validation.md": {
+              "detail": "tests/validation.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            }
+          },
+          "status": "locally-modified",
+          "upstreamRevision": "cbf893b954222276bf1af57e5f23379231e0efb9"
+        },
+        "web-perf": {
+          "detail": "2 tracked/upstream files checked",
+          "files": {
+            "web-perf/SKILL.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "0160c9e7f1b73eb80347efd899a6082219d43bb9de30424667c8017628a48469",
+              "status": "up-to-date"
+            },
+            "web-perf/references/skill-feedback.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "d9a25e839f2af5f0b92c4af0fb0d5e075befffc711653124440a4586d3695c7f",
+              "status": "up-to-date"
+            }
+          },
+          "sha": "0160c9e7f1b73eb80347efd899a6082219d43bb9de30424667c8017628a48469",
+          "status": "up-to-date",
+          "upstreamRevision": "cbf893b954222276bf1af57e5f23379231e0efb9"
+        },
+        "workers-best-practices": {
+          "detail": "5 tracked/upstream files checked",
+          "files": {
+            "workers-best-practices/SKILL.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "01c452fd0b6b3caeb4c3b06f87893e52d8e95e32f691911c1644060e00dafa0e",
+              "status": "up-to-date"
+            },
+            "workers-best-practices/references/configuration.md": {
+              "detail": "references/configuration.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "workers-best-practices/references/platform-apis.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "9ca9f5a7a82f92de45d310f5e2ee05aa464ddb7a63a737529caa17fff3660f28",
+              "status": "up-to-date"
+            },
+            "workers-best-practices/references/runtime-patterns.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "455e270a6a2cb6aaf8db7c7690e6963688ea73602993edd9eb97293de0e36c14",
+              "status": "up-to-date"
+            },
+            "workers-best-practices/references/skill-feedback.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "7bc7ac3c0ba025e3d89d4672c734d5359f748cdfc70628028e27e626422a0655",
+              "status": "up-to-date"
+            }
+          },
+          "sha": "01c452fd0b6b3caeb4c3b06f87893e52d8e95e32f691911c1644060e00dafa0e",
+          "status": "locally-modified",
+          "upstreamRevision": "cbf893b954222276bf1af57e5f23379231e0efb9"
+        },
+        "workers-profiling": {
+          "detail": "2 tracked/upstream files checked",
+          "files": {
+            "workers-profiling/SKILL.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "fec05a080c90f019e1e93e5e1ca3416bb89362655dfc158458301f461cb29839",
+              "status": "up-to-date"
+            },
+            "workers-profiling/references/skill-feedback.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "d0f67417b1e4cb11a4fb9d51d75c442e33d1d838022ad5fd56940a3b7172c8c2",
+              "status": "up-to-date"
+            }
+          },
+          "sha": "fec05a080c90f019e1e93e5e1ca3416bb89362655dfc158458301f461cb29839",
+          "status": "up-to-date",
+          "upstreamRevision": "cbf893b954222276bf1af57e5f23379231e0efb9"
+        },
+        "wrangler": {
+          "detail": "2 tracked/upstream files checked",
+          "files": {
+            "wrangler/SKILL.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "a39de5c69f50e88759736a6ec7ad07f402c15f7a58a3224bcf979dce42013b13",
+              "status": "up-to-date"
+            },
+            "wrangler/references/skill-feedback.md": {
+              "detail": "matches reviewed upstream base",
+              "sha": "f24d02c8beebbc7484c7c9d42e957e7b58c92bcf80798e8b86111b850913a57a",
+              "status": "up-to-date"
+            }
+          },
+          "sha": "a39de5c69f50e88759736a6ec7ad07f402c15f7a58a3224bcf979dce42013b13",
+          "status": "up-to-date",
+          "upstreamRevision": "cbf893b954222276bf1af57e5f23379231e0efb9"
+        }
+      },
+      "status": "needs-review",
+      "upstreamRevision": "cbf893b954222276bf1af57e5f23379231e0efb9"
+    },
+    "mattpocock/skills": {
+      "error": null,
+      "pinnedRevision": null,
+      "retry": false,
+      "skills": {
+        "ask-matt": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "claude-handoff": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "code-review": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "codebase-design": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "diagnosing-bugs": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "domain-modeling": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "git-guardrails-claude-code": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "grill-me": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "grill-with-docs": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "grilling": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "handoff": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "implement": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "implement-spec": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "improve-codebase-architecture": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "loop-me": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "migrate-to-shoehorn": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "pr": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "prototype": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "research": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "resolving-merge-conflicts": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream skill path skills/engineering/resolving-merge-conflicts/SKILL.md is not found at 5863806dd4e1; review required",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "retro": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "scaffold-exercises": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "setup-matt-pocock-skills": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "setup-pre-commit": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "setup-ts-deep-modules": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "tdd": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "teach": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "to-questionnaire": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "to-spec": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "to-tickets": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "triage": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "wait-what": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "wayfinder": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "wizard": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "writing-beats": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "writing-for-agents": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "writing-fragments": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        },
+        "writing-shape": {
+          "detail": "no reviewed pin for mattpocock/skills; upstream is 5863806dd4e1; pin required before automation can merge",
+          "status": "unpinned",
+          "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+        }
+      },
+      "status": "needs-review",
+      "upstreamRevision": "5863806dd4e15c63174bee4e7515a4256792ecfa"
+    },
+    "obra/superpowers": {
+      "error": null,
+      "pinnedRevision": "22f0b463e7a5e579904dd6211a520321035526f7",
+      "retry": false,
+      "skills": {
+        "brainstorming": {
+          "detail": "8 tracked/upstream files checked",
+          "files": {
+            "brainstorming/SKILL.md": {
+              "detail": "SKILL.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "brainstorming/builder-check-prompt.md": {
+              "detail": "builder-check-prompt.md is missing locally; it was not recreated",
+              "status": "local-deleted"
+            },
+            "brainstorming/scripts/frame-template.html": {
+              "detail": "scripts/frame-template.html is missing locally; it was not recreated",
+              "status": "local-deleted"
+            },
+            "brainstorming/scripts/helper.js": {
+              "detail": "scripts/helper.js is missing locally; it was not recreated",
+              "status": "local-deleted"
+            },
+            "brainstorming/scripts/server.cjs": {
+              "detail": "scripts/server.cjs is missing locally; it was not recreated",
+              "status": "local-deleted"
+            },
+            "brainstorming/scripts/start-server.sh": {
+              "detail": "scripts/start-server.sh is missing locally; it was not recreated",
+              "status": "local-deleted"
+            },
+            "brainstorming/scripts/stop-server.sh": {
+              "detail": "scripts/stop-server.sh is missing locally; it was not recreated",
+              "status": "local-deleted"
+            },
+            "brainstorming/visual-companion.md": {
+              "detail": "visual-companion.md is missing locally; it was not recreated",
+              "status": "local-deleted"
+            }
+          },
+          "status": "needs-review",
+          "upstreamRevision": "22f0b463e7a5e579904dd6211a520321035526f7"
+        },
+        "dispatching-parallel-agents": {
+          "detail": "1 tracked/upstream files checked",
+          "files": {
+            "dispatching-parallel-agents/SKILL.md": {
+              "detail": "SKILL.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            }
+          },
+          "status": "locally-modified",
+          "upstreamRevision": "22f0b463e7a5e579904dd6211a520321035526f7"
+        },
+        "executing-plans": {
+          "detail": "3 tracked/upstream files checked",
+          "files": {
+            "executing-plans/SKILL.md": {
+              "detail": "SKILL.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "executing-plans/scripts/task-done": {
+              "detail": "scripts/task-done is missing locally; it was not recreated",
+              "status": "local-deleted"
+            },
+            "executing-plans/scripts/task-start": {
+              "detail": "scripts/task-start is missing locally; it was not recreated",
+              "status": "local-deleted"
+            }
+          },
+          "status": "needs-review",
+          "upstreamRevision": "22f0b463e7a5e579904dd6211a520321035526f7"
+        },
+        "finishing-a-development-branch": {
+          "detail": "1 tracked/upstream files checked",
+          "files": {
+            "finishing-a-development-branch/SKILL.md": {
+              "detail": "SKILL.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            }
+          },
+          "status": "locally-modified",
+          "upstreamRevision": "22f0b463e7a5e579904dd6211a520321035526f7"
+        },
+        "receiving-code-review": {
+          "detail": "3 tracked/upstream files checked",
+          "files": {
+            "receiving-code-review/SKILL.md": {
+              "detail": "SKILL.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "receiving-code-review/references/post-fix-review-iteration.md": {
+              "detail": "references/post-fix-review-iteration.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "receiving-code-review/references/release-sensitive-pr-markers.md": {
+              "detail": "references/release-sensitive-pr-markers.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            }
+          },
+          "status": "locally-modified",
+          "upstreamRevision": "22f0b463e7a5e579904dd6211a520321035526f7"
+        },
+        "requesting-code-review": {
+          "detail": "2 tracked/upstream files checked",
+          "files": {
+            "requesting-code-review/SKILL.md": {
+              "detail": "SKILL.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "requesting-code-review/code-reviewer.md": {
+              "detail": "code-reviewer.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            }
+          },
+          "status": "locally-modified",
+          "upstreamRevision": "22f0b463e7a5e579904dd6211a520321035526f7"
+        },
+        "subagent-driven-development": {
+          "detail": "tracked as skills/subagent-driven-development/SKILL.md but not present locally; not recreated — restore or remove via provider flow",
+          "status": "missing-locally"
+        },
+        "systematic-debugging": {
+          "detail": "tracked as skills/systematic-debugging/SKILL.md but not present locally; not recreated — restore or remove via provider flow",
+          "status": "missing-locally"
+        },
+        "test-driven-development": {
+          "detail": "tracked as skills/test-driven-development/SKILL.md but not present locally; not recreated — restore or remove via provider flow",
+          "status": "missing-locally"
+        },
+        "using-git-worktrees": {
+          "detail": "1 tracked/upstream files checked",
+          "files": {
+            "using-git-worktrees/SKILL.md": {
+              "detail": "SKILL.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            }
+          },
+          "status": "locally-modified",
+          "upstreamRevision": "22f0b463e7a5e579904dd6211a520321035526f7"
+        },
+        "verification-before-completion": {
+          "detail": "tracked as skills/verification-before-completion/SKILL.md but not present locally; not recreated — restore or remove via provider flow",
+          "status": "missing-locally"
+        },
+        "writing-plans": {
+          "detail": "2 tracked/upstream files checked",
+          "files": {
+            "writing-plans/SKILL.md": {
+              "detail": "SKILL.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "writing-plans/plan-document-reviewer-prompt.md": {
+              "detail": "plan-document-reviewer-prompt.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            }
+          },
+          "status": "locally-modified",
+          "upstreamRevision": "22f0b463e7a5e579904dd6211a520321035526f7"
+        },
+        "writing-skills": {
+          "detail": "17 tracked/upstream files checked",
+          "files": {
+            "writing-skills/SKILL.md": {
+              "detail": "SKILL.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "writing-skills/anthropic-best-practices.md": {
+              "detail": "anthropic-best-practices.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "writing-skills/examples/CLAUDE_MD_TESTING.md": {
+              "detail": "examples/CLAUDE_MD_TESTING.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "writing-skills/graphviz-conventions.dot": {
+              "detail": "graphviz-conventions.dot has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "writing-skills/persuasion-principles.md": {
+              "detail": "persuasion-principles.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "writing-skills/references/CLAUDE_MD_TESTING.md": {
+              "detail": "references/CLAUDE_MD_TESTING.md is missing locally; it was not recreated",
+              "status": "local-deleted"
+            },
+            "writing-skills/references/anthropic-best-practices.md": {
+              "detail": "references/anthropic-best-practices.md is missing locally; it was not recreated",
+              "status": "local-deleted"
+            },
+            "writing-skills/references/bulletproofing.md": {
+              "detail": "references/bulletproofing.md is missing locally; it was not recreated",
+              "status": "local-deleted"
+            },
+            "writing-skills/references/discovery.md": {
+              "detail": "references/discovery.md is missing locally; it was not recreated",
+              "status": "local-deleted"
+            },
+            "writing-skills/references/flowcharts.md": {
+              "detail": "references/flowcharts.md is missing locally; it was not recreated",
+              "status": "local-deleted"
+            },
+            "writing-skills/references/graphviz-conventions.dot": {
+              "detail": "references/graphviz-conventions.dot is missing locally; it was not recreated",
+              "status": "local-deleted"
+            },
+            "writing-skills/references/persuasion-principles.md": {
+              "detail": "references/persuasion-principles.md is missing locally; it was not recreated",
+              "status": "local-deleted"
+            },
+            "writing-skills/references/pressure-scenarios.md": {
+              "detail": "references/pressure-scenarios.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "writing-skills/references/testing-skills-with-subagents.md": {
+              "detail": "references/testing-skills-with-subagents.md is missing locally; it was not recreated",
+              "status": "local-deleted"
+            },
+            "writing-skills/render-graphs.js": {
+              "detail": "render-graphs.js differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            },
+            "writing-skills/testing-discipline-reference.md": {
+              "detail": "testing-discipline-reference.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            },
+            "writing-skills/testing-skills-with-subagents.md": {
+              "detail": "testing-skills-with-subagents.md has no upstream counterpart; preserved",
+              "status": "local-only"
+            }
+          },
+          "status": "needs-review",
+          "upstreamRevision": "22f0b463e7a5e579904dd6211a520321035526f7"
+        }
+      },
+      "status": "needs-review",
+      "upstreamRevision": "22f0b463e7a5e579904dd6211a520321035526f7"
+    },
+    "remotion-dev/skills": {
+      "error": null,
+      "pinnedRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb",
+      "retry": false,
+      "skills": {
+        "remotion-best-practices": {
+          "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
+          "status": "license-blocked",
+          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+        },
+        "remotion-captions": {
+          "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
+          "status": "license-blocked",
+          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+        },
+        "remotion-create": {
+          "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
+          "status": "license-blocked",
+          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+        },
+        "remotion-docs": {
+          "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
+          "status": "license-blocked",
+          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+        },
+        "remotion-interactivity": {
+          "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
+          "status": "license-blocked",
+          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+        },
+        "remotion-maps": {
+          "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
+          "status": "license-blocked",
+          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+        },
+        "remotion-markup": {
+          "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
+          "status": "license-blocked",
+          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+        },
+        "remotion-multimedia": {
+          "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
+          "status": "license-blocked",
+          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+        },
+        "remotion-render": {
+          "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
+          "status": "license-blocked",
+          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+        },
+        "remotion-saas": {
+          "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
+          "status": "license-blocked",
+          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+        },
+        "remotion-studio": {
+          "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
+          "status": "license-blocked",
+          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+        },
+        "remotion-upgrade": {
+          "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
+          "status": "license-blocked",
+          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+        }
+      },
+      "status": "needs-review",
+      "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+    },
+    "vercel-labs/agent-skills": {
+      "error": null,
+      "pinnedRevision": "1a2c79d4e6c4a2283dc2c614b6538cbe1ed5ca62",
+      "retry": false,
+      "skills": {
+        "vercel-react-best-practices": {
+          "detail": "tracked as skills/react-best-practices/SKILL.md but not present locally; not recreated — restore or remove via provider flow",
+          "status": "missing-locally"
+        }
+      },
+      "status": "needs-review",
+      "upstreamRevision": "1a2c79d4e6c4a2283dc2c614b6538cbe1ed5ca62"
+    },
+    "vercel-labs/skills": {
+      "error": null,
+      "pinnedRevision": "b716f9dc2ba36b6aa8f0080615e5a3a6caeac63b",
+      "retry": false,
+      "skills": {
+        "find-skills": {
+          "detail": "tracked as skills/find-skills/SKILL.md but not present locally; not recreated — restore or remove via provider flow",
+          "status": "missing-locally"
+        }
+      },
+      "status": "needs-review",
+      "upstreamRevision": "b716f9dc2ba36b6aa8f0080615e5a3a6caeac63b"
+    },
+    "vipulgupta2048/gitshot": {
+      "error": null,
+      "pinnedRevision": "8c24a699677cd81f2aac6f4e261a43e50f370d60",
+      "retry": false,
+      "skills": {
+        "gitshot": {
+          "detail": "1 tracked/upstream files checked",
+          "files": {
+            "gitshot/SKILL.md": {
+              "detail": "SKILL.md differs from reviewed base; upstream unchanged — local bytes kept",
+              "status": "locally-modified"
+            }
+          },
+          "status": "locally-modified",
+          "upstreamRevision": "8c24a699677cd81f2aac6f4e261a43e50f370d60"
+        }
+      },
+      "status": "needs-review",
+      "upstreamRevision": "8c24a699677cd81f2aac6f4e261a43e50f370d60"
+    }
+  },
+  "summary": {
+    "byStatus": {
+      "license-blocked": 12,
+      "locally-modified": 12,
+      "missing-locally": 7,
+      "needs-review": 4,
+      "unpinned": 64,
+      "up-to-date": 14,
+      "upstream-path-not-found": 1
+    },
+    "needsReview": 100,
+    "skills": 114,
+    "sources": 11,
+    "writes": 0
+  },
+  "version": 1,
+  "writes": []
+}
