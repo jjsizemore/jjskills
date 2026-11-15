@@ -1,6 +1,7 @@
 .tokensave/
 .serena/
 .headroom/
+.mesh/
 .omc/
 .DS_Store
 .hub/
@@ -10,6 +11,9 @@
 .global-skill-*
 .usage.json
 .usage.json.lock
+# Machine-owned installer links
+/autoproject
+/terminal-browser
 __pycache__/
 *.py[cod]
 *$py.class
