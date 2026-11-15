@@ -7,6 +7,12 @@
       "skillPath": "skills/engineering/ask-matt/SKILL.md",
       "computedHash": "b2e8ef5ffc2f142022c1e1e1bba68073f0821356a8e1cf1b23670f61d13fe50b"
     },
+    "basin": {
+      "source": "cloudflare/skills",
+      "sourceType": "github",
+      "skillPath": "skills/basin/SKILL.md",
+      "computedHash": "4b447ec8bd58635536c5630e0ef1223563b013676ffabfc02e8a2e0e5c436b98"
+    },
     "cavecrew": {
       "source": "JuliusBrussee/caveman",
       "sourceType": "github",
@@ -91,6 +97,12 @@
       "skillPath": "skills/caveman-stats/SKILL.md",
       "computedHash": "57c7db449641379e2afd1389fdb17cec8f33d9c8e25b1d28093937b4431895e8"
     },
+    "cf-cli": {
+      "source": "cloudflare/skills",
+      "sourceType": "github",
+      "skillPath": "skills/cf-cli/SKILL.md",
+      "computedHash": "91da778590a135b120129c96f8f673e8005e8329d436cfb8787e70101d5a0dba"
+    },
     "claude-handoff": {
       "source": "mattpocock/skills",
       "sourceType": "github",
@@ -120,6 +132,12 @@
       "sourceType": "github",
       "skillPath": "skills/engineering/domain-modeling/SKILL.md",
       "computedHash": "363cb0f53b0b431e7c00086ad1f823500b7e1b70b5616ee969c979f0934e9e6e"
+    },
+    "gateway-workers": {
+      "source": "cloudflare/skills",
+      "sourceType": "github",
+      "skillPath": "skills/gateway-workers/SKILL.md",
+      "computedHash": "4bb90e9ef651c6332d8fccead2e0b25d2b423605657c0b52822c89bf371ddd4b"
     },
     "git-guardrails-claude-code": {
       "source": "mattpocock/skills",
@@ -169,6 +187,12 @@
       "skillPath": "skills/investigate-first/SKILL.md",
       "computedHash": "59b581b5abfc0e19b7dd5a7c3bb2b16621ab5e94e085065c7b724a9c86cc3d4d"
     },
+    "k2": {
+      "source": "cloudflare/skills",
+      "sourceType": "github",
+      "skillPath": "skills/k2/SKILL.md",
+      "computedHash": "3e0d83ae8a95de6256c6dff7225dcf19aa33d271f634fa6c349403a4eff23235"
+    },
     "lean-build": {
       "source": "JuliusBrussee/caveman",
       "sourceType": "github",
@@ -192,6 +216,12 @@
       "sourceType": "github",
       "skillPath": "skills/migration/SKILL.md",
       "computedHash": "7348b2d21ca05bdecc1e4ec2c8b63515ccb1700c8a261fdbd458b04b7383945b"
+    },
+    "nextjs-on-cloudflare": {
+      "source": "cloudflare/skills",
+      "sourceType": "github",
+      "skillPath": "skills/nextjs-on-cloudflare/SKILL.md",
+      "computedHash": "15d2dc117c5bbe9f92cb7c42a8d55e4bcddb91c2f1e4705ad93736c7a219d99b"
     },
     "prototype": {
       "source": "mattpocock/skills",
@@ -306,6 +336,12 @@
       "sourceType": "github",
       "skillPath": "skills/engineering/wizard/SKILL.md",
       "computedHash": "2c0d1187398b1b7ebb9902a4c91b24181ee07892f285615b46c59f45e2c4229c"
+    },
+    "workers-profiling": {
+      "source": "cloudflare/skills",
+      "sourceType": "github",
+      "skillPath": "skills/workers-profiling/SKILL.md",
+      "computedHash": "310220bfad691100e6c2549628437c03873bdf870cbfacbd2e2cb5c125538864"
     },
     "writing-beats": {
       "source": "mattpocock/skills",
