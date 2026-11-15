@@ -71,6 +71,7 @@ invoking through `~/.agents/skills` executes the same admission gates as the sou
 | `cancel` | Clear ACTIVE; keep history |
 | `complete` | All pass + bound evidence + controller verifier → clear ACTIVE |
 | `admission` | Evaluate baseline-bound project probe against release safeguards prerequisites |
+| `admission --stage-only` | Check an isolated staging preflight; never authorizes deployment or runtime acceptance |
 | `set-max` | Always rejected after seal |
 
 New `init` calls require `--endpoint pr|merge|staging|deploy|local-only`. The
@@ -176,6 +177,21 @@ the RTO). Both use explicit units such as `ms`, `s`, `minutes`, or `h`.
 `sha256:<64 hex>`, or `<artifact/config>@sha256:<64 hex>`. A version tag, branch,
 goal-only duration, or structured assertion without an exercised probe is not
 rollback readiness.
+
+`closeout-command.json` may declare a baseline-owned `stageCommand` for
+`admission --run-id ID --stage-only --endpoint staging --surface S
+--environment E --require-stage-ready`. The ledger must be active, target
+`staging`, match the requested surface, and seal the baseline config digest.
+The direct project script must be unchanged from that baseline. Its JSON
+`stageAdmission` must bind repository, current HEAD, target surface/environment,
+an observation no older than five minutes, passing resource/security gates,
+exclusive lease, zero active jobs, and the SHA-256 of the exact target config.
+It must scope staging to one disposable guest, isolate production, and require
+separate release admission before promotion. The CLI rejects caller evidence,
+deploy endpoints, and release-admitted flags; `stage-ready` still requires
+protected-environment approval and grants no deploy/runtime authority.
+Stage probes have a 120-second deadline. Timeout or probe supervision failure
+denies preflight, even if the probe emitted valid observations.
 
 ## Model tier
 

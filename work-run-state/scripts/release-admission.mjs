@@ -3,6 +3,7 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 
 export const DEFAULT_MAX_SAFEGUARD_AGE_MS = 3600_000; // 1 hour
+const DEFAULT_MAX_STAGE_PREFLIGHT_AGE_MS = 5 * 60_000;
 
 function gitRemote(cwd) {
   try {
@@ -371,6 +372,104 @@ export function evaluateReleaseAdmission({
     admitted: true,
     status: 'admitted',
     reason: 'release safeguards admitted: bounded staging with promotion criteria, actionable detection, and exercised compatible fast rollback verified',
+    missing: [],
+  };
+}
+
+export function evaluateStageAdmission({
+  cwd = process.cwd(),
+  evidence,
+  endpoint,
+  expectedEnvironment,
+  expectedSurface,
+  subjectHead,
+  maxAgeMs = DEFAULT_MAX_STAGE_PREFLIGHT_AGE_MS,
+  now = Date.now(),
+}) {
+  const missing = [];
+  const ev = evidence;
+  if (!ev || typeof ev !== 'object' || Array.isArray(ev)) {
+    return {
+      stageReady: false,
+      status: 'denied',
+      reason: 'stage-only preflight denied: stageAdmission evidence is missing or invalid',
+      missing: ['stageAdmission evidence'],
+    };
+  }
+
+  if (endpoint !== 'staging') missing.push('stage-only admission requires endpoint staging');
+  if (!expectedEnvironment) missing.push('explicit target environment binding');
+  if (!expectedSurface) missing.push('explicit target surface binding');
+
+  const declaredRepo = ev.repository || ev.repo;
+  if (typeof declaredRepo !== 'string' || !declaredRepo.trim()) {
+    missing.push('repository binding');
+  } else if (normalizeRepoIdentity(declaredRepo, cwd) !== resolveExpectedRepo(cwd)) {
+    missing.push('repository binding mismatch');
+  }
+
+  const actualHead = subjectHead || gitHead(cwd);
+  if (typeof ev.subjectHead !== 'string' || !ev.subjectHead.trim()) {
+    missing.push('subjectHead binding');
+  } else if (actualHead && ev.subjectHead.trim() !== actualHead.trim()) {
+    missing.push('subjectHead mismatch');
+  }
+  if (typeof ev.surface !== 'string' || !expectedSurface ||
+      ev.surface.trim().toLowerCase() !== expectedSurface.trim().toLowerCase()) {
+    missing.push('surface binding mismatch');
+  }
+  if (typeof ev.environment !== 'string' || !expectedEnvironment ||
+      ev.environment.trim().toLowerCase() !== expectedEnvironment.trim().toLowerCase()) {
+    missing.push('environment binding mismatch');
+  }
+  if (ev.intent !== 'stage-rehearsal') missing.push('stage-rehearsal intent');
+
+  const evaluatedAt = typeof ev.evaluatedAt === 'string' ? Date.parse(ev.evaluatedAt) : NaN;
+  if (!Number.isFinite(evaluatedAt)) {
+    missing.push('valid evaluatedAt timestamp');
+  } else if (evaluatedAt > now + 60_000 || now - evaluatedAt > maxAgeMs) {
+    missing.push('fresh stage preflight evidence');
+  }
+
+  const preflight = ev.preflight;
+  if (!preflight || typeof preflight !== 'object' || preflight.status !== 'ready') {
+    missing.push('passing host preflight');
+  } else {
+    if (preflight.resourceGate !== 'passed') missing.push('resource gate');
+    if (preflight.securityGate !== 'passed') missing.push('security gate');
+    if (preflight.exclusiveLease !== true) missing.push('exclusive host lease');
+    if (preflight.activeJobs !== 0) missing.push('idle host job inventory');
+    if (!/^sha256:[a-f0-9]{64}$/i.test(preflight.targetConfigSha || '')) {
+      missing.push('content-pinned target configuration');
+    }
+  }
+
+  const staging = ev.staging;
+  if (!staging || typeof staging !== 'object') {
+    missing.push('isolated staging scope');
+  } else {
+    if (staging.isolatedFromProduction !== true) missing.push('production isolation');
+    if (staging.blastRadius?.guests !== 1 ||
+        String(staging.blastRadius?.surface || '').toLowerCase() !== String(expectedSurface || '').toLowerCase()) {
+      missing.push('single-target blast radius');
+    }
+    if (staging.promotionRequiresReleaseAdmission !== true) {
+      missing.push('separate release admission before promotion');
+    }
+  }
+
+  if (missing.length) {
+    return {
+      stageReady: false,
+      status: 'denied',
+      reason: `stage-only preflight denied: ${missing.join('; ')}`,
+      missing,
+    };
+  }
+  return {
+    stageReady: true,
+    status: 'stage-ready',
+    reason: 'isolated staging preflight passed; protected environment approval remains required; no deploy or runtime acceptance authority',
     missing: [],
   };
 }
