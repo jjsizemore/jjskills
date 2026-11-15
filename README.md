@@ -121,6 +121,15 @@ providers using their supported mechanisms, with backups and checks before
 touching live configurations or active sessions. Verify discovery in the
 affected provider; installation alone does not refresh running sessions.
 
+### Automated weekly check
+
+`.github/workflows/third-party-skill-updates.yml` runs `node scripts/third-party-updates.mjs --report <path>` every Monday at 09:00 UTC (and on manual dispatch from the Actions tab).
+
+- The updater preserves local customizations and disabled skills. Missing reviewed pins, conflicts, and sources without clear redistribution rights require manual review; see the tracked `third-party-updates.report.json`.
+- A PR from `automation/third-party-skill-updates` is opened or updated when files change. It is never auto-merged. The workflow does not execute upstream scripts.
+- Requires Settings > Actions > General > "Allow GitHub Actions to create and approve pull requests". The workflow requests only contents and pull-request write permissions.
+
+
 ### Exclusions (see `.gitignore`)
 
 Tooling and install junk must stay untracked, including:

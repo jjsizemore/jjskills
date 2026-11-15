@@ -1,0 +1,17 @@
+{
+  "sources": {
+    "DietrichGebert/ponytail": { "files": {}, "pinnedRevision": null, "upstreamRevision": null },
+    "JuliusBrussee/caveman": { "files": {}, "pinnedRevision": null, "upstreamRevision": null },
+    "anthropics/skills": { "files": {}, "pinnedRevision": "1780c5e5a552fd4d1c9d6a7b0cab26b0c2bef064", "upstreamRevision": null },
+    "ayghri/i-have-adhd": { "files": {}, "pinnedRevision": "1ecea1993b7fce257ffbd686c070948b5e07eda6", "upstreamRevision": null },
+    "cloudflare/skills": { "files": {}, "pinnedRevision": "cbf893b954222276bf1af57e5f23379231e0efb9", "upstreamRevision": null },
+    "mattpocock/skills": { "files": {}, "pinnedRevision": null, "upstreamRevision": null },
+    "obra/superpowers": { "files": {}, "pinnedRevision": "22f0b463e7a5e579904dd6211a520321035526f7", "upstreamRevision": null },
+    "remotion-dev/skills": { "files": {}, "pinnedRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb", "upstreamRevision": null },
+    "vercel-labs/agent-skills": { "files": {}, "pinnedRevision": "1a2c79d4e6c4a2283dc2c614b6538cbe1ed5ca62", "upstreamRevision": null },
+    "vercel-labs/skills": { "files": {}, "pinnedRevision": "b716f9dc2ba36b6aa8f0080615e5a3a6caeac63b", "upstreamRevision": null },
+    "vipulgupta2048/gitshot": { "files": {}, "pinnedRevision": "8c24a699677cd81f2aac6f4e261a43e50f370d60", "upstreamRevision": null }
+  },
+  "updatedAt": null,
+  "version": 1
+}
