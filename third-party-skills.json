@@ -1,5 +1,40 @@
 {
   "description": "Historical source claims and installed package manifests; an entry is not proof of current installation or version. Compare source and local content before updates.",
+  "upstreamReviews": {
+    "reviewedAt": "2026-11-15",
+    "cloudflare/skills": {
+      "revisionParts": ["cbf893b954222276bf1a", "f57e5f23379231e0efb9"],
+      "note": "Refreshed compatible installed packages; Cloudflare index, sandbox routing and Turnstile security customizations retained. sandbox-sdk has no current upstream counterpart."
+    },
+    "remotion-dev/skills": {
+      "revision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb",
+      "note": "Compared upstream; publication of refreshed copies is pending clarification of redistribution rights."
+    },
+    "ayghri/i-have-adhd": {
+      "revision": "1ecea1993b7fce257ffbd686c070948b5e07eda6",
+      "note": "Refreshed the shared copy; provider-managed plugin installation is separate."
+    },
+    "obra/superpowers": {
+      "revision": "22f0b463e7a5e579904dd6211a520321035526f7",
+      "note": "Compared upstream; local workflows retain intentional customizations and absent historical names were not activated."
+    },
+    "anthropics/skills": {
+      "revision": "1780c5e5a552fd4d1c9d6a7b0cab26b0c2bef064",
+      "note": "Historical frontend-design claim is not installed in the shared root."
+    },
+    "vercel-labs/agent-skills": {
+      "revision": "1a2c79d4e6c4a2283dc2c614b6538cbe1ed5ca62",
+      "note": "Historical skill claim is not installed in the shared root."
+    },
+    "vercel-labs/skills": {
+      "revision": "b716f9dc2ba36b6aa8f0080615e5a3a6caeac63b",
+      "note": "Historical skill claim is not installed in the shared root."
+    },
+    "vipulgupta2048/gitshot": {
+      "revision": "8c24a699677cd81f2aac6f4e261a43e50f370d60",
+      "note": "Compared upstream; retained the stricter local privacy guidance."
+    }
+  },
   "sources": {
     "DietrichGebert/ponytail": {
       "ponytail": {

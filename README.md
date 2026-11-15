@@ -112,8 +112,11 @@ source entries in `third-party-skills.json`.
 
 Review these sources periodically and after provider upgrades. Compare the
 upstream skill and bundled assets with the installed version and local changes;
-preserve local customizations and disabled skills. Update the inventory when
-adding, removing, or changing a source. Restore missing skills and update
+preserve local customizations and disabled skills. Record each inspected upstream
+revision and retained divergence in `upstreamReviews` in the inventory; a review
+does not imply an exact upstream copy. Join `revisionParts` in order to reconstruct
+a full revision when a public SHA matches a secret-scanner pattern. Update the
+inventory when adding, removing, or changing a source. Restore missing skills and update
 providers using their supported mechanisms, with backups and checks before
 touching live configurations or active sessions. Verify discovery in the
 affected provider; installation alone does not refresh running sessions.
