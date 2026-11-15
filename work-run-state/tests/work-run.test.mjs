@@ -457,6 +457,24 @@ describe('work-run pick / mark-pass / seal', () => {
     assert.equal(fs.readFileSync(counter, 'utf8'), 'run\n');
     assert.equal(fs.readFileSync(ledgerPath, 'utf8'), before);
   });
+  it('does not let a completed run be reopened for another closeout', () => {
+    assert.equal(run(['mark-pass', '--story', 'US-001'], repo).status, 0);
+    assert.equal(run(['mark-pass', '--story', 'US-002'], repo).status, 0);
+    const evidence = closeoutEvidence(repo);
+    const counter = path.join(runsRoot(repo), 'oracle-count');
+    const env = { WORK_RUN_TEST_ORACLE_COUNT: counter };
+    assert.equal(run(['complete', '--closeout-evidence', evidence], repo, env).status, 0);
+    assert.equal(fs.readFileSync(counter, 'utf8'), 'run\n');
+    const ledgerPath = path.join(runsRoot(repo), 'pick-run/ledger.json');
+    const before = fs.readFileSync(ledgerPath, 'utf8');
+    const reopen = run(['mark-blocked', '--run-id', 'pick-run', '--story', 'US-001', '--reason', 'x'], repo);
+    assert.notEqual(reopen.status, 0, 'completed run must not accept a status change');
+    assert.match(reopen.stderr, /already completed/i);
+    assert.equal(fs.readFileSync(ledgerPath, 'utf8'), before);
+    const replay = run(['complete', '--run-id', 'pick-run', '--closeout-evidence', evidence], repo, env);
+    assert.notEqual(replay.status, 0);
+    assert.equal(fs.readFileSync(counter, 'utf8'), 'run\n');
+  });
   it(
     'rejects a failing project oracle despite matching metadata',
     () => {

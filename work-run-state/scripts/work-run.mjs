@@ -649,6 +649,7 @@ function cmdMarkBlocked(cwd, args) {
   if (!storyId) die('mark-blocked requires --story');
   if (!args.reason) die('mark-blocked requires --reason');
   const { path: lp, data } = readLedger(cwd, runId);
+  if (data.status === 'completed') die('cannot mark-blocked: run already completed');
   const story = data.userStories.find((s) => s.id === storyId);
   if (!story) die(`unknown story: ${storyId}`);
   story.blockedReason = String(args.reason);
