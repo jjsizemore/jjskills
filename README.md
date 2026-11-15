@@ -105,6 +105,10 @@ the repository and machine skill locks and the installed package manifests.
 It is an inventory, not proof a skill is installed, enabled, unmodified, or
 current. `skills-lock.json` is an older version-1 lock and does not cover every
 provider; OMP, Claude, and Codex maintain separate plugin registrations.
+The Cloudflare skill snapshots are distributed under Apache-2.0; see
+[`cloudflare-skills-LICENSE.txt`](cloudflare-skills-LICENSE.txt) and their
+source entries in `third-party-skills.json`.
+
 
 Review these sources periodically and after provider upgrades. Compare the
 upstream skill and bundled assets with the installed version and local changes;
@@ -118,7 +122,7 @@ affected provider; installation alone does not refresh running sessions.
 
 Tooling and install junk must stay untracked, including:
 
-- `.tokensave/`, `.serena/`, `.headroom/`, `.omc/`
+- `.tokensave/`, `.serena/`, `.headroom/`, `.mesh/`, `.omc/`
 - `.hub/`, `.curator_backups/`, curator state, usage journals
 - `__pycache__/`, `.env*`, keys/secrets
 
