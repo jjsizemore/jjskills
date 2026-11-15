@@ -16,7 +16,7 @@
     },
     "obra/superpowers": {
       "revision": "22f0b463e7a5e579904dd6211a520321035526f7",
-      "note": "Compared upstream; local workflows retain intentional customizations and absent historical names were not activated."
+      "note": "Reconciled applicable review-thread and submodule safeguards. Retained local autonomous execution, risk-scaled review and worktree policies; absent historical names were not activated."
     },
     "anthropics/skills": {
       "revision": "1780c5e5a552fd4d1c9d6a7b0cab26b0c2bef064",

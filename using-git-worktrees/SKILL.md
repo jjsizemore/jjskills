@@ -20,7 +20,9 @@ Use the repository directory name as `<repository-name>` and replace `/` with
 1. Confirm the branch name from the repository's issue tracker when available;
    otherwise use its documented ad-hoc branch convention.
 2. Check `git worktree list`, the repository's coordination ledger, and dirty
-   state before creating or moving a worktree.
+   state before creating or moving a worktree. Confirm you are not inside a git
+   submodule (`git rev-parse --show-superproject-working-tree` returns empty)
+   before treating a nested git dir as a worktree.
 3. Create the canonical parent directory and add from the explicit base branch:
 
    ```bash
