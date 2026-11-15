@@ -1,5 +1,5 @@
 {
-  "baselineUpdated": true,
+  "baselineUpdated": false,
   "check": false,
   "limitations": [
     "Upstream deletions and local-only files are reported and preserved; files are never deleted automatically.",
@@ -196,7 +196,7 @@
           "upstreamRevision": "1ecea1993b7fce257ffbd686c070948b5e07eda6"
         }
       },
-      "status": "baseline-initialized",
+      "status": "up-to-date",
       "upstreamRevision": "1ecea1993b7fce257ffbd686c070948b5e07eda6"
     },
     "cloudflare/skills": {
