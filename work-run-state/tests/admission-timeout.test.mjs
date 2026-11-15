@@ -5,6 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
+import { createHash } from 'node:crypto';
 import { CLOSEOUT_ORACLE_TIMEOUT_MS } from '../scripts/closeout-timeouts.mjs';
 
 const CLI = fileURLToPath(new URL('../scripts/work-run.mjs', import.meta.url));
@@ -135,6 +136,73 @@ test('a delayed valid probe within its internal deadline still admits', () => {
     assert.equal(result.status, 0, result.stderr);
     assert.equal(JSON.parse(result.stdout).status, 'admitted');
   } finally { f.close(); }
+});
+
+test('stage preflight denies valid output from a probe that exceeds its deadline', () => {
+  const f = fixture(`
+process.on('SIGTERM', () => {});
+if (process.platform !== 'win32') {
+  const child = spawn(process.execPath, ['-e', "process.on('SIGTERM', () => {}); setTimeout(() => {}, 5000);"],
+    { stdio: 'inherit' });
+  fs.writeFileSync(process.env.DEADLINE_TEST_ROOT + '/stage-child.pid', String(child.pid));
+}
+const stageAdmission = {
+  repository: process.env.WORK_RUN_EXPECTED_REPO,
+  subjectHead: process.env.WORK_RUN_EXPECTED_HEAD,
+  surface: process.env.WORK_RUN_EXPECTED_SURFACE,
+  environment: process.env.WORK_RUN_EXPECTED_ENVIRONMENT,
+  evaluatedAt: new Date().toISOString(),
+  intent: 'stage-rehearsal',
+  preflight: { status: 'ready', resourceGate: 'passed', securityGate: 'passed',
+    exclusiveLease: true, activeJobs: 0, targetConfigSha: 'sha256:' + 'a'.repeat(64) },
+  staging: { isolatedFromProduction: true,
+    blastRadius: { guests: 1, surface: process.env.WORK_RUN_EXPECTED_SURFACE },
+    promotionRequiresReleaseAdmission: true },
+};
+process.stdout.write(JSON.stringify({ stageAdmission }));
+setTimeout(() => process.exit(0), 4000);
+`);
+  try {
+    const configPath = path.join(f.repo, 'closeout-command.json');
+    const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    config.stageCommand = [process.execPath, 'probe.mjs'];
+    fs.writeFileSync(configPath, JSON.stringify(config));
+    const git = (...args) => {
+      const result = spawnSync('git', args, { cwd: f.repo, env: f.env, encoding: 'utf8' });
+      assert.equal(result.status, 0, result.stderr);
+      return result.stdout.trim();
+    };
+    git('add', '--', 'closeout-command.json');
+    git('-c', `core.hooksPath=${os.devNull}`, '-c', 'commit.gpgsign=false', 'commit', '-qm', 'seal stage command');
+    const baseSha = git('rev-parse', 'HEAD');
+    const expectedConfigSha = `sha256:${createHash('sha256').update(fs.readFileSync(configPath)).digest('hex')}`;
+    const runner = path.join(f.root, 'run-stage-probe.mjs');
+    fs.writeFileSync(runner, `import { executeBaselineStagePreflight } from ${JSON.stringify(new URL('../scripts/work-run.mjs', import.meta.url).href)};
+const result = executeBaselineStagePreflight({
+  cwd: process.cwd(), baseSha: ${JSON.stringify(baseSha)}, expectedConfigSha: ${JSON.stringify(expectedConfigSha)},
+  subjectHead: ${JSON.stringify(baseSha)}, endpoint: 'staging',
+  expectedEnvironment: 'staging', expectedSurface: 'backend-api', timeoutMs: 2000,
+});
+process.stdout.write(JSON.stringify(result));`);
+    const run = spawnSync(process.execPath, [runner], {
+      cwd: f.repo, env: f.env, encoding: 'utf8', timeout: 6_000, killSignal: 'SIGKILL',
+    });
+    assert.equal(run.status, 0, run.stderr);
+    const result = JSON.parse(run.stdout);
+    assert.equal(result.stageReady, false);
+    assert.equal(result.status, 'denied');
+    assert.match(result.reason, /ETIMEDOUT/);
+    if (process.platform !== 'win32') {
+      const childPid = Number(fs.readFileSync(path.join(f.root, 'stage-child.pid'), 'utf8'));
+      assert.ok(stopped(childPid), `stage probe child ${childPid} remains live`);
+    }
+  } finally {
+    const childPath = path.join(f.root, 'stage-child.pid');
+    if (fs.existsSync(childPath)) {
+      try { process.kill(Number(fs.readFileSync(childPath, 'utf8')), 'SIGKILL'); } catch {}
+    }
+    f.close();
+  }
 });
 
 test('invalid internal deadlines deny before starting a probe', () => {

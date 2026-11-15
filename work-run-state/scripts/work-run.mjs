@@ -13,8 +13,9 @@ import { createHash } from 'node:crypto';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { ADMISSION_PROBE_TIMEOUT_MS, CLOSEOUT_VERIFIER_TIMEOUT_MS } from './closeout-timeouts.mjs';
-import { DEFAULT_MAX_SAFEGUARD_AGE_MS, evaluateReleaseAdmission } from './release-admission.mjs';
+import { DEFAULT_MAX_SAFEGUARD_AGE_MS, evaluateReleaseAdmission, evaluateStageAdmission, resolveExpectedRepo } from './release-admission.mjs';
 import { adoptAdmissionSource, revokeAdmissionSource, admissionRuntime } from './admission-adoption.mjs';
+const STAGE_PREFLIGHT_TIMEOUT_MS = 120_000;
 
 const FLOOR = 10;
 const HARD_CEILING = 30;
@@ -342,9 +343,29 @@ function parseOracleConfig(cwd, baseSha) {
   )) {
     throw new Error('closeout-command.json admissionCommand must invoke one repository-owned script directly');
   }
+  const stageCommand = config.stageCommand;
+  const stageExecutable = Array.isArray(stageCommand) && typeof stageCommand[0] === 'string'
+    ? path.basename(stageCommand[0]) : '';
+  const stageFile = Array.isArray(stageCommand) ? stageCommand[1] : '';
+  if (stageCommand !== undefined && (
+    !Array.isArray(stageCommand) ||
+    stageCommand.length !== 2 ||
+    !['node', 'python', 'python3'].includes(stageExecutable) ||
+    (stageCommand[0] !== stageExecutable && stageCommand[0] !== process.execPath) ||
+    typeof stageFile !== 'string' ||
+    path.isAbsolute(stageFile) ||
+    path.win32.isAbsolute(stageFile) ||
+    /^[A-Za-z]:/u.test(stageFile) ||
+    stageFile.startsWith('-') ||
+    stageFile.split(/[\\/]/u).some((part) => !part || part === '.' || part === '..') ||
+    !/\.(?:mjs|cjs|js|py)$/iu.test(stageFile)
+  )) {
+    throw new Error('closeout-command.json stageCommand must invoke one repository-owned script directly');
+  }
   return {
     command,
     admissionCommand,
+    stageCommand,
     rollbackPolicy: config.rollbackPolicy,
     configSha: `sha256:${createHash('sha256').update(raw).digest('hex')}`,
   };
@@ -369,6 +390,152 @@ function baselineAdmissionScriptMatches(cwd, baseSha, scriptFile) {
   } catch {
     return false;
   }
+}
+
+function baselineStageScriptMatches(cwd, baseSha, scriptFile) {
+  const repoRoot = fs.realpathSync(execFileSync('git', ['rev-parse', '--show-toplevel'], {
+    cwd,
+    encoding: 'utf8',
+  }).trim());
+  const scriptPath = path.resolve(cwd, scriptFile);
+  const relative = path.relative(repoRoot, scriptPath);
+  if (relative === '..' || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative)) return false;
+  const stat = fs.lstatSync(scriptPath);
+  if (!stat.isFile() || stat.isSymbolicLink()) return false;
+  const realScript = fs.realpathSync(scriptPath);
+  const realRelative = path.relative(repoRoot, realScript);
+  if (realRelative === '..' || realRelative.startsWith(`..${path.sep}`) || path.isAbsolute(realRelative)) return false;
+  const baseline = execFileSync('git', ['show', `${baseSha}:${relative.split(path.sep).join('/')}`], {
+    cwd,
+    encoding: 'buffer',
+  });
+  return fs.readFileSync(scriptPath).equals(baseline);
+}
+
+
+export function executeBaselineStagePreflight({
+  cwd,
+  baseSha,
+  expectedConfigSha,
+  subjectHead,
+  endpoint,
+  expectedEnvironment,
+  expectedSurface,
+  timeoutMs = STAGE_PREFLIGHT_TIMEOUT_MS,
+}) {
+  if (!Number.isSafeInteger(timeoutMs) || timeoutMs <= 0 || timeoutMs > STAGE_PREFLIGHT_TIMEOUT_MS) {
+    return { stageReady: false, status: 'denied',
+      reason: 'stage-only preflight denied: invalid bounded project probe deadline',
+      missing: ['bounded project probe deadline'] };
+  }
+  const curHead = subjectHead || currentHead(cwd);
+  if (!/^[a-f0-9]{40}(?:[a-f0-9]{24})?$/i.test(baseSha || '') ||
+      !/^sha256:[a-f0-9]{64}$/i.test(expectedConfigSha || '')) {
+    return {
+      stageReady: false,
+      status: 'denied',
+      reason: 'stage-only preflight denied: a sealed run base and closeout-config digest are required',
+      missing: ['sealed staging run baseline'],
+    };
+  }
+  let oracleConfig;
+  try {
+    oracleConfig = parseOracleConfig(cwd, baseSha);
+  } catch (err) {
+    return {
+      stageReady: false,
+      status: 'denied',
+      reason: `stage-only preflight denied: cannot resolve baseline stage command: ${err.message}`,
+      missing: ['baseline stage preflight command'],
+    };
+  }
+  if (!oracleConfig.stageCommand) {
+    return {
+      stageReady: false,
+      status: 'denied',
+      reason: 'stage-only preflight denied: baseline project has no stageCommand',
+      missing: ['baseline stage preflight command'],
+    };
+  }
+  if (oracleConfig.configSha !== expectedConfigSha) {
+    return {
+      stageReady: false,
+      status: 'denied',
+      reason: 'stage-only preflight denied: baseline closeout configuration differs from the sealed run',
+      missing: ['sealed baseline closeout configuration'],
+    };
+  }
+  try {
+    if (!baselineStageScriptMatches(cwd, baseSha, oracleConfig.stageCommand[1])) {
+      return {
+        stageReady: false,
+        status: 'denied',
+        reason: 'stage-only preflight denied: stage command script differs from the sealed baseline',
+        missing: ['unchanged baseline stage command script'],
+      };
+    }
+  } catch {
+    return {
+      stageReady: false,
+      status: 'denied',
+      reason: 'stage-only preflight denied: baseline stage command script is missing or unreadable',
+      missing: ['readable baseline stage command script'],
+    };
+  }
+
+  let probeRun;
+  try {
+    const guardian = path.join(path.dirname(fileURLToPath(import.meta.url)), 'admission-probe.mjs');
+    const run = spawnSync(process.execPath,
+      [guardian, String(timeoutMs), String(process.pid), ...oracleConfig.stageCommand], {
+        cwd, encoding: 'utf8', timeout: timeoutMs + 1_000,
+        killSignal: 'SIGKILL', maxBuffer: 16 * 1024 * 1024,
+        env: {
+          ...process.env,
+          WORK_RUN_STAGE_ONLY: '1',
+          WORK_RUN_EXPECTED_REPO: resolveExpectedRepo(cwd),
+          WORK_RUN_EXPECTED_HEAD: curHead,
+          WORK_RUN_EXPECTED_SURFACE: expectedSurface || '',
+          WORK_RUN_EXPECTED_ENVIRONMENT: expectedEnvironment || '',
+        },
+      });
+    probeRun = run.error || run.signal || run.status !== 0
+      ? { ...run, error: { code: run.error?.code || run.signal || 'PROBE_RUNNER_FAILED' } }
+      : JSON.parse(run.stdout);
+  } catch (error) {
+    probeRun = { status: null, signal: null, error: { code: error.code || 'PROBE_RUNNER_FAILED' } };
+  }
+  if (probeRun.error || probeRun.status !== 0 || probeRun.signal) {
+    const infrastructure = probeRun.error?.code || probeRun.signal;
+    return {
+      stageReady: false,
+      status: 'denied',
+      reason: infrastructure
+        ? `stage-only preflight denied: project probe infrastructure failure (${infrastructure})`
+        : `stage-only preflight denied: project command failed with exit code ${probeRun.status}`,
+      missing: ['passing host preflight command'],
+    };
+  }
+
+  let observedPayload;
+  try {
+    observedPayload = JSON.parse(probeRun.stdout);
+  } catch {
+    return {
+      stageReady: false,
+      status: 'denied',
+      reason: 'stage-only preflight denied: project command did not output valid JSON',
+      missing: ['valid JSON stageAdmission observations'],
+    };
+  }
+  return evaluateStageAdmission({
+    cwd,
+    evidence: observedPayload.stageAdmission,
+    endpoint,
+    expectedEnvironment,
+    expectedSurface,
+    subjectHead: curHead,
+  });
 }
 
 export function executeBaselineSafeguardsProbe({
@@ -900,6 +1067,47 @@ function cmdAdmission(cwd, args) {
   if (requireAdmitted && (!endpoint || !expectedSurface)) {
     die('release safeguards admission denied: --require-admitted requires explicit --endpoint and --surface bindings');
   }
+  const stageOnly = Boolean(args['stage-only']);
+  const requireStageReady = Boolean(args['require-stage-ready']);
+  if (stageOnly && requireAdmitted) {
+    die('stage-only preflight cannot satisfy release admission or --require-admitted');
+  }
+  if (!stageOnly && requireStageReady) {
+    die('--require-stage-ready requires --stage-only');
+  }
+  if (stageOnly) {
+    if (args.evidence) die('stage-only preflight rejects caller-supplied evidence');
+    if (!args['run-id']) die('stage-only preflight requires explicit --run-id for a sealed staging run');
+    if (endpoint !== 'staging' || !expectedSurface || !expectedEnvironment) {
+      die('stage-only preflight requires --endpoint staging plus explicit --surface and --environment; it cannot authorize deploy');
+    }
+    let stageRun;
+    try {
+      stageRun = readLedger(cwd, args['run-id']).data;
+    } catch {
+      die('stage-only preflight cannot read the sealed --run-id ledger');
+    }
+    if (stageRun.status !== 'active' || stageRun.endpoint !== 'staging' ||
+        String(stageRun.surface || '').trim().toLowerCase() !== expectedSurface.trim().toLowerCase()) {
+      die('stage-only preflight requires an active staging run bound to the requested surface');
+    }
+    const stageResult = executeBaselineStagePreflight({
+      cwd,
+      baseSha: stageRun.baseSha,
+      expectedConfigSha: stageRun.closeoutConfigSha,
+      subjectHead,
+      endpoint,
+      expectedEnvironment,
+      expectedSurface,
+    });
+    if (!stageResult.stageReady || (requireStageReady && stageResult.status !== 'stage-ready')) {
+      if (args.enforce || args.strict) die(stageResult.reason);
+      process.stdout.write(JSON.stringify(stageResult, null, 2) + '\n');
+      process.exit(1);
+    }
+    process.stdout.write(JSON.stringify(stageResult, null, 2) + '\n');
+    return;
+  }
   let callerEvidence = null;
   if (args.evidence) {
     try {
@@ -1014,6 +1222,7 @@ Commands:
   admission --evidence PATH [--endpoint E] [--subject-head S] [--environment ENV] [--surface SURF]
   adopt-admission --source-pr URL --endpoint staging --environment staging --surface S [--run-id ID]
   revoke-admission --endpoint staging --environment staging --surface S [--run-id ID]
+  admission --stage-only --endpoint staging --surface SURF --environment ENV [--require-stage-ready]
   complete --closeout-evidence PATH
 
 State: <git-common-dir>/agent-runs/ (or AGENT_RUNS_ROOT)

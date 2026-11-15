@@ -911,6 +911,159 @@ process.stdout.write(JSON.stringify({ releaseSafeguards: payload }));
     spawnSync('git', ['-c', 'core.hooksPath=/dev/null', 'commit', '--no-gpg-sign', '-q', '-m', 'set admission probe'], { cwd: repo });
   };
 
+  it('keeps stage-only preflight separate from release admission', () => {
+    const head = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).stdout.trim();
+    const stageAdmission = {
+      repository: resolveExpectedRepo(repo),
+      subjectHead: head,
+      surface: 'macos-arm64-01',
+      environment: 'mini',
+      evaluatedAt: new Date().toISOString(),
+      intent: 'stage-rehearsal',
+      preflight: {
+        status: 'ready',
+        targetConfigSha: `sha256:${'a'.repeat(64)}`,
+        resourceGate: 'passed',
+        securityGate: 'passed',
+        exclusiveLease: true,
+        activeJobs: 0,
+      },
+      staging: {
+        isolatedFromProduction: true,
+        blastRadius: { guests: 1, surface: 'macos-arm64-01' },
+        promotionRequiresReleaseAdmission: true,
+      },
+    };
+    const stageProbe = path.join(repo, 'stage-probe.mjs');
+    fs.writeFileSync(
+      stageProbe,
+      `import { execFileSync } from 'node:child_process';
+const stageAdmission = ${JSON.stringify(stageAdmission)};
+stageAdmission.subjectHead = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+stageAdmission.preflight.activeJobs = Number(process.env.STAGE_ACTIVE_JOBS || 0);
+stageAdmission.preflight.targetConfigSha = process.env.STAGE_CONFIG_SHA || stageAdmission.preflight.targetConfigSha;
+process.stdout.write(JSON.stringify({ stageAdmission }));
+`,
+    );
+    fs.writeFileSync(
+      path.join(repo, 'closeout-command.json'),
+      JSON.stringify({
+        closeoutCommand: [process.execPath, 'oracle.test.mjs'],
+        stageCommand: [process.execPath, 'stage-probe.mjs'],
+        rollbackPolicy: ROLLBACK_POLICY,
+      }),
+    );
+    assert.equal(spawnSync('git', ['add', 'stage-probe.mjs', 'closeout-command.json'], { cwd: repo }).status, 0);
+    assert.equal(
+      spawnSync('git', ['-c', 'core.hooksPath=/dev/null', 'commit', '--no-gpg-sign', '-q', '-m', 'set stage probe'], { cwd: repo }).status,
+      0,
+    );
+
+    const storiesPath = path.join(repo, 'stories.json');
+    fs.writeFileSync(storiesPath, JSON.stringify([
+      { id: 'STAGE-1', title: 'Stage preflight', acceptanceCriteria: ['isolated'], passes: false },
+    ]));
+    const init = run([
+      'init',
+      '--run-id',
+      'stage-run',
+      '--project',
+      'fixture',
+      '--branch',
+      'main',
+      '--description',
+      'Stage preflight fixture',
+      '--stories-file',
+      storiesPath,
+      '--endpoint',
+      'staging',
+      '--surface',
+      'macos-arm64-01',
+    ], repo);
+    assert.equal(init.status, 0, init.stderr + init.stdout);
+
+    const stageArgs = (endpoint = 'staging') => [
+      'admission',
+      '--run-id',
+      'stage-run',
+      '--stage-only',
+      '--endpoint',
+      endpoint,
+      '--surface',
+      'macos-arm64-01',
+      '--environment',
+      'mini',
+    ];
+    const runStage = (endpoint = 'staging', flags = [], env = {}) =>
+      run([...stageArgs(endpoint), ...flags], repo, env);
+
+    const ready = runStage('staging', ['--require-stage-ready']);
+    assert.equal(ready.status, 0, ready.stderr + ready.stdout);
+    const result = JSON.parse(ready.stdout);
+    assert.equal(result.status, 'stage-ready');
+    assert.equal(result.stageReady, true);
+    assert.equal(result.admitted, undefined);
+
+    const baselineStageProbe = fs.readFileSync(stageProbe);
+    fs.writeFileSync(stageProbe, 'process.stdout.write(JSON.stringify({ stageAdmission: { status: "ready" } }));\n');
+    const changedProbe = runStage('staging', ['--require-stage-ready']);
+    assert.notEqual(changedProbe.status, 0);
+    assert.match(changedProbe.stdout, /differs from the sealed baseline/i);
+    fs.writeFileSync(stageProbe, baselineStageProbe);
+
+    const busy = runStage('staging', ['--require-stage-ready'], { STAGE_ACTIVE_JOBS: '1' });
+    assert.notEqual(busy.status, 0);
+    assert.match(busy.stdout, /idle host job inventory/i);
+
+    const malformedConfig = runStage('staging', ['--require-stage-ready'], { STAGE_CONFIG_SHA: 'not-a-digest' });
+    assert.notEqual(malformedConfig.status, 0);
+    assert.match(malformedConfig.stdout, /content-pinned target configuration/i);
+
+    const evidencePath = path.join(repo, 'caller-stage-evidence.json');
+    fs.writeFileSync(evidencePath, JSON.stringify({ stageAdmission }));
+    const callerEvidence = runStage('staging', ['--evidence', evidencePath]);
+    assert.notEqual(callerEvidence.status, 0);
+    assert.match(callerEvidence.stderr, /rejects caller-supplied evidence/i);
+
+    const noRun = run([
+      'admission',
+      '--stage-only',
+      '--endpoint',
+      'staging',
+      '--surface',
+      'macos-arm64-01',
+      '--environment',
+      'mini',
+    ], repo);
+    assert.notEqual(noRun.status, 0);
+    assert.match(noRun.stderr, /explicit --run-id/i);
+
+    const releaseRequirement = runStage('staging', ['--require-admitted']);
+    assert.notEqual(releaseRequirement.status, 0);
+    assert.match(releaseRequirement.stderr, /cannot satisfy release admission/i);
+
+    const wrongSurface = runStage('staging', ['--surface', 'macos-arm64-02', '--require-stage-ready']);
+    assert.notEqual(wrongSurface.status, 0);
+    assert.match(wrongSurface.stderr, /bound to the requested surface/i);
+
+    const deploy = runStage('deploy', ['--require-stage-ready']);
+    assert.notEqual(deploy.status, 0);
+    assert.match(deploy.stderr + deploy.stdout, /stage-only.*staging/i);
+
+    const release = run([
+      'admission',
+      '--endpoint',
+      'staging',
+      '--surface',
+      'macos-arm64-01',
+      '--environment',
+      'mini',
+      '--require-admitted',
+    ], repo);
+    assert.notEqual(release.status, 0);
+    assert.doesNotMatch(release.stdout, /"status":"admitted"/);
+  });
+
   it('rejects caller probe-command or subject-head overrides', () => {
     const probeOverride = run(['admission', '--probe-command', 'echo 1'], repo);
     assert.notEqual(probeOverride.status, 0);
@@ -1093,6 +1246,21 @@ if (process.env.WORK_RUN_EXPECTED_HEAD !== head ||
       const result = run(['admission', '--endpoint', 'staging'], repo);
       assert.notEqual(result.status, 0, JSON.stringify(admissionCommand));
       assert.match(result.stdout + result.stderr, /admissionCommand/i);
+    }
+  });
+
+  it('applies dedicated probe path boundaries to stage commands', () => {
+    for (const stageCommand of [
+      ['/tmp/node', 'stage-probe.mjs'],
+      ['./node', 'stage-probe.mjs'],
+      [12, 'stage-probe.mjs'],
+      [process.execPath, 'C:outside.mjs'],
+      [process.execPath, 'C:\\outside.mjs'],
+    ]) {
+      commitProbe(validSafeguards(repo), ROLLBACK_POLICY, { stageCommand });
+      const result = run(['admission', '--endpoint', 'staging'], repo);
+      assert.notEqual(result.status, 0, JSON.stringify(stageCommand));
+      assert.match(result.stdout + result.stderr, /stageCommand/i);
     }
   });
 
