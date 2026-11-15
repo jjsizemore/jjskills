@@ -649,6 +649,7 @@ function cmdMarkBlocked(cwd, args) {
   if (!storyId) die('mark-blocked requires --story');
   if (!args.reason) die('mark-blocked requires --reason');
   const { path: lp, data } = readLedger(cwd, runId);
+  if (data.status === 'completed') die('cannot mark-blocked: run already completed');
   const story = data.userStories.find((s) => s.id === storyId);
   if (!story) die(`unknown story: ${storyId}`);
   story.blockedReason = String(args.reason);
@@ -793,6 +794,7 @@ function cmdComplete(cwd, args) {
   const runId = resolveRunId(cwd, args);
   if (!runId) die('no ACTIVE run');
   const { path: lp, data } = readLedger(cwd, runId);
+  if (data.status === 'completed') die('cannot complete: run already completed');
   if (!(data.userStories || []).every((s) => s.passes)) {
     die('cannot complete: incomplete stories remain');
   }
