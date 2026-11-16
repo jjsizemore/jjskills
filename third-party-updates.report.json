@@ -1,5 +1,5 @@
 {
-  "baselineUpdated": false,
+  "baselineUpdated": true,
   "check": false,
   "limitations": [
     "Upstream deletions and local-only files are reported and preserved; files are never deleted automatically.",
@@ -51,108 +51,128 @@
       "retry": false,
       "skills": {
         "cavecrew": {
-          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is 9b243662ff98 (moved from b4ee71d557d9); pin required before automation can merge",
+          "movedFrom": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5",
           "status": "unpinned",
-          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+          "upstreamRevision": "9b243662ff98d392bc0a95b865a554583d71be75"
         },
         "caveman": {
-          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is 9b243662ff98 (moved from b4ee71d557d9); pin required before automation can merge",
+          "movedFrom": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5",
           "status": "unpinned",
-          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+          "upstreamRevision": "9b243662ff98d392bc0a95b865a554583d71be75"
         },
         "caveman-commit": {
-          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is 9b243662ff98 (moved from b4ee71d557d9); pin required before automation can merge",
+          "movedFrom": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5",
           "status": "unpinned",
-          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+          "upstreamRevision": "9b243662ff98d392bc0a95b865a554583d71be75"
         },
         "caveman-compress": {
-          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is 9b243662ff98 (moved from b4ee71d557d9); pin required before automation can merge",
+          "movedFrom": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5",
           "status": "unpinned",
-          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+          "upstreamRevision": "9b243662ff98d392bc0a95b865a554583d71be75"
         },
         "caveman-discover": {
-          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is 9b243662ff98 (moved from b4ee71d557d9); pin required before automation can merge",
+          "movedFrom": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5",
           "status": "unpinned",
-          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+          "upstreamRevision": "9b243662ff98d392bc0a95b865a554583d71be75"
         },
         "caveman-evidence-review": {
-          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is 9b243662ff98 (moved from b4ee71d557d9); pin required before automation can merge",
+          "movedFrom": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5",
           "status": "unpinned",
-          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+          "upstreamRevision": "9b243662ff98d392bc0a95b865a554583d71be75"
         },
         "caveman-explore": {
-          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is 9b243662ff98 (moved from b4ee71d557d9); pin required before automation can merge",
+          "movedFrom": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5",
           "status": "unpinned",
-          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+          "upstreamRevision": "9b243662ff98d392bc0a95b865a554583d71be75"
         },
         "caveman-help": {
-          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is 9b243662ff98 (moved from b4ee71d557d9); pin required before automation can merge",
+          "movedFrom": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5",
           "status": "unpinned",
-          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+          "upstreamRevision": "9b243662ff98d392bc0a95b865a554583d71be75"
         },
         "caveman-learn": {
-          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is 9b243662ff98 (moved from b4ee71d557d9); pin required before automation can merge",
+          "movedFrom": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5",
           "status": "unpinned",
-          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+          "upstreamRevision": "9b243662ff98d392bc0a95b865a554583d71be75"
         },
         "caveman-manage": {
-          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is 9b243662ff98 (moved from b4ee71d557d9); pin required before automation can merge",
+          "movedFrom": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5",
           "status": "unpinned",
-          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+          "upstreamRevision": "9b243662ff98d392bc0a95b865a554583d71be75"
         },
         "caveman-optimize": {
-          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is 9b243662ff98 (moved from b4ee71d557d9); pin required before automation can merge",
+          "movedFrom": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5",
           "status": "unpinned",
-          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+          "upstreamRevision": "9b243662ff98d392bc0a95b865a554583d71be75"
         },
         "caveman-review": {
-          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is 9b243662ff98 (moved from b4ee71d557d9); pin required before automation can merge",
+          "movedFrom": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5",
           "status": "unpinned",
-          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+          "upstreamRevision": "9b243662ff98d392bc0a95b865a554583d71be75"
         },
         "caveman-setup": {
-          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is 9b243662ff98 (moved from b4ee71d557d9); pin required before automation can merge",
+          "movedFrom": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5",
           "status": "unpinned",
-          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+          "upstreamRevision": "9b243662ff98d392bc0a95b865a554583d71be75"
         },
         "caveman-stats": {
-          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is 9b243662ff98 (moved from b4ee71d557d9); pin required before automation can merge",
+          "movedFrom": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5",
           "status": "unpinned",
-          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+          "upstreamRevision": "9b243662ff98d392bc0a95b865a554583d71be75"
         },
         "investigate-first": {
-          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is 9b243662ff98 (moved from b4ee71d557d9); pin required before automation can merge",
+          "movedFrom": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5",
           "status": "unpinned",
-          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+          "upstreamRevision": "9b243662ff98d392bc0a95b865a554583d71be75"
         },
         "lean-build": {
-          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is 9b243662ff98 (moved from b4ee71d557d9); pin required before automation can merge",
+          "movedFrom": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5",
           "status": "unpinned",
-          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+          "upstreamRevision": "9b243662ff98d392bc0a95b865a554583d71be75"
         },
         "migration": {
-          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is 9b243662ff98 (moved from b4ee71d557d9); pin required before automation can merge",
+          "movedFrom": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5",
           "status": "unpinned",
-          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+          "upstreamRevision": "9b243662ff98d392bc0a95b865a554583d71be75"
         },
         "safe-refactor": {
-          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is 9b243662ff98 (moved from b4ee71d557d9); pin required before automation can merge",
+          "movedFrom": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5",
           "status": "unpinned",
-          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+          "upstreamRevision": "9b243662ff98d392bc0a95b865a554583d71be75"
         },
         "surgical-patch": {
-          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is 9b243662ff98 (moved from b4ee71d557d9); pin required before automation can merge",
+          "movedFrom": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5",
           "status": "unpinned",
-          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+          "upstreamRevision": "9b243662ff98d392bc0a95b865a554583d71be75"
         },
         "verify-and-stop": {
-          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is b4ee71d557d9; pin required before automation can merge",
+          "detail": "no reviewed pin for JuliusBrussee/caveman; upstream is 9b243662ff98 (moved from b4ee71d557d9); pin required before automation can merge",
+          "movedFrom": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5",
           "status": "unpinned",
-          "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+          "upstreamRevision": "9b243662ff98d392bc0a95b865a554583d71be75"
         }
       },
       "status": "needs-review",
-      "upstreamRevision": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5"
+      "upstreamRevision": "9b243662ff98d392bc0a95b865a554583d71be75"
     },
     "anthropics/skills": {
       "error": null,
@@ -2562,66 +2582,66 @@
         "remotion-best-practices": {
           "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
           "status": "license-blocked",
-          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+          "upstreamRevision": "3e20ac75161bc34468845df714701cc9bf6075f4"
         },
         "remotion-captions": {
           "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
           "status": "license-blocked",
-          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+          "upstreamRevision": "3e20ac75161bc34468845df714701cc9bf6075f4"
         },
         "remotion-create": {
           "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
           "status": "license-blocked",
-          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+          "upstreamRevision": "3e20ac75161bc34468845df714701cc9bf6075f4"
         },
         "remotion-docs": {
           "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
           "status": "license-blocked",
-          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+          "upstreamRevision": "3e20ac75161bc34468845df714701cc9bf6075f4"
         },
         "remotion-interactivity": {
           "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
           "status": "license-blocked",
-          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+          "upstreamRevision": "3e20ac75161bc34468845df714701cc9bf6075f4"
         },
         "remotion-maps": {
           "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
           "status": "license-blocked",
-          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+          "upstreamRevision": "3e20ac75161bc34468845df714701cc9bf6075f4"
         },
         "remotion-markup": {
           "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
           "status": "license-blocked",
-          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+          "upstreamRevision": "3e20ac75161bc34468845df714701cc9bf6075f4"
         },
         "remotion-multimedia": {
           "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
           "status": "license-blocked",
-          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+          "upstreamRevision": "3e20ac75161bc34468845df714701cc9bf6075f4"
         },
         "remotion-render": {
           "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
           "status": "license-blocked",
-          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+          "upstreamRevision": "3e20ac75161bc34468845df714701cc9bf6075f4"
         },
         "remotion-saas": {
           "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
           "status": "license-blocked",
-          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+          "upstreamRevision": "3e20ac75161bc34468845df714701cc9bf6075f4"
         },
         "remotion-studio": {
           "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
           "status": "license-blocked",
-          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+          "upstreamRevision": "3e20ac75161bc34468845df714701cc9bf6075f4"
         },
         "remotion-upgrade": {
           "detail": "source remotion-dev/skills is pinned at 7e541aa4d736 but redistribution rights are unclarified; bytes are never copied",
           "status": "license-blocked",
-          "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+          "upstreamRevision": "3e20ac75161bc34468845df714701cc9bf6075f4"
         }
       },
       "status": "needs-review",
-      "upstreamRevision": "7e541aa4d7361dfaca0780a565a47307eb7bdfbb"
+      "upstreamRevision": "3e20ac75161bc34468845df714701cc9bf6075f4"
     },
     "vercel-labs/agent-skills": {
       "error": null,
@@ -2647,7 +2667,7 @@
         }
       },
       "status": "needs-review",
-      "upstreamRevision": "b716f9dc2ba36b6aa8f0080615e5a3a6caeac63b"
+      "upstreamRevision": "af860243b8c68053b3b5151e3732b9322933674d"
     },
     "vipulgupta2048/gitshot": {
       "error": null,
