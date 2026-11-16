@@ -1204,7 +1204,8 @@ function cmdAdmission(cwd, args) {
 
 function main() {
   const argv = process.argv.slice(2);
-  if (argv.length === 0 || argv[0] === '-h' || argv[0] === '--help') {
+  // Help must return before command dispatch can run probes or mutate state.
+  if (argv.length === 0 || argv.some((arg) => arg === '-h' || arg === '--help')) {
     process.stdout.write(`Usage: work-run.mjs <command> [options]
 
 Commands:
