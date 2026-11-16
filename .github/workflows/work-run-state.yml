@@ -9,7 +9,7 @@ permissions:
   contents: read
 jobs:
   contracts:
-    runs-on: ubicloud-standard-4
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
