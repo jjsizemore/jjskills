@@ -20,7 +20,23 @@ defines authority, proof tiers, recovery, ownership, and terminal states.
 Repository adapters add commands and provider facts; they may not weaken its
 fail-closed boundaries.
 
-## Controller interface
+## Routine path
+
+Use for small scope with no concrete review trigger under the contract, no release
+effect and no live-host effect. Applicable repository checks and safety gates still bind.
+
+1. Confirm scope, existing authority and the recorded endpoint; execute directly.
+2. Pass applicable checks bound to the intended diff and commit with the delivery
+   conventions below. Deterministic checks may provide the independent oracle.
+3. Push and provide a PR only when the recorded endpoint requires those publication
+   steps. Source-only work needs no PR unless the endpoint requires one.
+4. Report `VERIFIED` when those applicable checks and endpoint steps are complete.
+
+This path requires no consensus loop, no second review lane and no pre-yield
+frontier check. It skips the full sequence below. If a concrete trigger or release/
+live-host effect emerges, use the full path and its applicable proof tier.
+
+## Controller interface (full path)
 
 The controller accepts the repository intent, acceptance/todo coverage,
 immutable intended diff, task class, requested endpoint, current phase, and
@@ -33,7 +49,7 @@ contract; this controller does not infer scope expansion. Its evidence bindings
 permit retained proof with recorded source/input equivalence, not session-only
 freshness. Hosted results and required approvals remain current-head/base-bound.
 
-## Closeout sequence
+## Full closeout sequence (non-routine work)
 
 1. **Pre-change** — confirm scope, task class, authority, acceptance criteria,
    any immutable identity or handoff required by the repository adapter, and
@@ -74,14 +90,14 @@ freshness. Hosted results and required approvals remain current-head/base-bound.
    boundary immediately before applicable actuation; bind actual merge SHA to artifact/release SHA,
    deployment result, runtime/version equality, authenticated smoke/UAT, tracking
    closure, and cleanup evidence.
-8. **Pre-yield frontier check** — before ending the turn or a terminal report,
-   account for remaining authorized work under the portable contract's
-   [delivery coordination rules](../references/autonomous-completion-contract.md#delivery-coordination).
+8. **Pre-yield frontier check** — only for multi-lane or release-sensitive work,
+   account for remaining authorized work before a terminal report under the portable
+   contract's [delivery coordination rules](../references/autonomous-completion-contract.md#delivery-coordination).
    Progress updates remain allowed while work continues.
-9. **Terminal** — after the frontier check, apply the portable contract's terminal
+9. **Terminal** — after any applicable frontier check, apply the portable contract's terminal
    criteria once applicable proof is complete and independently confirmed at the
-   required proof tier. A `VERIFIED` terminal state requires committed+pushed code plus applicable post-push
-   evidence; after merge, the PR is closed and is not required to remain open.
+   required proof tier. A `VERIFIED` terminal state requires committed code and, when
+   publication is required, pushed code plus applicable post-push evidence; after merge, the PR is closed and is not required to remain open.
 
 ## Leaf handoffs
 Load a capability leaf only when the current procedure actually needs it; do not
@@ -117,13 +133,11 @@ recovery/rollback scope or `Not applicable — reason`.
   Keep local worktree paths in local records. Repair a conflicting repository
   template or validator through its existing review/check flow for that metadata
   operation; do not retransmit metadata rejected by native privacy review.
-- Include `Why / Rationale` and `Change Explanation` in the PR body. Write
-  2–4 sentences directly explaining what changed, why, and the key behavior or
-  trade-off to retain; do not route this through a teaching skill.
+- Follow the canonical [Why/Rationale and ADR rule](../references/why-rationale-and-adr.md).
+- Include `Change Explanation` in the PR body: 2–4 sentences describing the changed
+  behavior and key trade-off; do not route this through a teaching skill.
 - Use a conventional commit message with `Agent:` and `Model:` trailers.
-- Attach UI/UX screenshots with `npx gitshot <image> | gh pr comment <n> --body-file -`.
-- Write an ADR under `docs/architecture/adr/` only for an architectural decision
-  with evaluated alternatives, trade-offs, and rationale.
+- For non-routine product/UI delivery, attach UI/UX screenshots with `npx gitshot <image> | gh pr comment <n> --body-file -`.
 - Use the tracker already attached to the assignment. Search Linear only when
   the user or repository workflow uses it for this task; do not introduce a
   tracker, ledger or issue-creation prerequisite for ordinary ad-hoc work.
@@ -141,13 +155,13 @@ recovery/rollback scope or `Not applicable — reason`.
 
 The recorded endpoint's delivery criteria are:
 
-- `VERIFIED`: the applicable proof tier passed with an independent oracle **AND** all of:
+- `VERIFIED`: the applicable proof tier passed with an independent oracle **AND** all applicable items below (the routine path above suffices for routine work):
   - Product code changes are **committed** with semantic message and `Agent:`/`Model:` trailers.
   - Changes are **pushed** when the recorded endpoint requires publication.
     Explicit local-only work keeps its authorized endpoint without a new ledger.
-  - For product/UI changes (feat/fix/refactor/perf touching frontend, desktop, or packages/ui), an **open PR** existed targeting the resolved branch under repository policy and its body reflected the current head at push time.
-  - **Gitshot screenshots** were attached to the PR for every UI/UX diff. Upload and comment via `npx gitshot <image> | gh pr comment <n> --body-file -`.
-  - Source-only changes with no operational effect do not require a PR or screenshots for `VERIFIED`; effect, not file extension, decides.
+  - For non-routine product/UI changes (feat/fix/refactor/perf touching frontend, desktop, or packages/ui), an **open PR** existed targeting the resolved branch under repository policy and its body reflected the current head at push time.
+  - For non-routine product/UI delivery, **Gitshot screenshots** were attached to the PR for every UI/UX diff. Upload and comment via `npx gitshot <image> | gh pr comment <n> --body-file -`.
+  - Source-only changes with no operational effect do not require a PR or screenshots for `VERIFIED` unless the recorded endpoint requires them; effect, not file extension, decides.
   - After merge, the PR is closed; terminal verification uses the recorded post-push PR evidence and does not require an open PR.
   - If any applicable item above is unmet, withhold `VERIFIED` and continue
     reachable authorized work. Use `BLOCKED`/`PAUSED` only under the scoped

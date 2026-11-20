@@ -25,7 +25,7 @@ owns review scope, capability, evidence reuse and convergence.
 For each finding, cite section/heading evidence and a concrete fix.
 
 1. **Goal, non-goals & Why rationale** — clear explanation of **why** the change was made; out-of-scope stated
-2. **Architectural Decision Records (ADRs)** — if an architectural decision was made & options/tradeoffs considered, an ADR under `docs/architecture/adr/` is mandated, containing all 4 required fields: decision, alternatives considered, tradeoffs, and rationale
+2. Follow the canonical [Why/Rationale and ADR rule](../references/why-rationale-and-adr.md).
 4. **No placeholders** — no TBD/TODO/“similar to Task N”/hand-wavy validation
 5. **File paths** — real paths; layer order sane for the stack
 6. **Tests** — each story has a verifiable check; bug plans have a regression guard

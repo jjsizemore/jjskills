@@ -21,8 +21,15 @@ a review trigger is present (see Proof section for the trigger list); add only g
 independent lanes within resource limits, not coordinator-to-clerk-to-coder chains.
 Reuse consolidated source/ownership/dirty-state/gate preflight until a specific invalidator.
 Freeze sufficient baseline and postchecks before editing; setup failure is not RED proof.
-Expand checks only for concrete risk or failed criteria. Sufficient facts/authority mean
-execute directly: no routine second plan, approval, or owner transfer; no gate bypass.
+Expand checks only for concrete risk or failed criteria.
+
+### Plan-first rule (canonical)
+
+Execute directly when facts and authority are sufficient. Require a written plan and review-to-consensus only for multi-step or risky work: multi-surface, cross-boundary, release-sensitive, a concrete review trigger present, or genuine unknowns a plan must resolve.
+
+Ordinary edit/check/commit steps alone do not make work multi-step for this rule.
+Reuse a sufficient supplied plan; no routine second plan, approval, or owner transfer.
+Planning-only authority remains planning-only; a plan never authorizes gate bypass.
 
 ### Current authority
 
@@ -103,10 +110,21 @@ subject only when a review trigger is present. Review triggers are defined by re
 action/effect, never by file extension or task-class label: concrete security risk,
 credential/secret handling, data-loss risk, release-admission effect, live-host safety
 risk, an actual branch/repository/protected policy that requires review/approval, or
-an explicit user requirement for review. Fresh-context independence does not
-universally require a different model. A second reviewer beyond the one triggered
-review is required only for concrete identified risk or explicit protected repository
-policy.
+an explicit user requirement for review.
+
+A trigger requires a concrete identified effect. Concrete security risk names a
+vulnerability or attack path, not a vague possibility. Release-admission effect means
+actual release actuation (publication/promotion or reduction of gates protecting those
+actions), not merely touching release-adjacent files. Protected policy counts only
+where the actual repository/branch policy requires review or approval. Credential/secret
+handling, data-loss risk and live-host safety risk retain their fail-closed requirements.
+Routine single-file fixes, mechanical/source-only changes, docs and style are not
+triggers by themselves; any concrete trigger above still applies regardless of size
+or file type.
+
+Fresh-context independence does not universally require a different model. Reuse one
+capable triggered review; a second review lane is required only for an identified risk
+that needs distinct reviewer capability or an explicit protected repository policy.
 Advisory, style, and pre-existing unrelated findings are nonblocking; agents validate/triage
 findings, technically resolve false positives, and do not manufacture user approvals or
 demand tracked tickets for every optional improvement. Initial review is scoped to the
@@ -140,7 +158,7 @@ cannot replace higher.
 | Mechanical / source-only guidance with no operational effect | Deterministic checks and input binding; no mandatory review or staging |
 | Behavior / product change without review trigger | Targeted behavior regression, affected checks, changed-path smoke; no mandatory review |
 | Behavior / product change with review trigger | Above plus one capable independent review bound to the current subject |
-| Release-sensitive | Triggered-review tier above plus identified release guardrails and expected artifact/SHA evidence |
+| Release-sensitive (actual publication/promotion or release-gate reduction) | Triggered-review tier above plus identified release guardrails and expected artifact/SHA evidence; release-adjacent source alone follows its actual effects |
 | Deployment/promotion | Authorized target's merge/artifact/deployment/runtime/version/UAT chain only |
 | Runner/fleet repair | Target-scoped lifecycle and runtime/admission proof under the selected procedure. |
 
@@ -413,7 +431,10 @@ bindings above; each forbidden variant must remain closed.
 | Password/PAT/GUI genuinely human-only | HUMAN_BLOCKED lane; one exact private action/destination and expected non-secret result. Continue independent work. | Secret relay, fake consent, recurring requests or asking for an action available tools already permit. |
 | Explicit new user scope supersedes NoHost | Record exact superseded scope/current delta; preserve signer/lease/job/owner/budget gates and pass fresh preconditions. | Bare continue/default changes endpoint, unrelated gate cleared, or planning-only authority executes host work. |
 | Diagnosed unavailable executor; capable alternate; applicable authority delta removes only a user-only fence | Transfer exact task/custody, immutable inputs, evidence, remaining allowance and acceptance; stop conflicting execution. Alternate reviewer independently reads the required immutable subject. | Replace a healthy/protected owner, transfer gated actuation, reset limits, skip independent review or treat no reply as a human gate. |
-| Mechanical edit; no behavior change | Deterministic check and input binding; no mandatory reviewer or staging ceremony. | Compulsory review loop or staging deployment ceremony for mechanical text change. |
+| Routine single-file fix; sufficient facts/authority; no concrete review, release or live-host effect | Execute directly; applicable checks, commit, then push/PR only as required by the recorded endpoint reach VERIFIED. No consensus loop, second review lane or pre-yield frontier check. | Treating edit/check/commit as multi-step planning or inventing review/frontier gates; omitting an explicitly required PR. |
+| Multi-surface, cross-boundary, release-sensitive, concrete review trigger or genuine unknowns needing a plan | Use a sufficient written plan and bounded review-to-consensus, then execute within existing authority; retain matching plan/review proof. | Unconditional planning for routine work, repeated approval for authorized execution, or planning-only authority treated as execution authority. |
+| Mechanical/source-only edit, docs or style; no concrete review trigger | Deterministic check and input binding; no mandatory reviewer or staging ceremony. | Compulsory review loop or staging deployment ceremony for mechanical text change; using the label to bypass a concrete safety trigger. |
+| Release-adjacent source edit without publication/promotion or release-gate reduction; no other concrete trigger | Affected source checks; no release-admission review or staging merely due to file location. | Treating proximity to release files as actuation, or overlooking actual gate reduction. |
 | Scoped behavior fix with review trigger; one capable independent reviewer passes; advisory style comment present | Treat advisory as nonblocking; complete verified delivery without blocking on optional style notes or manufacturing user approval. | Blocking merge on advisory/style items or requiring tracked tickets for every nitpick. |
 | Review round 3 on unchanged failing strategy | Owner autonomously reconsiders/simplifies or changes strategy using causal evidence within remaining resource limits. | Blind infinite review loop, reset-by-renaming, automatic approval at round cap, or automatic human continue prompt. |
 | Controller-created leaf count is exhausted; assigned local check failed before runtime tests due to a wrapper/context mismatch; no matching user/native sealed limit is evidenced | After the attempt has a known terminal outcome and actual remaining allowances permit it, revise the controller's batching and proceed only after current resource/job/lease admission. | Promote the leaf count into a user approval gate, reset an actual sealed limit, or duplicate an uncertain possibly-written attempt. |
