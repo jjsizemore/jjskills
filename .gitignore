@@ -32,3 +32,6 @@ graphify-out/
 # hk local overrides (https://hk.jdx.dev)
 hk.local.pkl
 .config/hk.local.pkl
+
+# Local agent tool state (regenerable, never shared)
+.scratch/
